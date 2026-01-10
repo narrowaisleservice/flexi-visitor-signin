@@ -1178,9 +1178,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Vehicle Registration (Optional)</label>
+                        <label>Vehicle Registration <span style="font-size: 0.9em; opacity: 0.7;">(Optional)</span></label>
                         <div class="input-icon" data-icon="🚗">
                             <input type="text" id="vehicleReg" placeholder="e.g. AB12 CDE" style="text-transform: uppercase;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Your Email Address <span style="font-size: 0.9em; opacity: 0.7;">(Optional - for visit confirmation)</span></label>
+                        <div class="input-icon" data-icon="📧">
+                            <input type="email" id="visitorEmail" placeholder="e.g. your.name@company.com">
                         </div>
                     </div>
 
@@ -1475,6 +1482,7 @@
             const hostEmail = hostData[1];
             const visitPurpose = document.getElementById('visitPurpose').value.replace(/🤝|📦|🔧|💼|💰|📋/g, '').trim();
             const vehicleReg = document.getElementById('vehicleReg').value;
+            const visitorEmail = document.getElementById('visitorEmail').value;
             
             const now = new Date();
             const timeIn = now.toLocaleTimeString('en-GB');
@@ -1491,6 +1499,7 @@
                 hostEmail: hostEmail,
                 visitPurpose: visitPurpose,
                 vehicleReg: vehicleReg,
+                visitorEmail: visitorEmail,
                 status: 'Signed In'
             };
             
