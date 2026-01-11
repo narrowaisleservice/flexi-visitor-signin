@@ -96,44 +96,54 @@
 
         h2 {
             color: var(--flexi-red-light);
-            font-size: 2.2em;
+            font-size: 2.8em;
             margin-bottom: 15px;
-            text-shadow: 0 0 20px var(--flexi-red-glow);
+            text-shadow: 0 0 30px var(--flexi-red-glow), 0 0 60px var(--flexi-red-glow);
             text-align: center;
+            font-weight: 700;
         }
 
         .subtitle {
             text-align: center;
-            color: var(--dark-text);
-            opacity: 0.8;
-            margin-bottom: 30px;
-            font-size: 1.1em;
+            color: white;
+            opacity: 0.9;
+            margin-bottom: 35px;
+            font-size: 1.3em;
+            font-weight: 700;
         }
 
         .btn-large {
             background: linear-gradient(135deg, var(--flexi-red) 0%, #cc0000 100%);
             color: white;
             border: none;
-            padding: 25px 40px;
-            font-size: 1.4em;
+            padding: 30px 40px;
+            font-size: 1.6em;
             font-weight: 700;
-            border-radius: 12px;
+            border-radius: 15px;
             cursor: pointer;
             width: 100%;
-            margin: 10px 0;
-            box-shadow: 0 8px 25px var(--flexi-red-glow);
+            margin: 12px 0;
+            box-shadow: 0 10px 35px var(--flexi-red-glow), 0 0 60px var(--flexi-red-glow);
             transition: all 0.3s;
             font-family: 'Roboto Condensed', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-large:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px var(--flexi-red-glow);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 45px var(--flexi-red-glow), 0 0 80px var(--flexi-red-glow);
         }
 
         .btn-secondary {
             background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%);
-            border: 2px solid var(--flexi-red);
+            border: 3px solid var(--flexi-red);
+            box-shadow: 0 8px 30px rgba(255, 10, 22, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border-color: var(--flexi-red-light);
         }
 
         .form-group {
@@ -142,20 +152,22 @@
 
         label {
             display: block;
-            color: var(--dark-text);
+            color: white;
             font-weight: 700;
-            margin-bottom: 8px;
-            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         input, select {
             width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 10, 22, 0.3);
-            border-radius: 8px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 10, 22, 0.4);
+            border-radius: 10px;
             color: white;
-            font-size: 1.1em;
+            font-size: 1.15em;
+            font-weight: 500;
             font-family: 'Roboto Condensed', sans-serif;
             transition: all 0.3s;
         }
@@ -171,27 +183,35 @@
 
         input:focus, select:focus {
             outline: none;
-            border-color: var(--flexi-red);
-            box-shadow: 0 0 15px var(--flexi-red-glow);
-            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--flexi-red-light);
+            box-shadow: 0 0 25px var(--flexi-red-glow), 0 0 50px var(--flexi-red-glow);
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.01);
         }
 
         .required {
             color: var(--flexi-red-light);
+            font-size: 1.3em;
+            text-shadow: 0 0 20px var(--flexi-red-glow), 0 0 40px var(--flexi-red-glow);
+            font-weight: 700;
         }
 
         .safety-info {
-            background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid var(--flexi-red);
-            margin: 20px 0;
+            background: linear-gradient(135deg, #2a0000 0%, #1a0000 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 6px solid var(--flexi-red-light);
+            border: 2px solid var(--flexi-red);
+            margin: 25px 0;
+            box-shadow: 0 0 30px var(--flexi-red-glow);
         }
 
         .safety-info h3 {
             color: var(--flexi-red-light);
-            margin-bottom: 15px;
-            font-size: 1.3em;
+            margin-bottom: 18px;
+            font-size: 1.5em;
+            text-shadow: 0 0 20px var(--flexi-red-glow);
+            font-weight: 700;
         }
 
         .safety-info ul {
@@ -200,9 +220,11 @@
         }
 
         .safety-info li {
-            padding: 8px 0;
-            color: var(--dark-text);
-            line-height: 1.6;
+            padding: 10px 0;
+            color: white;
+            line-height: 1.7;
+            font-size: 1.05em;
+            font-weight: 500;
         }
 
         .checkbox-group {
@@ -324,6 +346,47 @@
             }
         }
 
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(14deg); }
+            20% { transform: rotate(-8deg); }
+            30% { transform: rotate(14deg); }
+            40% { transform: rotate(-4deg); }
+            50% { transform: rotate(10deg); }
+            60% { transform: rotate(0deg); }
+        }
+
+        .wave-hand {
+            display: inline-block;
+            font-size: 1em;
+            animation: wave 2s ease-in-out infinite;
+            transform-origin: 70% 70%;
+        }
+
+        .welcome-time {
+            text-align: center;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%);
+            border-radius: 15px;
+            border: 2px solid var(--flexi-red);
+            box-shadow: 0 0 30px var(--flexi-red-glow);
+        }
+
+        .time-display {
+            font-size: 3em;
+            font-weight: 700;
+            color: var(--flexi-red-light);
+            text-shadow: 0 0 30px var(--flexi-red-glow);
+            margin-bottom: 10px;
+        }
+
+        .date-display {
+            font-size: 1.3em;
+            color: white;
+            font-weight: 500;
+        }
+
         @keyframes flexiSpin {
             0% {
                 transform: scale(0) rotate(0deg);
@@ -372,14 +435,36 @@
 
         <!-- Welcome Screen -->
         <div class="screen active" id="welcomeScreen">
-            <h2>Welcome to Narrow Aisle</h2>
-            <p class="subtitle">Please select an option below</p>
+            <!-- Company Branding -->
+            <div style="text-align: center; margin-bottom: 25px;">
+                <h2 style="margin-bottom: 10px;">Welcome to Narrow Aisle <span class="wave-hand">👋</span></h2>
+                <p style="font-size: 1.5em; color: white; font-weight: 700;">Your Space, Our Expertise</p>
+            </div>
             
+            <!-- Live Clock -->
+            <div class="welcome-time">
+                <div class="time-display" id="welcomeTime">00:00:00</div>
+                <div class="date-display" id="welcomeDate">Loading...</div>
+            </div>
+
+            <!-- Live Stats -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 25px 0;">
+                <div style="background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%); padding: 20px; border-radius: 12px; text-align: center; border: 2px solid var(--flexi-red); box-shadow: 0 0 20px var(--flexi-red-glow);">
+                    <div style="font-size: 0.95em; color: white; opacity: 0.8; margin-bottom: 8px; font-weight: 600;">📊 Visitors Today</div>
+                    <div style="font-size: 2.5em; font-weight: 700; color: var(--flexi-red-light); text-shadow: 0 0 25px var(--flexi-red-glow);" id="welcomeTodayCount">-</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%); padding: 20px; border-radius: 12px; text-align: center; border: 2px solid var(--flexi-red); box-shadow: 0 0 20px var(--flexi-red-glow);">
+                    <div style="font-size: 0.95em; color: white; opacity: 0.8; margin-bottom: 8px; font-weight: 600;">👥 Currently On-Site</div>
+                    <div style="font-size: 2.5em; font-weight: 700; color: var(--flexi-red-light); text-shadow: 0 0 25px var(--flexi-red-glow);" id="welcomeCurrentCount">-</div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
             <button class="btn-large" onclick="showScreen('signinScreen')">
-                📝 Sign In
+                📝 Visitor Sign In
             </button>
             <button class="btn-large btn-secondary" onclick="showScreen('signoutScreen')">
-                👋 Sign Out
+                👋 Visitor Sign Out
             </button>
         </div>
 
@@ -486,13 +571,14 @@
 
         <!-- Success Screen -->
         <div class="screen" id="successScreen">
-            <h2 style="color: #28a745;">✅ Successfully Signed In!</h2>
-            <p class="subtitle">Thank you for signing in</p>
-            <div style="text-align: center; margin: 40px 0;">
-                <p style="font-size: 1.3em;"><span id="successHost"></span> has been notified</p>
-                <p style="margin-top: 20px; opacity: 0.8;">Please wait at reception</p>
+            <div style="font-size: 5em; margin: 20px 0; animation: pulse 1.5s ease-in-out infinite;">✅</div>
+            <h2 style="color: #28a745; text-shadow: 0 0 40px rgba(40, 167, 69, 0.8);">Successfully Signed In!</h2>
+            <p class="subtitle" style="color: #28a745;">Thank you for signing in</p>
+            <div style="text-align: center; margin: 40px 0; padding: 30px; background: linear-gradient(135deg, #1a3a1a 0%, #0a2a0a 100%); border-radius: 15px; border: 2px solid #28a745; box-shadow: 0 0 30px rgba(40, 167, 69, 0.5);">
+                <p style="font-size: 1.5em; color: white; font-weight: 700;"><span id="successHost"></span> has been notified <span style="font-size: 1.3em;">📧</span></p>
+                <p style="margin-top: 20px; opacity: 0.9; color: white; font-size: 1.2em;">Please wait at reception</p>
             </div>
-            <button class="btn-large" onclick="showScreen('welcomeScreen')">← Back to Welcome</button>
+            <button class="btn-large" onclick="showScreen('welcomeScreen')" style="background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); box-shadow: 0 10px 35px rgba(40, 167, 69, 0.5);">← Back to Welcome</button>
         </div>
 
         <!-- Sign Out Screen -->
@@ -527,6 +613,23 @@
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwO7z8GIegwND7UQGKaJRVep84Gdn7yvPkO0cgc6RppEOoxPc0OHyOkGw7pJwZ6AG1l/exec';
 
+        // Update welcome clock
+        function updateWelcomeClock() {
+            const now = new Date();
+            document.getElementById('welcomeTime').textContent = now.toLocaleTimeString('en-GB');
+            document.getElementById('welcomeDate').textContent = now.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+        
+        updateWelcomeClock();
+        setInterval(updateWelcomeClock, 1000);
+        loadWelcomeStats();
+        setInterval(loadWelcomeStats, 30000); // Refresh every 30 seconds
+
         // Particles
         for (let i = 0; i < 20; i++) {
             const particle = document.createElement('div');
@@ -541,8 +644,25 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             if (screenId === 'signoutScreen') loadTodaysVisitors();
+            if (screenId === 'welcomeScreen') loadWelcomeStats();
             if (screenId === 'successScreen') {
                 setTimeout(() => showScreen('welcomeScreen'), 60000);
+            }
+        }
+
+        // Load stats for welcome screen
+        async function loadWelcomeStats() {
+            try {
+                const today = new Date().toLocaleDateString('en-GB');
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getTodaysVisitors&date=${today}`);
+                const visitors = await response.json();
+                
+                const current = visitors.filter(v => v.status === 'Signed In');
+                document.getElementById('welcomeTodayCount').textContent = visitors.length;
+                document.getElementById('welcomeCurrentCount').textContent = current.length;
+            } catch (error) {
+                document.getElementById('welcomeTodayCount').textContent = '0';
+                document.getElementById('welcomeCurrentCount').textContent = '0';
             }
         }
 
