@@ -281,6 +281,63 @@
         .weather-day:hover {
             background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
         }
+
+        /* Welcome Overlay */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .welcome-overlay.show {
+            display: flex;
+        }
+
+        .welcome-message {
+            text-align: center;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        .welcome-message h1 {
+            font-size: 5em;
+            color: var(--flexi-red-light);
+            font-weight: 700;
+            text-shadow: 0 0 60px var(--flexi-red-glow), 0 0 100px var(--flexi-red-glow);
+            margin-bottom: 30px;
+        }
+
+        .welcome-message p {
+            font-size: 2.5em;
+            color: white;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -350,8 +407,28 @@
         </div>
     </div>
 
+    <!-- Welcome Overlay -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-message">
+            <h1>👋 Welcome!</h1>
+            <p id="welcomeVisitorName"></p>
+        </div>
+    </div>
+
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwO7z8GIegwND7UQGKaJRVep84Gdn7yvPkO0cgc6RppEOoxPc0OHyOkGw7pJwZ6AG1l/exec';
+        
+        let lastVisitorCount = 0;
+        
+        function showWelcomeMessage(visitorName) {
+            const overlay = document.getElementById('welcomeOverlay');
+            document.getElementById('welcomeVisitorName').textContent = visitorName;
+            overlay.classList.add('show');
+            
+            setTimeout(() => {
+                overlay.classList.remove('show');
+            }, 12000); // Show for 12 seconds
+        }
         
         function createParticles() {
             const container = document.getElementById('particles');
@@ -385,8 +462,16 @@
                     visitorsList.innerHTML = '<div class="no-visitors">📭 No visitors currently on-site</div>';
                     document.getElementById('todayCount').textContent = '0';
                     document.getElementById('currentCount').textContent = '0';
+                    lastVisitorCount = 0;
                     return;
                 }
+                
+                // Check for new visitor
+                if (visitors.length > lastVisitorCount && lastVisitorCount > 0) {
+                    const newestVisitor = visitors[visitors.length - 1];
+                    showWelcomeMessage(newestVisitor.visitorName);
+                }
+                lastVisitorCount = visitors.length;
                 
                 const currentVisitors = visitors.filter(v => v.status === 'Signed In');
                 document.getElementById('todayCount').textContent = visitors.length;
