@@ -270,12 +270,13 @@
 
         .weather-day {
             background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
             border: 1px solid rgba(255, 10, 22, 0.2);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
+            font-size: 0.95em;
         }
 
         .weather-day:hover {
@@ -392,15 +393,15 @@
                 <h3 style="color: var(--flexi-red-light); font-size: 1.8em; text-shadow: 0 0 20px var(--flexi-red-glow); margin: 0 0 15px 0;">🌤️ Weather - Tipton</h3>
                 
                 <!-- Current Weather -->
-                <div style="background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%); padding: 22px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255, 10, 22, 0.2);">
-                    <div style="font-size: 0.85em; opacity: 0.7; margin-bottom: 8px; font-weight: 700;">NOW</div>
-                    <div id="weatherCurrent" style="font-size: 2.5em; margin: 12px 0;"></div>
-                    <div id="weatherCurrentTemp" style="font-size: 2.2em; font-weight: 700; color: var(--flexi-red-light);"></div>
+                <div style="background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%); padding: 18px; border-radius: 12px; margin-bottom: 16px; text-align: center; border: 1px solid rgba(255, 10, 22, 0.2);">
+                    <div style="font-size: 0.8em; opacity: 0.7; margin-bottom: 6px; font-weight: 700;">NOW</div>
+                    <div id="weatherCurrent" style="font-size: 2em; margin: 8px 0;"></div>
+                    <div id="weatherCurrentTemp" style="font-size: 1.8em; font-weight: 700; color: var(--flexi-red-light);"></div>
                 </div>
                 
                 <!-- 5 Day Forecast -->
-                <div style="font-size: 1em; font-weight: 700; margin-bottom: 12px; opacity: 0.8;">5-Day Forecast</div>
-                <div id="weatherForecast" style="display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto;">
+                <div style="font-size: 0.95em; font-weight: 700; margin-bottom: 10px; opacity: 0.8;">5-Day Forecast</div>
+                <div id="weatherForecast" style="display: flex; flex-direction: column; gap: 8px; flex: 1; overflow-y: auto;">
                     <div style="text-align: center; color: var(--dark-text); padding: 30px;">Loading...</div>
                 </div>
             </div>
@@ -418,7 +419,7 @@
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwO7z8GIegwND7UQGKaJRVep84Gdn7yvPkO0cgc6RppEOoxPc0OHyOkGw7pJwZ6AG1l/exec';
         
-        let lastVisitorCount = 0;
+        let lastVisitorIds = new Set();
         
         function showWelcomeMessage(visitorName) {
             const overlay = document.getElementById('welcomeOverlay');
@@ -462,16 +463,25 @@
                     visitorsList.innerHTML = '<div class="no-visitors">📭 No visitors currently on-site</div>';
                     document.getElementById('todayCount').textContent = '0';
                     document.getElementById('currentCount').textContent = '0';
-                    lastVisitorCount = 0;
+                    lastVisitorIds.clear();
                     return;
                 }
                 
-                // Check for new visitor
-                if (visitors.length > lastVisitorCount && lastVisitorCount > 0) {
-                    const newestVisitor = visitors[visitors.length - 1];
-                    showWelcomeMessage(newestVisitor.visitorName);
-                }
-                lastVisitorCount = visitors.length;
+                // Check for new visitors by comparing IDs
+                const currentSignedIn = visitors.filter(v => v.status === 'Signed In');
+                currentSignedIn.forEach(visitor => {
+                    // Create unique ID for each visitor sign-in (name + time)
+                    const visitorId = `${visitor.visitorName}_${visitor.timeIn}`;
+                    if (!lastVisitorIds.has(visitorId)) {
+                        // New visitor detected!
+                        showWelcomeMessage(visitor.visitorName);
+                        lastVisitorIds.add(visitorId);
+                    }
+                });
+                
+                // Clean up IDs of visitors who have signed out
+                const currentIds = new Set(currentSignedIn.map(v => `${v.visitorName}_${v.timeIn}`));
+                lastVisitorIds = currentIds;
                 
                 const currentVisitors = visitors.filter(v => v.status === 'Signed In');
                 document.getElementById('todayCount').textContent = visitors.length;
@@ -532,12 +542,12 @@
                     
                     return `
                         <div class="weather-day">
-                            <div style="font-weight: 700; font-size: 1.1em; width: 50px;">${dayName}</div>
-                            <div style="font-size: 2em;">${icon}</div>
+                            <div style="font-weight: 700; font-size: 0.95em; width: 42px;">${dayName}</div>
+                            <div style="font-size: 1.6em;">${icon}</div>
                             <div style="flex: 1;">
-                                <div style="font-size: 1.3em; font-weight: 700; color: var(--flexi-red-light);">${tempMax}° / ${tempMin}°</div>
+                                <div style="font-size: 1.1em; font-weight: 700; color: var(--flexi-red-light);">${tempMax}° / ${tempMin}°</div>
                             </div>
-                            <div style="font-size: 0.95em; opacity: 0.8;">💧 ${rain}%</div>
+                            <div style="font-size: 0.85em; opacity: 0.8;">💧 ${rain}%</div>
                         </div>
                     `;
                 }).join('');
