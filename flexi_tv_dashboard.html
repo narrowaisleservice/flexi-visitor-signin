@@ -549,7 +549,7 @@
                 document.getElementById('weatherCurrent').textContent = currentDesc;
                 document.getElementById('weatherCurrentTemp').textContent = Math.round(current.temperature) + '°C';
                 
-                const forecastHTML = data.daily.time.map((date, i) => {
+                const forecastHTML = data.daily.time.slice(0, 3).map((date, i) => {
                     const dayName = new Date(date).toLocaleDateString('en-GB', { weekday: 'short' });
                     const tempMax = Math.round(data.daily.temperature_2m_max[i]);
                     const tempMin = Math.round(data.daily.temperature_2m_min[i]);
