@@ -387,10 +387,43 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN - Weather -->
-        <div>
-            <div style="background: var(--dark-card); padding: 28px; border-radius: 20px; border: 1px solid rgba(255, 10, 22, 0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.5); height: 100%; display: flex; flex-direction: column;">
+        <!-- RIGHT COLUMN - Weather & WiFi -->
+        <div style="display: flex; flex-direction: column; gap: 25px;">
+            
+            <!-- Weather Section -->
+            <div style="background: var(--dark-card); padding: 28px; border-radius: 20px; border: 1px solid rgba(255, 10, 22, 0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
                 <h3 style="color: var(--flexi-red-light); font-size: 1.8em; text-shadow: 0 0 20px var(--flexi-red-glow); margin: 0 0 15px 0;">🌤️ Weather - Tipton</h3>
+                
+                <!-- Current Weather -->
+                <div style="background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%); padding: 18px; border-radius: 12px; margin-bottom: 16px; text-align: center; border: 1px solid rgba(255, 10, 22, 0.2);">
+                    <div style="font-size: 0.8em; opacity: 0.7; margin-bottom: 6px; font-weight: 700;">NOW</div>
+                    <div id="weatherCurrent" style="font-size: 2em; margin: 8px 0;"></div>
+                    <div id="weatherCurrentTemp" style="font-size: 1.8em; font-weight: 700; color: var(--flexi-red-light);"></div>
+                </div>
+                
+                <!-- 5 Day Forecast -->
+                <div style="font-size: 0.95em; font-weight: 700; margin-bottom: 10px; opacity: 0.8;">5-Day Forecast</div>
+                <div id="weatherForecast" style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto;">
+                    <div style="text-align: center; color: var(--dark-text); padding: 30px;">Loading...</div>
+                </div>
+            </div>
+
+            <!-- WiFi Info Card -->
+            <div style="background: linear-gradient(135deg, var(--flexi-red) 0%, var(--flexi-red-dark) 100%); padding: 28px; border-radius: 20px; border: 1px solid rgba(255, 10, 22, 0.5); box-shadow: 0 10px 40px rgba(255, 10, 22, 0.3), 0 0 60px var(--flexi-red-glow); text-align: center;">
+                <div style="font-size: 3em; margin-bottom: 12px;">📶</div>
+                <h3 style="color: white; font-size: 1.8em; font-weight: 700; margin: 0 0 18px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Guest WiFi</h3>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+                    <div style="font-size: 0.9em; opacity: 0.9; margin-bottom: 6px; color: white;">Network</div>
+                    <div style="font-size: 1.4em; font-weight: 700; color: white; letter-spacing: 1px;">Guest Wifi</div>
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px;">
+                    <div style="font-size: 0.9em; opacity: 0.9; margin-bottom: 6px; color: white;">Password</div>
+                    <div style="font-size: 1.3em; font-weight: 700; color: white; font-family: 'Courier New', monospace; letter-spacing: 1px;">$Building564Free$</div>
+                </div>
+            </div>
+        </div>
                 
                 <!-- Current Weather -->
                 <div style="background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%); padding: 18px; border-radius: 12px; margin-bottom: 16px; text-align: center; border: 1px solid rgba(255, 10, 22, 0.2);">
