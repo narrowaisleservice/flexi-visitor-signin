@@ -410,6 +410,78 @@
             transform-origin: 70% 70%;
         }
 
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(255, 10, 22, 0.2);
+            border-top: 8px solid var(--flexi-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.5em;
+            font-weight: 700;
+            text-shadow: 0 0 20px var(--flexi-red-glow);
+        }
+
+        @keyframes checkmark {
+            0% {
+                stroke-dashoffset: 100;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--flexi-red);
+            animation: confetti-fall 3s linear;
+        }
+
         .welcome-time {
             text-align: center;
             margin: 30px 0;
@@ -474,6 +546,12 @@
 <body>
     <div class="particles" id="particles"></div>
     <div class="toast" id="toast"></div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Processing...</div>
+    </div>
 
     <div class="container">
         <div class="header">
@@ -708,11 +786,37 @@
 
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
+            const targetScreen = document.getElementById(screenId);
+            targetScreen.classList.add('active');
+            targetScreen.scrollTop = 0; // Scroll to top
+            
             if (screenId === 'signoutScreen') loadTodaysVisitors();
             if (screenId === 'welcomeScreen') loadWelcomeStats();
             if (screenId === 'successScreen') {
                 setTimeout(() => showScreen('welcomeScreen'), 60000);
+            }
+        }
+
+        function showLoading(text = 'Processing...') {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.querySelector('.loading-text').textContent = text;
+            overlay.classList.add('show');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        function createConfetti() {
+            const colors = ['#FF0A16', '#FF3D47', '#FFD700', '#00FF00', '#0066FF'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
             }
         }
 
@@ -769,6 +873,8 @@
         document.getElementById('signinForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            showLoading('Signing in...');
+            
             const hostData = document.getElementById('hostName').value.split('|');
             const data = {
                 action: 'signin',
@@ -793,20 +899,26 @@
                     body: JSON.stringify(data)
                 });
                 
+                // Small delay to ensure data is saved
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                hideLoading();
                 document.getElementById('successHost').textContent = data.hostName;
                 showScreen('successScreen');
-                createFlexiSpin();
+                createConfetti();
                 showToast('✅ Successfully signed in!', 'success');
                 document.getElementById('signinForm').reset();
                 document.getElementById('progressFill').style.width = '0%';
                 
             } catch (error) {
+                hideLoading();
                 showToast('❌ Error signing in', 'error');
             }
         });
 
         async function loadTodaysVisitors() {
             const list = document.getElementById('visitorList');
+            showLoading('Loading visitors...');
             list.innerHTML = '<div style="text-align: center; padding: 40px;">Loading...</div>';
             
             try {
@@ -819,6 +931,8 @@
                 // Update stats
                 document.getElementById('statsTodayCount').textContent = visitors.length;
                 document.getElementById('statsCurrentCount').textContent = current.length;
+                
+                hideLoading();
                 
                 if (current.length === 0) {
                     list.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.6;">📭 No visitors currently signed in</div>';
@@ -834,12 +948,15 @@
                     `).join('');
                 }
             } catch (error) {
+                hideLoading();
                 list.innerHTML = '<div style="text-align: center; padding: 40px; color: #ff0000;">❌ Error loading visitors</div>';
             }
         }
 
         async function signOutVisitor(id, name) {
             if (!confirm(`Sign out ${name}?`)) return;
+            
+            showLoading('Signing out...');
             
             try {
                 await fetch(GOOGLE_SCRIPT_URL, {
@@ -854,9 +971,12 @@
                     })
                 });
                 
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                hideLoading();
                 showToast(`✅ ${name} signed out!`, 'success');
-                setTimeout(() => loadTodaysVisitors(), 1000);
+                setTimeout(() => loadTodaysVisitors(), 500);
             } catch (error) {
+                hideLoading();
                 showToast('❌ Error signing out', 'error');
             }
         }
