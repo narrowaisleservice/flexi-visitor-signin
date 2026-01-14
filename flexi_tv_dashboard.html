@@ -32,6 +32,22 @@
             padding: 10px;
         }
 
+        .version-badge {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 10, 22, 0.15);
+            color: var(--flexi-red-light);
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            border: 1px solid rgba(255, 10, 22, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            letter-spacing: 0.5px;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -376,9 +392,22 @@
             font-family: 'Courier New', monospace;
             font-size: 1.05em;
         }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
+    <!-- Version Badge -->
+    <div class="version-badge">v1.0.1</div>
+    
     <div class="particles" id="particles"></div>
 
     <!-- Header -->
@@ -475,6 +504,7 @@
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwO7z8GIegwND7UQGKaJRVep84Gdn7yvPkO0cgc6RppGOoxPc0OHyOkGw7pJwZ6AG1l/exec';
         
         let lastVisitorIds = new Set();
+        let errorCount = 0;
         
         function showWelcomeMessage(visitorName) {
             const overlay = document.getElementById('welcomeOverlay');
@@ -509,8 +539,28 @@
         async function loadVisitors() {
             try {
                 const today = new Date().toLocaleDateString('en-GB');
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getTodaysVisitors&date=${today}`);
+                console.log('Fetching visitors for date:', today);
+                
+                const url = `${GOOGLE_SCRIPT_URL}?action=getTodaysVisitors&date=${encodeURIComponent(today)}`;
+                console.log('Request URL:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const visitors = await response.json();
+                console.log('Received visitors:', visitors);
+                
+                errorCount = 0; // Reset error count on success
                 
                 const visitorsList = document.getElementById('visitorsList');
                 
@@ -556,6 +606,19 @@
                 
             } catch (error) {
                 console.error('Error loading visitors:', error);
+                errorCount++;
+                
+                const visitorsList = document.getElementById('visitorsList');
+                visitorsList.innerHTML = `
+                    <div class="error-message">
+                        ⚠️ Connection Error (Attempt ${errorCount})<br>
+                        <small>${error.message}</small><br>
+                        <small>Retrying in 30 seconds...</small>
+                    </div>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                `;
             }
         }
         
@@ -612,17 +675,20 @@
             }
         }
         
+        // Initialize
         createParticles();
         updateClock();
         loadVisitors();
         loadWeather();
         
-        setInterval(() => {
-            loadVisitors();
-        }, 30000);
-        
-        setInterval(loadWeather, 3600000);
+        // Update intervals
         setInterval(updateClock, 1000);
+        setInterval(loadVisitors, 30000); // Every 30 seconds
+        setInterval(loadWeather, 3600000); // Every hour
+        
+        // Log initialization
+        console.log('Dashboard initialized at:', new Date().toLocaleString());
+        console.log('Google Script URL:', GOOGLE_SCRIPT_URL);
     </script>
 </body>
 </html>
