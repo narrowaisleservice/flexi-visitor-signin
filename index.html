@@ -49,6 +49,22 @@
             flex-direction: column;
         }
 
+        .version-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 10, 22, 0.15);
+            color: var(--flexi-red-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid rgba(255, 10, 22, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            letter-spacing: 0.5px;
+        }
+
         .header {
             background: var(--dark-card);
             padding: 25px 35px;
@@ -544,6 +560,9 @@
     </style>
 </head>
 <body>
+    <!-- Version Badge -->
+    <div class="version-badge">v1.0.1</div>
+
     <div class="particles" id="particles"></div>
     <div class="toast" id="toast"></div>
     
