@@ -402,17 +402,74 @@
             margin: 10px 0;
             font-size: 0.9em;
         }
+
+        .wifi-icon {
+            width: 30px;
+            height: 30px;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .wifi-icon::before,
+        .wifi-icon::after {
+            content: '';
+            position: absolute;
+            border: 2px solid var(--flexi-red-light);
+            border-radius: 50%;
+            border-bottom: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .wifi-icon::before {
+            width: 30px;
+            height: 15px;
+            bottom: 5px;
+            left: 0;
+            border-top-width: 3px;
+        }
+
+        .wifi-icon::after {
+            width: 20px;
+            height: 10px;
+            bottom: 5px;
+            left: 5px;
+            border-top-width: 2px;
+        }
+
+        .wifi-icon span {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--flexi-red-light);
+            border-radius: 50%;
+            bottom: 0;
+            left: 12px;
+            box-shadow: 0 0 10px var(--flexi-red-glow);
+        }
     </style>
 </head>
 <body>
-    <!-- Version Badge -->
-    <div class="version-badge">v1.0.1</div>
-    
     <div class="particles" id="particles"></div>
 
     <!-- Header -->
     <div class="header">
-        <div style="width: 50px;"></div>
+        <!-- WiFi Info - Far Left -->
+        <div style="text-align: left;">
+            <div class="wifi-icon"><span></span></div>
+            <div style="font-size: 0.8em; opacity: 0.7; margin-bottom: 2px;">Guest WiFi</div>
+            <div style="font-size: 0.9em; font-weight: 700; font-family: 'Courier New', monospace; color: white;">$Building564Free$</div>
+        </div>
+        
+        <!-- Version Badge - Center -->
+        <div style="text-align: center;">
+            <div style="background: rgba(255, 10, 22, 0.15); color: var(--flexi-red-light); padding: 6px 14px; border-radius: 15px; font-size: 0.8em; font-weight: 600; border: 1px solid rgba(255, 10, 22, 0.3); letter-spacing: 0.5px; display: inline-block;">
+                v1.0.2
+            </div>
+        </div>
+        
+        <!-- Time/Date - Right -->
         <div class="datetime">
             <div class="time" id="time">00:00:00</div>
             <div class="date" id="date">Loading...</div>
@@ -453,7 +510,7 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN - Weather & WiFi -->
+        <!-- RIGHT COLUMN - Weather, WiFi & H&S -->
         <div style="display: flex; flex-direction: column; gap: 15px;">
             
             <!-- Weather Section -->
@@ -474,19 +531,24 @@
                 </div>
             </div>
 
-            <!-- WiFi Info Card -->
-            <div class="wifi-card">
-                <div style="font-size: 2.2em; margin-bottom: 6px;">📶</div>
-                <h3 style="color: white; font-size: 1.3em; font-weight: 700; margin: 0 0 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Guest WiFi</h3>
+            <!-- Health & Safety Card -->
+            <div class="wifi-card" style="background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 1px solid rgba(255, 10, 22, 0.3); padding: 15px;">
+                <div style="font-size: 2em; margin-bottom: 6px;">🛡️</div>
+                <h3 style="color: var(--flexi-red-light); font-size: 1.2em; font-weight: 700; margin: 0 0 12px 0; text-shadow: 0 0 20px var(--flexi-red-glow);">Health & Safety</h3>
                 
-                <div class="wifi-info-box">
-                    <div class="wifi-label">Network</div>
-                    <div class="wifi-value">Guest Wifi</div>
+                <div class="wifi-info-box" style="padding: 8px; margin-bottom: 6px;">
+                    <div class="wifi-label" style="font-size: 0.75em;">Current Month Accidents</div>
+                    <div class="wifi-value" style="font-size: 1.4em;" id="currentMonthAccidents">-</div>
                 </div>
                 
-                <div class="wifi-info-box">
-                    <div class="wifi-label">Password</div>
-                    <div class="wifi-value wifi-password">$Building564Free$</div>
+                <div class="wifi-info-box" style="padding: 8px; margin-bottom: 6px;">
+                    <div class="wifi-label" style="font-size: 0.75em;">Days Since Last Accident</div>
+                    <div class="wifi-value" style="font-size: 1.4em; color: #4ade80;" id="daysSinceAccident">-</div>
+                </div>
+
+                <div class="wifi-info-box" style="padding: 8px; margin-bottom: 0;">
+                    <div class="wifi-label" style="font-size: 0.75em;">Year to Date Accidents</div>
+                    <div class="wifi-value" style="font-size: 1.4em;" id="ytdAccidents">-</div>
                 </div>
             </div>
         </div>
@@ -621,6 +683,23 @@
                 `;
             }
         }
+
+        async function loadHealthSafety() {
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=getHealthSafety`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                document.getElementById('currentMonthAccidents').textContent = data.currentMonthAccidents || '0';
+                document.getElementById('daysSinceAccident').textContent = data.daysSinceAccident || '0';
+                document.getElementById('ytdAccidents').textContent = data.ytdAccidents || '0';
+            } catch (error) {
+                console.error('Error loading H&S data:', error);
+                document.getElementById('currentMonthAccidents').textContent = '-';
+                document.getElementById('daysSinceAccident').textContent = '-';
+                document.getElementById('ytdAccidents').textContent = '-';
+            }
+        }
         
         async function loadWeather() {
             try {
@@ -679,11 +758,13 @@
         createParticles();
         updateClock();
         loadVisitors();
+        loadHealthSafety();
         loadWeather();
         
         // Update intervals
         setInterval(updateClock, 1000);
         setInterval(loadVisitors, 30000); // Every 30 seconds
+        setInterval(loadHealthSafety, 60000); // Every minute
         setInterval(loadWeather, 3600000); // Every hour
         
         // Log initialization
