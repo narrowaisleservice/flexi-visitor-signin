@@ -403,6 +403,31 @@
             font-size: 0.9em;
         }
 
+        /* Video Overlay */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .video-overlay.show {
+            display: flex;
+        }
+
+        .video-overlay iframe {
+            width: 90%;
+            height: 90%;
+            border: none;
+        }
+
         .wifi-icon {
             width: 30px;
             height: 30px;
@@ -560,6 +585,18 @@
             <h1>👋 Welcome!</h1>
             <p id="welcomeVisitorName"></p>
         </div>
+    </div>
+
+    <!-- Video Overlay -->
+    <div class="video-overlay" id="videoOverlay">
+        <!-- Replace YOUR_YOUTUBE_VIDEO_ID with your actual video ID -->
+        <!-- Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ -> use dQw4w9WgXcQ -->
+        <iframe 
+            id="https://www.youtube.com/watch?v=Jp79Byg1BAc"
+            src="https://www.youtube.com/embed/YOUR_YOUTUBE_VIDEO_ID?autoplay=1&mute=1&loop=1&playlist=YOUR_YOUTUBE_VIDEO_ID&controls=0&showinfo=0&modestbranding=1"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+        </iframe>
     </div>
 
     <script>
@@ -766,6 +803,30 @@
         setInterval(loadVisitors, 30000); // Every 30 seconds
         setInterval(loadHealthSafety, 60000); // Every minute
         setInterval(loadWeather, 3600000); // Every hour
+        
+        // Video rotation - show video every 2 minutes for 60 seconds
+        function showVideo() {
+            const videoOverlay = document.getElementById('videoOverlay');
+            const iframe = document.getElementById('youtubeVideo');
+            
+            // Reload iframe to restart video
+            const src = iframe.src;
+            iframe.src = src;
+            
+            // Show video
+            videoOverlay.classList.add('show');
+            
+            // Hide after 60 seconds
+            setTimeout(() => {
+                videoOverlay.classList.remove('show');
+            }, 60000); // 60 seconds
+        }
+        
+        // Start video rotation after 2 minutes, then repeat every 2 minutes
+        setTimeout(() => {
+            showVideo();
+            setInterval(showVideo, 120000); // Every 2 minutes
+        }, 120000); // First video after 2 minutes
         
         // Log initialization
         console.log('Dashboard initialized at:', new Date().toLocaleString());
