@@ -423,8 +423,8 @@
         }
 
         .video-overlay iframe {
-            width: 90%;
-            height: 90%;
+            width: 100%;
+            height: 100%;
             border: none;
         }
 
@@ -593,7 +593,7 @@
         <!-- Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ -> use dQw4w9WgXcQ -->
         <iframe 
             id="youtubeVideo"
-            src="https://www.youtube.com/embed/Jp79Byg1BAc?autoplay=1&mute=1&loop=1&playlist=Jp79Byg1BAc&controls=0&showinfo=0&modestbranding=1"
+            src="https://www.youtube.com/embed/YOUR_YOUTUBE_VIDEO_ID?autoplay=1&mute=1&loop=1&playlist=YOUR_YOUTUBE_VIDEO_ID&controls=0&showinfo=0&modestbranding=1"
             allow="autoplay; encrypted-media"
             allowfullscreen>
         </iframe>
@@ -686,6 +686,16 @@
                 const currentVisitors = visitors.filter(v => v.status === 'Signed In');
                 document.getElementById('todayCount').textContent = visitors.length;
                 document.getElementById('currentCount').textContent = currentVisitors.length;
+                
+                // Calculate this week's visitors
+                const today = new Date();
+                const startOfWeek = new Date(today);
+                startOfWeek.setDate(today.getDate() - today.getDay()); // Go back to Sunday
+                startOfWeek.setHours(0, 0, 0, 0);
+                
+                // For now, just show today's count (you'd need to query all week's data from the sheet)
+                // This is a simplified version - ideally you'd fetch all week's data from Google Sheets
+                document.getElementById('weekCount').textContent = visitors.length;
                 
                 if (currentVisitors.length === 0) {
                     visitorsList.innerHTML = '<div class="no-visitors">📭 No visitors currently on-site</div>';
@@ -806,6 +816,7 @@
         
         // Video rotation - show video every 2 minutes for 60 seconds
         function showVideo() {
+            console.log('Showing video overlay...');
             const videoOverlay = document.getElementById('videoOverlay');
             const iframe = document.getElementById('youtubeVideo');
             
@@ -815,22 +826,26 @@
             
             // Show video
             videoOverlay.classList.add('show');
+            console.log('Video overlay displayed');
             
             // Hide after 60 seconds
             setTimeout(() => {
                 videoOverlay.classList.remove('show');
+                console.log('Video overlay hidden');
             }, 60000); // 60 seconds
         }
         
-        // Start video rotation after 2 minutes, then repeat every 2 minutes
+        // FOR TESTING: Start video after 10 seconds instead of 2 minutes
+        // Change back to 120000 (2 minutes) after testing
         setTimeout(() => {
             showVideo();
             setInterval(showVideo, 120000); // Every 2 minutes
-        }, 120000); // First video after 2 minutes
+        }, 10000); // TESTING: 10 seconds - change to 120000 for production
         
         // Log initialization
         console.log('Dashboard initialized at:', new Date().toLocaleString());
         console.log('Google Script URL:', GOOGLE_SCRIPT_URL);
+        console.log('Video will play in 10 seconds for testing...');
     </script>
 </body>
 </html>
