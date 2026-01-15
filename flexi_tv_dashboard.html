@@ -691,9 +691,6 @@
                 document.getElementById('todayCount').textContent = visitors.length;
                 document.getElementById('currentCount').textContent = currentVisitors.length;
                 
-                // For now, just show today's count for week (simplified version)
-                document.getElementById('weekCount').textContent = visitors.length;
-                
                 if (currentVisitors.length === 0) {
                     visitorsList.innerHTML = '<div class="no-visitors">📭 No visitors currently on-site</div>';
                 } else {
@@ -742,6 +739,19 @@
                 document.getElementById('currentMonthAccidents').textContent = '-';
                 document.getElementById('daysSinceAccident').textContent = '-';
                 document.getElementById('ytdAccidents').textContent = '-';
+            }
+        }
+
+        async function loadWeekVisitors() {
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=getWeekVisitors`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                document.getElementById('weekCount').textContent = data.count || '0';
+            } catch (error) {
+                console.error('Error loading week visitors:', error);
+                document.getElementById('weekCount').textContent = '-';
             }
         }
         
@@ -802,12 +812,14 @@
         createParticles();
         updateClock();
         loadVisitors();
+        loadWeekVisitors();
         loadHealthSafety();
         loadWeather();
         
         // Update intervals
         setInterval(updateClock, 1000);
         setInterval(loadVisitors, 30000); // Every 30 seconds
+        setInterval(loadWeekVisitors, 60000); // Every minute
         setInterval(loadHealthSafety, 60000); // Every minute
         setInterval(loadWeather, 3600000); // Every hour
         
