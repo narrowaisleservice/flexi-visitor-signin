@@ -602,6 +602,10 @@
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
         
+        console.log('=== DASHBOARD STARTING ===');
+        console.log('Google Script URL:', GOOGLE_SCRIPT_URL);
+        console.log('Time:', new Date().toLocaleString());
+        
         let lastVisitorIds = new Set();
         let errorCount = 0;
         
@@ -687,14 +691,7 @@
                 document.getElementById('todayCount').textContent = visitors.length;
                 document.getElementById('currentCount').textContent = currentVisitors.length;
                 
-                // Calculate this week's visitors
-                const today = new Date();
-                const startOfWeek = new Date(today);
-                startOfWeek.setDate(today.getDate() - today.getDay()); // Go back to Sunday
-                startOfWeek.setHours(0, 0, 0, 0);
-                
-                // For now, just show today's count (you'd need to query all week's data from the sheet)
-                // This is a simplified version - ideally you'd fetch all week's data from Google Sheets
+                // For now, just show today's count for week (simplified version)
                 document.getElementById('weekCount').textContent = visitors.length;
                 
                 if (currentVisitors.length === 0) {
