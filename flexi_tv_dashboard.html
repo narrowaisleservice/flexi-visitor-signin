@@ -41,8 +41,8 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            gap: 20px;
+            padding: 16px;
+            gap: 14px;
         }
 
         /* ── HEADER ── */
@@ -154,7 +154,7 @@
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 14px;
             flex-shrink: 0;
         }
 
@@ -192,7 +192,7 @@
         .body {
             display: grid;
             grid-template-columns: 1fr 300px;
-            gap: 20px;
+            gap: 14px;
             flex: 1;
             min-height: 0;
         }
@@ -400,17 +400,17 @@
         .right-col {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 14px;
             min-height: 0;
         }
 
-        /* WiFi card — matches parts header card style */
+        /* WiFi card */
         .wifi-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 16px;
             border-left: 4px solid var(--primary-red);
-            padding: 20px 24px;
+            padding: 18px 22px;
             flex-shrink: 0;
         }
 
@@ -464,17 +464,15 @@
             border-left: 4px solid var(--primary-red);
             display: flex;
             flex-direction: column;
-            flex: 1;
-            min-height: 0;
+            flex-shrink: 0;
             overflow: hidden;
         }
 
         .hs-body {
-            flex: 1;
-            padding: 16px 20px;
+            padding: 14px 18px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         /* H&S metrics styled like stat-cards */
@@ -482,8 +480,7 @@
             background: var(--dark-bg);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 16px 18px;
-            flex: 1;
+            padding: 14px 16px;
             transition: all 0.2s ease;
         }
 
@@ -493,12 +490,12 @@
         }
 
         .hs-metric-value {
-            font-size: 2.8em;
+            font-size: 2.4em;
             font-weight: 900;
             color: var(--primary-red);
             letter-spacing: -2px;
             line-height: 1;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .hs-metric-value.green {
@@ -506,7 +503,7 @@
         }
 
         .hs-metric-label {
-            font-size: 0.85em;
+            font-size: 0.82em;
             font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
