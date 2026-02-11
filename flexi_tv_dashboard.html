@@ -4,235 +4,213 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flexi Visitor Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --red: #E8001A;
-            --red-dim: rgba(232, 0, 26, 0.6);
-            --red-glow: rgba(232, 0, 26, 0.25);
-            --red-subtle: rgba(232, 0, 26, 0.08);
-            --bg: #050507;
-            --surface: #0C0C0F;
-            --surface-2: #12121A;
-            --surface-3: #1A1A24;
-            --border: rgba(255,255,255,0.06);
-            --border-red: rgba(232, 0, 26, 0.3);
-            --text: #C8C8D8;
-            --text-dim: rgba(200, 200, 216, 0.4);
-            --text-bright: #FFFFFF;
-            --green: #00C896;
-            --green-glow: rgba(0, 200, 150, 0.3);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-red: #DC2626;
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --border: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --hover-bg: #252525;
+        }
 
         html, body {
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Exo 2', sans-serif;
+            background: #000000;
+            color: var(--text-primary);
+            font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: 0.3px;
         }
 
-        /* Ambient glow */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -40%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 60%;
-            background: radial-gradient(ellipse, rgba(232,0,26,0.05) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Scanlines */
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.07) 2px,
-                rgba(0,0,0,0.07) 4px
-            );
-            pointer-events: none;
-            z-index: 999;
-        }
-
+        /* ── SHELL ── */
         .shell {
-            position: relative;
-            z-index: 1;
             width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 14px 18px 14px 18px;
-            gap: 12px;
+            padding: 20px;
+            gap: 20px;
         }
 
         /* ── HEADER ── */
         .header {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 30px;
+            border-left: 4px solid var(--primary-red);
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            background: var(--surface);
-            border: 1px solid var(--border-red);
-            border-radius: 10px;
-            padding: 10px 22px;
             flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
         }
 
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--red-dim), transparent);
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
         }
 
-        .wifi-block { display: flex; flex-direction: column; gap: 2px; }
+        .header-logo {
+            height: 52px;
+            width: auto;
+            object-fit: contain;
+        }
 
-        .wifi-top-label {
-            font-size: 0.58em;
-            font-weight: 600;
-            letter-spacing: 0.14em;
+        .header-title {
+            font-size: 2.6em;
+            font-weight: 400;
+            letter-spacing: -1.5px;
             text-transform: uppercase;
-            color: var(--text-dim);
-        }
-
-        .wifi-ssid {
-            font-size: 0.72em;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .wifi-pw {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.68em;
-            font-weight: 700;
-            color: var(--red);
-            letter-spacing: 0.04em;
-        }
-
-        .version-pill {
-            background: var(--red-subtle);
-            border: 1px solid var(--border-red);
-            color: var(--red);
-            padding: 4px 14px;
-            border-radius: 999px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.6em;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-        }
-
-        .clock-block { text-align: right; }
-
-        .clock-time {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8em;
-            font-weight: 700;
-            color: var(--text-bright);
-            letter-spacing: 0.04em;
             line-height: 1;
         }
 
-        .clock-date {
-            font-size: 0.68em;
+        .header-subtitle {
+            font-size: 1em;
+            color: var(--text-secondary);
             font-weight: 500;
-            color: var(--text-dim);
-            letter-spacing: 0.05em;
-            margin-top: 3px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .header-time {
+            font-size: 2.4em;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--primary-red);
+            line-height: 1;
+        }
+
+        .header-date {
+            font-size: 1em;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wifi-block {
+            text-align: center;
+        }
+
+        .wifi-label-small {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .wifi-pw {
+            font-size: 1em;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 999px;
+            color: var(--primary-red);
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* ── STATS ── */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary-red);
+        }
+
+        .stat-value {
+            font-size: 3.2em;
+            font-weight: 900;
+            color: var(--primary-red);
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.95em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
         /* ── BODY ── */
         .body {
             display: grid;
             grid-template-columns: 1fr 300px;
-            gap: 12px;
+            gap: 20px;
             flex: 1;
             min-height: 0;
         }
 
-        /* ── LEFT ── */
-        .left-col {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            min-height: 0;
-        }
-
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px 18px;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--red), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .stat-card:hover { border-color: var(--border-red); }
-        .stat-card:hover::before { opacity: 1; }
-
-        .stat-label {
-            font-size: 0.6em;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 7px;
-        }
-
-        .stat-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5em;
-            font-weight: 800;
-            color: var(--text-bright);
-            line-height: 1;
-        }
-
-        .stat-value.red { color: var(--red); }
-
-        /* Visitors panel */
+        /* ── VISITORS PANEL ── */
         .visitors-panel {
-            background: var(--surface);
+            background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 16px;
+            border-left: 4px solid var(--primary-red);
             display: flex;
             flex-direction: column;
-            flex: 1;
             min-height: 0;
             overflow: hidden;
         }
 
         .panel-header {
-            padding: 14px 20px 10px;
+            padding: 18px 24px 14px;
             border-bottom: 1px solid var(--border);
             flex-shrink: 0;
             display: flex;
@@ -241,296 +219,305 @@
         }
 
         .panel-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.7em;
+            font-size: 1.6em;
             font-weight: 700;
-            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: var(--text-bright);
+            letter-spacing: -0.5px;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.85em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .live-dot {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.6em;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--red);
-        }
-
-        .live-dot::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: var(--red);
+            width: 8px;
+            height: 8px;
+            background: var(--primary-red);
             border-radius: 50%;
-            box-shadow: 0 0 8px var(--red);
+            box-shadow: 0 0 6px rgba(220, 38, 38, 0.6);
             animation: blink 1.4s ease-in-out infinite;
         }
 
         @keyframes blink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.25; }
+            50% { opacity: 0.2; }
         }
 
         .visitors-list {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 16px;
+            padding: 16px 20px;
         }
 
-        .visitors-list::-webkit-scrollbar { width: 3px; }
-        .visitors-list::-webkit-scrollbar-track { background: transparent; }
-        .visitors-list::-webkit-scrollbar-thumb { background: var(--border-red); border-radius: 3px; }
-
-        .visitor-row {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            align-items: center;
-            gap: 14px;
-            padding: 11px 14px;
-            margin-bottom: 7px;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-left: 2px solid var(--red);
+        .visitors-list::-webkit-scrollbar { width: 8px; }
+        .visitors-list::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+            border-left: 1px solid var(--border);
+        }
+        .visitors-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary-red) 0%, #ef4444 100%);
             border-radius: 7px;
-            animation: slideIn 0.4s ease-out both;
-            transition: background 0.2s, border-color 0.2s;
+            border: 2px solid var(--dark-bg);
+        }
+        .visitors-list::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #ef4444 0%, #ff5555 100%);
+        }
+
+        /* Visitor rows styled like orders table rows */
+        .visitor-row {
+            background: var(--dark-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+            animation: rowIn 0.35s ease-out both;
         }
 
         .visitor-row:hover {
-            background: var(--surface-3);
-            border-color: var(--border-red);
-            border-left-color: var(--red);
+            background: var(--hover-bg);
+            border-color: var(--primary-red);
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-14px); }
+        @keyframes rowIn {
+            from { opacity: 0; transform: translateX(-12px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
         .visitor-name {
-            font-size: 0.9em;
-            font-weight: 700;
-            color: var(--text-bright);
-            margin-bottom: 2px;
+            font-size: 1.4em;
+            font-weight: 900;
+            color: var(--primary-red);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            line-height: 1;
         }
 
         .visitor-meta {
-            font-size: 0.68em;
-            color: var(--text-dim);
-            letter-spacing: 0.02em;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .visitor-meta span { color: var(--text); }
+        .visitor-meta span {
+            color: var(--text-primary);
+        }
 
-        .onsite-chip {
-            background: rgba(0, 200, 150, 0.08);
-            border: 1px solid rgba(0, 200, 150, 0.35);
-            color: var(--green);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.52em;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            padding: 4px 9px;
-            border-radius: 4px;
+        .onsite-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            border-radius: 6px;
+            color: #4ade80;
+            font-size: 0.8em;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             white-space: nowrap;
         }
 
         .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            gap: 10px;
-            color: var(--text-dim);
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
         }
 
-        .empty-icon { font-size: 2em; opacity: 0.25; }
+        .empty-state-icon {
+            font-size: 3.5em;
+            margin-bottom: 14px;
+            opacity: 0.3;
+        }
 
-        .empty-text {
-            font-size: 0.75em;
-            font-weight: 500;
-            letter-spacing: 0.08em;
+        .empty-state-text {
+            font-size: 1.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .loading-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            gap: 14px;
-            color: var(--text-dim);
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
         }
 
         .spinner {
-            width: 28px;
-            height: 28px;
-            border: 2px solid var(--border-red);
-            border-top-color: var(--red);
+            border: 3px solid rgba(220, 38, 38, 0.2);
+            border-top: 3px solid var(--primary-red);
             border-radius: 50%;
+            width: 36px;
+            height: 36px;
             animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .loading-text {
-            font-size: 0.65em;
-            font-weight: 600;
-            letter-spacing: 0.12em;
+            font-size: 1em;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
         .error-state {
-            padding: 14px;
-            background: rgba(232, 0, 26, 0.05);
-            border: 1px solid rgba(232, 0, 26, 0.2);
-            border-radius: 7px;
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 8px;
+            padding: 14px 18px;
             margin: 8px;
         }
 
         .error-title {
-            font-size: 0.68em;
-            font-weight: 700;
-            color: var(--red);
-            letter-spacing: 0.1em;
+            font-size: 0.9em;
+            font-weight: 800;
+            color: var(--primary-red);
             text-transform: uppercase;
-            margin-bottom: 3px;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
 
-        .error-detail { font-size: 0.62em; color: var(--text-dim); }
+        .error-detail {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
 
-        /* ── RIGHT ── */
+        /* ── RIGHT COLUMN ── */
         .right-col {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 20px;
             min-height: 0;
         }
 
-        .panel-label {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.6em;
+        /* WiFi card — matches parts header card style */
+        .wifi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            border-left: 4px solid var(--primary-red);
+            padding: 20px 24px;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-size: 1.4em;
             font-weight: 700;
-            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: var(--red);
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .wifi-row {
             margin-bottom: 12px;
         }
 
-        /* WiFi panel */
-        .wifi-panel {
-            background: var(--surface);
-            border: 1px solid var(--border-red);
-            border-radius: 10px;
-            padding: 16px 18px;
-            flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .wifi-panel::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at top left, rgba(232,0,26,0.05), transparent 55%);
-            pointer-events: none;
-        }
-
-        .wifi-row { margin-bottom: 10px; }
         .wifi-row:last-child { margin-bottom: 0; }
 
         .wifi-row-label {
-            font-size: 0.57em;
-            font-weight: 600;
-            letter-spacing: 0.12em;
+            font-size: 0.8em;
+            font-weight: 700;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 2px;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
         }
 
         .wifi-row-value {
-            font-size: 0.78em;
-            font-weight: 600;
-            color: var(--text-bright);
-        }
-
-        .wifi-pw-display {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.72em;
+            font-size: 1.05em;
             font-weight: 700;
-            color: var(--red);
-            letter-spacing: 0.03em;
+            color: var(--text-primary);
         }
 
-        /* H&S panel */
-        .hs-panel {
-            background: var(--surface);
+        .wifi-password-value {
+            font-size: 1em;
+            font-weight: 800;
+            color: var(--primary-red);
+            letter-spacing: 0.5px;
+        }
+
+        .access-ok {
+            font-size: 0.95em;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        /* H&S card */
+        .hs-card {
+            background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 16px;
+            border-left: 4px solid var(--primary-red);
             display: flex;
             flex-direction: column;
             flex: 1;
             min-height: 0;
             overflow: hidden;
-        }
-
-        .hs-header {
-            padding: 14px 18px 10px;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
         }
 
         .hs-body {
             flex: 1;
-            padding: 14px 16px;
+            padding: 16px 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
+        /* H&S metrics styled like stat-cards */
         .hs-metric {
-            background: var(--surface-2);
+            background: var(--dark-bg);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 14px;
+            border-radius: 10px;
+            padding: 16px 18px;
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            transition: all 0.2s ease;
         }
 
-        .hs-metric-label {
-            font-size: 0.58em;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 5px;
+        .hs-metric:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary-red);
         }
 
         .hs-metric-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.9em;
-            font-weight: 800;
-            color: var(--text-bright);
+            font-size: 2.8em;
+            font-weight: 900;
+            color: var(--primary-red);
+            letter-spacing: -2px;
             line-height: 1;
+            margin-bottom: 4px;
         }
 
         .hs-metric-value.green {
-            color: var(--green);
-            text-shadow: 0 0 20px var(--green-glow);
+            color: #4ade80;
+        }
+
+        .hs-metric-label {
+            font-size: 0.85em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* ── OVERLAYS ── */
         .welcome-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(5, 5, 7, 0.97);
+            background: rgba(0, 0, 0, 0.95);
             display: none;
             align-items: center;
             justify-content: center;
@@ -539,48 +526,55 @@
 
         .welcome-overlay.show { display: flex; }
 
-        .welcome-content {
+        .welcome-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            border-left: 6px solid var(--primary-red);
+            padding: 60px 80px;
             text-align: center;
-            animation: welcomeIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            animation: modalSlideIn 0.4s ease;
+            max-width: 700px;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .welcome-eyebrow {
-            font-size: 0.75em;
-            font-weight: 600;
-            letter-spacing: 0.4em;
+            font-size: 0.9em;
+            font-weight: 700;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            color: var(--text-dim);
+            letter-spacing: 2px;
             margin-bottom: 16px;
         }
 
         .welcome-heading {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4em;
+            font-size: 5em;
             font-weight: 900;
-            color: var(--text-bright);
-            letter-spacing: 0.05em;
+            letter-spacing: -3px;
+            text-transform: uppercase;
             line-height: 1;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .welcome-name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5em;
-            font-weight: 700;
-            color: var(--red);
-            text-shadow: 0 0 40px var(--red-glow), 0 0 80px var(--red-glow);
+            font-size: 3em;
+            font-weight: 800;
+            color: var(--primary-red);
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
         }
 
         .welcome-sub {
-            margin-top: 22px;
-            font-size: 0.82em;
-            color: var(--text-dim);
-            letter-spacing: 0.1em;
-        }
-
-        @keyframes welcomeIn {
-            from { opacity: 0; transform: scale(0.88) translateY(18px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            font-size: 1em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .video-overlay {
@@ -600,126 +594,106 @@
             height: 100%;
             border: none;
         }
-
-        /* Particles */
-        .particles {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            width: 1px;
-            background: linear-gradient(to top, transparent, var(--red));
-            opacity: 0;
-            animation: streak linear infinite;
-        }
-
-        @keyframes streak {
-            0% { transform: translateY(100vh); opacity: 0; }
-            5% { opacity: 0.12; }
-            95% { opacity: 0.12; }
-            100% { transform: translateY(-60px); opacity: 0; }
-        }
     </style>
 </head>
 <body>
-
-<div class="particles" id="particles"></div>
 
 <div class="shell">
 
     <!-- HEADER -->
     <div class="header">
-        <div class="wifi-block">
-            <div class="wifi-top-label">&#x25B6; Guest WiFi</div>
-            <div class="wifi-ssid">Flexi Guest Network</div>
-            <div class="wifi-pw">$Building564Free$</div>
+        <div class="header-left">
+            <img src="https://narrowaisleservice.github.io/Flexi-Parts-System/flexi-logo-white.svg" alt="Flexi Logo" class="header-logo" onerror="this.style.display='none'">
+            <div>
+                <div class="header-title">Visitor Dashboard</div>
+                <div class="header-subtitle">Reception — Live View</div>
+            </div>
         </div>
 
-        <div class="version-pill">V &mdash; A333</div>
+        <div class="header-center">
+            <div class="version-badge">V — B777X</div>
+        </div>
 
-        <div class="clock-block">
-            <div class="clock-time" id="time">00:00:00</div>
-            <div class="clock-date" id="date">Loading...</div>
+        <div class="header-right">
+            <div class="header-time" id="time">00:00:00</div>
+            <div class="header-date" id="date">Loading...</div>
+        </div>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-value" id="todayCount">0</div>
+            <div class="stat-label">Visitors Today</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="currentCount">0</div>
+            <div class="stat-label">Currently On-Site</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="weekCount">0</div>
+            <div class="stat-label">This Week</div>
         </div>
     </div>
 
     <!-- BODY -->
     <div class="body">
 
-        <!-- LEFT -->
-        <div class="left-col">
-
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-label">Visitors Today</div>
-                    <div class="stat-value" id="todayCount">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Currently On-Site</div>
-                    <div class="stat-value red" id="currentCount">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">This Week</div>
-                    <div class="stat-value" id="weekCount">0</div>
+        <!-- LEFT — Visitors -->
+        <div class="visitors-panel">
+            <div class="panel-header">
+                <div class="panel-title">Current Visitors On-Site</div>
+                <div class="live-indicator">
+                    <div class="live-dot"></div>
+                    Live
                 </div>
             </div>
-
-            <div class="visitors-panel">
-                <div class="panel-header">
-                    <div class="panel-title">On-Site Visitors</div>
-                    <div class="live-dot">Live</div>
-                </div>
-                <div class="visitors-list" id="visitorsList">
-                    <div class="loading-state">
-                        <div class="spinner"></div>
-                        <div class="loading-text">Fetching data&hellip;</div>
-                    </div>
+            <div class="visitors-list" id="visitorsList">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Loading Visitors...</div>
                 </div>
             </div>
-
         </div>
 
         <!-- RIGHT -->
         <div class="right-col">
 
-            <div class="wifi-panel">
-                <div class="panel-label">&#x25C6; Guest Access</div>
+            <!-- H&S -->
+            <div class="hs-card">
+                <div class="panel-header">
+                    <div class="panel-title">Health &amp; Safety</div>
+                </div>
+                <div class="hs-body">
+                    <div class="hs-metric">
+                        <div class="hs-metric-value green" id="daysSinceAccident">—</div>
+                        <div class="hs-metric-label">Days Since Last Accident</div>
+                    </div>
+                    <div class="hs-metric">
+                        <div class="hs-metric-value" id="currentMonthAccidents">—</div>
+                        <div class="hs-metric-label">Accidents This Month</div>
+                    </div>
+                    <div class="hs-metric">
+                        <div class="hs-metric-value" id="ytdAccidents">—</div>
+                        <div class="hs-metric-label">Year to Date</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WiFi -->
+            <div class="wifi-card">
+                <div class="card-title">Guest WiFi</div>
                 <div class="wifi-row">
-                    <div class="wifi-row-label">Network</div>
+                    <div class="wifi-row-label">Network Name</div>
                     <div class="wifi-row-value">Flexi Guest Network</div>
                 </div>
                 <div class="wifi-row">
                     <div class="wifi-row-label">Password</div>
-                    <div class="wifi-pw-display">$Building564Free$</div>
+                    <div class="wifi-password-value">$Building564Free$</div>
                 </div>
                 <div class="wifi-row">
-                    <div class="wifi-row-label">Access Level</div>
-                    <div class="wifi-row-value" style="color: var(--green); font-size: 0.72em;">Internet · Guests Only</div>
-                </div>
-            </div>
-
-            <div class="hs-panel">
-                <div class="hs-header">
-                    <div class="panel-label">&#x25C6; Health &amp; Safety</div>
-                </div>
-                <div class="hs-body">
-                    <div class="hs-metric">
-                        <div class="hs-metric-label">Days Since Last Accident</div>
-                        <div class="hs-metric-value green" id="daysSinceAccident">&mdash;</div>
-                    </div>
-                    <div class="hs-metric">
-                        <div class="hs-metric-label">Accidents This Month</div>
-                        <div class="hs-metric-value" id="currentMonthAccidents">&mdash;</div>
-                    </div>
-                    <div class="hs-metric">
-                        <div class="hs-metric-label">Year to Date</div>
-                        <div class="hs-metric-value" id="ytdAccidents">&mdash;</div>
-                    </div>
+                    <div class="wifi-row-label">Access</div>
+                    <div class="access-ok">Internet · Guests Only</div>
                 </div>
             </div>
 
@@ -729,9 +703,9 @@
 
 <!-- Welcome Overlay -->
 <div class="welcome-overlay" id="welcomeOverlay">
-    <div class="welcome-content">
-        <div class="welcome-eyebrow">Flexi &mdash; Narrow Aisle Ltd</div>
-        <div class="welcome-heading">WELCOME</div>
+    <div class="welcome-box">
+        <div class="welcome-eyebrow">Flexi — Narrow Aisle Ltd</div>
+        <div class="welcome-heading">Welcome</div>
         <div class="welcome-name" id="welcomeVisitorName"></div>
         <div class="welcome-sub">Please collect your visitor badge from reception</div>
     </div>
@@ -753,19 +727,7 @@
     let lastVisitorIds = new Set();
     let errorCount = 0;
 
-    function createParticles() {
-        const container = document.getElementById('particles');
-        for (let i = 0; i < 18; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            p.style.left = (Math.random() * 100) + '%';
-            p.style.animationDuration = (Math.random() * 14 + 8) + 's';
-            p.style.animationDelay = (Math.random() * 10) + 's';
-            p.style.height = (Math.random() * 50 + 20) + 'px';
-            container.appendChild(p);
-        }
-    }
-
+    // ── Clock ──
     function updateClock() {
         const now = new Date();
         document.getElementById('time').textContent = now.toLocaleTimeString('en-GB');
@@ -774,13 +736,14 @@
         });
     }
 
+    // ── Welcome ──
     function showWelcomeMessage(visitorName) {
-        const overlay = document.getElementById('welcomeOverlay');
         document.getElementById('welcomeVisitorName').textContent = visitorName;
-        overlay.classList.add('show');
-        setTimeout(() => overlay.classList.remove('show'), 12000);
+        document.getElementById('welcomeOverlay').classList.add('show');
+        setTimeout(() => document.getElementById('welcomeOverlay').classList.remove('show'), 12000);
     }
 
+    // ── Visitors ──
     async function loadVisitors() {
         try {
             const today = new Date().toLocaleDateString('en-GB');
@@ -791,40 +754,48 @@
             const visitors = await response.json();
             errorCount = 0;
 
-            const visitorsList = document.getElementById('visitorsList');
+            const list = document.getElementById('visitorsList');
 
             if (!visitors || visitors.length === 0) {
-                visitorsList.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">No visitors currently on-site</div></div>`;
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-text">No visitors currently on-site</div>
+                    </div>`;
                 document.getElementById('todayCount').textContent = '0';
                 document.getElementById('currentCount').textContent = '0';
                 lastVisitorIds.clear();
                 return;
             }
 
-            const currentSignedIn = visitors.filter(v => v.status === 'Signed In');
+            const signedIn = visitors.filter(v => v.status === 'Signed In');
 
-            currentSignedIn.forEach(visitor => {
+            signedIn.forEach(visitor => {
                 const id = `${visitor.visitorName}_${visitor.timeIn}`;
                 if (!lastVisitorIds.has(id)) showWelcomeMessage(visitor.visitorName);
             });
 
-            lastVisitorIds = new Set(currentSignedIn.map(v => `${v.visitorName}_${v.timeIn}`));
+            lastVisitorIds = new Set(signedIn.map(v => `${v.visitorName}_${v.timeIn}`));
 
             document.getElementById('todayCount').textContent = visitors.length;
-            document.getElementById('currentCount').textContent = currentSignedIn.length;
+            document.getElementById('currentCount').textContent = signedIn.length;
 
-            if (currentSignedIn.length === 0) {
-                visitorsList.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">No visitors currently on-site</div></div>`;
+            if (signedIn.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-text">No visitors currently on-site</div>
+                    </div>`;
             } else {
-                visitorsList.innerHTML = currentSignedIn.map((v, i) => `
-                    <div class="visitor-row" style="animation-delay:${i * 0.06}s">
+                list.innerHTML = signedIn.map((v, i) => `
+                    <div class="visitor-row" style="animation-delay:${i * 0.07}s">
                         <div>
                             <div class="visitor-name">${v.visitorName}</div>
                             <div class="visitor-meta">
                                 <span>${v.companyName}</span> &nbsp;·&nbsp; Host: <span>${v.hostName}</span> &nbsp;·&nbsp; In: <span>${v.timeIn}</span>
                             </div>
                         </div>
-                        <div class="onsite-chip">ON&#x2011;SITE</div>
+                        <div class="onsite-badge">On-Site</div>
                     </div>
                 `).join('');
             }
@@ -833,25 +804,27 @@
             errorCount++;
             document.getElementById('visitorsList').innerHTML = `
                 <div class="error-state">
-                    <div class="error-title">⚠ Connection Error (${errorCount})</div>
-                    <div class="error-detail">${error.message} · Retrying in 30s</div>
+                    <div class="error-title">⚠ Connection Error (Attempt ${errorCount})</div>
+                    <div class="error-detail">${error.message} &nbsp;·&nbsp; Retrying in 30 seconds</div>
                 </div>`;
         }
     }
 
+    // ── Health & Safety ──
     async function loadHealthSafety() {
         try {
             const data = await (await fetch(`${GOOGLE_SCRIPT_URL}?action=getHealthSafety`)).json();
             document.getElementById('currentMonthAccidents').textContent = data.currentMonthAccidents ?? '0';
-            document.getElementById('daysSinceAccident').textContent = data.daysSinceAccident ?? '0';
-            document.getElementById('ytdAccidents').textContent = data.ytdAccidents ?? '0';
+            document.getElementById('daysSinceAccident').textContent   = data.daysSinceAccident    ?? '0';
+            document.getElementById('ytdAccidents').textContent        = data.ytdAccidents         ?? '0';
         } catch {
-            ['currentMonthAccidents','daysSinceAccident','ytdAccidents'].forEach(id => {
+            ['currentMonthAccidents', 'daysSinceAccident', 'ytdAccidents'].forEach(id => {
                 document.getElementById(id).textContent = '—';
             });
         }
     }
 
+    // ── Week Count ──
     async function loadWeekVisitors() {
         try {
             const data = await (await fetch(`${GOOGLE_SCRIPT_URL}?action=getWeekVisitors`)).json();
@@ -861,6 +834,7 @@
         }
     }
 
+    // ── Video ──
     function showVideo() {
         const overlay = document.getElementById('videoOverlay');
         const iframe = document.getElementById('youtubeVideo');
@@ -869,8 +843,7 @@
         setTimeout(() => overlay.classList.remove('show'), 60000);
     }
 
-    // Boot
-    createParticles();
+    // ── Boot ──
     updateClock();
     loadVisitors();
     loadWeekVisitors();
