@@ -150,6 +150,30 @@
             letter-spacing: 1.5px;
         }
 
+        /* ── DEBUG BANNER ── */
+        .debug-banner {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(220, 38, 38, 0.9);
+            border: 2px solid var(--primary-red);
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            z-index: 50000;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .debug-banner.show { display: block; }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         /* ── STATS ── */
         .stats-bar {
             display: grid;
@@ -608,7 +632,7 @@
         </div>
 
         <div class="header-center">
-            <div class="version-badge">V — B777X</div>
+            <div class="version-badge">V — B777X-TV</div>
         </div>
 
         <div class="header-right">
@@ -698,6 +722,9 @@
     </div>
 </div>
 
+<!-- Debug Banner -->
+<div class="debug-banner" id="debugBanner"></div>
+
 <!-- Welcome Overlay -->
 <div class="welcome-overlay" id="welcomeOverlay">
     <div class="welcome-box">
@@ -723,33 +750,97 @@
 
     let lastVisitorIds = new Set();
     let errorCount = 0;
+    let consecutiveErrors = 0;
+    let lastSuccessfulLoad = null;
+
+    // ── Debug Logger ──
+    function showDebug(message, type = 'info') {
+        const banner = document.getElementById('debugBanner');
+        const timestamp = new Date().toLocaleTimeString('en-GB');
+        banner.textContent = `[${timestamp}] ${message}`;
+        banner.className = 'debug-banner show';
+        console.log(`[${type.toUpperCase()}] ${message}`);
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => banner.classList.remove('show'), 5000);
+    }
 
     // ── Clock ──
     function updateClock() {
-        const now = new Date();
-        document.getElementById('time').textContent = now.toLocaleTimeString('en-GB');
-        document.getElementById('date').textContent = now.toLocaleDateString('en-GB', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
+        try {
+            const now = new Date();
+            document.getElementById('time').textContent = now.toLocaleTimeString('en-GB');
+            document.getElementById('date').textContent = now.toLocaleDateString('en-GB', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+        } catch (e) {
+            console.error('Clock error:', e);
+        }
     }
 
     // ── Welcome ──
     function showWelcomeMessage(visitorName) {
-        document.getElementById('welcomeVisitorName').textContent = visitorName;
-        document.getElementById('welcomeOverlay').classList.add('show');
-        setTimeout(() => document.getElementById('welcomeOverlay').classList.remove('show'), 12000);
+        try {
+            document.getElementById('welcomeVisitorName').textContent = visitorName;
+            document.getElementById('welcomeOverlay').classList.add('show');
+            setTimeout(() => document.getElementById('welcomeOverlay').classList.remove('show'), 12000);
+            showDebug(`Welcome shown for: ${visitorName}`, 'info');
+        } catch (e) {
+            console.error('Welcome overlay error:', e);
+        }
     }
 
-    // ── Visitors ──
+    // ── Visitors with enhanced error handling ──
     async function loadVisitors() {
+        const startTime = Date.now();
+        showDebug('📡 Fetching visitor data...', 'info');
+        
         try {
             const today = new Date().toLocaleDateString('en-GB');
-            const url = `${GOOGLE_SCRIPT_URL}?action=getTodaysVisitors&date=${encodeURIComponent(today)}`;
-            const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const url = `${GOOGLE_SCRIPT_URL}?action=getTodaysVisitors&date=${encodeURIComponent(today)}&cache=${Date.now()}`;
+            
+            console.log('🌐 Full URL:', url);
+            
+            // Add timeout for TV compatibility
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+            
+            const response = await fetch(url, { 
+                method: 'GET', 
+                headers: { 
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                mode: 'cors',
+                cache: 'no-cache',
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            const loadTime = Date.now() - startTime;
+            console.log(`⏱️ Load time: ${loadTime}ms`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
 
-            const visitors = await response.json();
+            const textResponse = await response.text();
+            console.log('📥 Raw response:', textResponse.substring(0, 200));
+            
+            let visitors;
+            try {
+                visitors = JSON.parse(textResponse);
+            } catch (parseError) {
+                throw new Error(`JSON parse failed: ${parseError.message}`);
+            }
+            
+            console.log('✅ Visitors parsed:', visitors ? visitors.length : 0);
+            
             errorCount = 0;
+            consecutiveErrors = 0;
+            lastSuccessfulLoad = new Date();
+            showDebug(`✅ Loaded ${visitors ? visitors.length : 0} visitors (${loadTime}ms)`, 'success');
 
             const list = document.getElementById('visitorsList');
 
@@ -767,9 +858,12 @@
 
             const signedIn = visitors.filter(v => v.status === 'Signed In');
 
+            // Check for new visitors
             signedIn.forEach(visitor => {
                 const id = `${visitor.visitorName}_${visitor.timeIn}`;
-                if (!lastVisitorIds.has(id)) showWelcomeMessage(visitor.visitorName);
+                if (!lastVisitorIds.has(id)) {
+                    showWelcomeMessage(visitor.visitorName);
+                }
             });
 
             lastVisitorIds = new Set(signedIn.map(v => `${v.visitorName}_${v.timeIn}`));
@@ -799,22 +893,51 @@
 
         } catch (error) {
             errorCount++;
-            document.getElementById('visitorsList').innerHTML = `
+            consecutiveErrors++;
+            
+            const errorMsg = error.name === 'AbortError' 
+                ? 'Request timeout (15s) - Check network connection'
+                : error.message;
+            
+            console.error('❌ Visitor load error:', error);
+            showDebug(`❌ Error #${consecutiveErrors}: ${errorMsg}`, 'error');
+            
+            const list = document.getElementById('visitorsList');
+            list.innerHTML = `
                 <div class="error-state">
-                    <div class="error-title">⚠ Connection Error (Attempt ${errorCount})</div>
-                    <div class="error-detail">${error.message} &nbsp;·&nbsp; Retrying in 30 seconds</div>
+                    <div class="error-title">⚠ Connection Error (Attempt ${consecutiveErrors})</div>
+                    <div class="error-detail">
+                        ${errorMsg}<br>
+                        Last success: ${lastSuccessfulLoad ? lastSuccessfulLoad.toLocaleTimeString('en-GB') : 'Never'}<br>
+                        Retrying in 30 seconds...
+                    </div>
                 </div>`;
+            
+            // After 5 consecutive errors, try longer interval
+            if (consecutiveErrors >= 5) {
+                showDebug('⚠️ Multiple errors detected - extending retry interval', 'warning');
+            }
         }
     }
 
     // ── Health & Safety ──
     async function loadHealthSafety() {
         try {
-            const data = await (await fetch(`${GOOGLE_SCRIPT_URL}?action=getHealthSafety`)).json();
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getHealthSafety&cache=${Date.now()}`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
+            const data = await response.json();
             document.getElementById('currentMonthAccidents').textContent = data.currentMonthAccidents ?? '0';
             document.getElementById('daysSinceAccident').textContent   = data.daysSinceAccident    ?? '0';
             document.getElementById('ytdAccidents').textContent        = data.ytdAccidents         ?? '0';
-        } catch {
+            console.log('✅ H&S data loaded');
+        } catch (e) {
+            console.warn('⚠️ H&S load failed:', e.message);
             ['currentMonthAccidents', 'daysSinceAccident', 'ytdAccidents'].forEach(id => {
                 document.getElementById(id).textContent = '—';
             });
@@ -824,23 +947,44 @@
     // ── Week Count ──
     async function loadWeekVisitors() {
         try {
-            const data = await (await fetch(`${GOOGLE_SCRIPT_URL}?action=getWeekVisitors`)).json();
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getWeekVisitors&cache=${Date.now()}`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
+            const data = await response.json();
             document.getElementById('weekCount').textContent = data.count ?? '0';
-        } catch {
+            console.log('✅ Week count loaded:', data.count);
+        } catch (e) {
+            console.warn('⚠️ Week count load failed:', e.message);
             document.getElementById('weekCount').textContent = '—';
         }
     }
 
     // ── Video ──
     function showVideo() {
-        const overlay = document.getElementById('videoOverlay');
-        const iframe = document.getElementById('youtubeVideo');
-        iframe.src = iframe.src;
-        overlay.classList.add('show');
-        setTimeout(() => overlay.classList.remove('show'), 60000);
+        try {
+            const overlay = document.getElementById('videoOverlay');
+            const iframe = document.getElementById('youtubeVideo');
+            iframe.src = iframe.src; // Force reload
+            overlay.classList.add('show');
+            setTimeout(() => overlay.classList.remove('show'), 60000);
+            showDebug('▶️ Video playing', 'info');
+        } catch (e) {
+            console.error('Video error:', e);
+        }
     }
 
-    // ── Boot ──
+    // ── Boot Sequence ──
+    console.log('🚀 Dashboard initializing...');
+    console.log('📱 User Agent:', navigator.userAgent);
+    console.log('🌐 Online:', navigator.onLine);
+    
+    showDebug('🚀 Dashboard starting...', 'info');
+    
     updateClock();
     loadVisitors();
     loadWeekVisitors();
@@ -851,8 +995,24 @@
     setInterval(loadWeekVisitors, 60000);
     setInterval(loadHealthSafety, 60000);
 
-    // Video: 10s for testing, then every 2 min
-    setTimeout(() => { showVideo(); setInterval(showVideo, 120000); }, 10000);
+    // Video: 10s initial, then every 2 min
+    setTimeout(() => { 
+        showVideo(); 
+        setInterval(showVideo, 120000); 
+    }, 10000);
+
+    // Network monitoring
+    window.addEventListener('online', () => {
+        showDebug('🌐 Network connection restored', 'success');
+        consecutiveErrors = 0;
+        loadVisitors();
+    });
+    
+    window.addEventListener('offline', () => {
+        showDebug('⚠️ Network connection lost', 'error');
+    });
+
+    console.log('✅ Dashboard ready');
 </script>
 </body>
 </html>
