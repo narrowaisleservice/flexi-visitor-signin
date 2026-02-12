@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flexi Visitor Dashboard</title>
@@ -118,26 +118,6 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-        }
-
-        .wifi-block {
-            text-align: center;
-        }
-
-        .wifi-label-small {
-            font-size: 0.75em;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
-
-        .wifi-pw {
-            font-size: 1em;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: 0.5px;
         }
 
         .version-badge {
@@ -297,7 +277,6 @@
             background: linear-gradient(180deg, #ef4444 0%, #ff5555 100%);
         }
 
-        /* Visitor rows styled like orders table rows */
         .visitor-row {
             background: var(--dark-bg);
             border: 1px solid var(--border);
@@ -431,7 +410,6 @@
             min-height: 0;
         }
 
-        /* WiFi card */
         .wifi-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -483,7 +461,6 @@
             color: #4ade80;
         }
 
-        /* H&S card */
         .hs-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -502,7 +479,6 @@
             gap: 10px;
         }
 
-        /* H&S metrics styled like stat-cards */
         .hs-metric {
             background: var(--dark-bg);
             border: 1px solid var(--border);
@@ -525,9 +501,7 @@
             margin-bottom: 3px;
         }
 
-        .hs-metric-value.green {
-            color: #4ade80;
-        }
+        .hs-metric-value.green { color: #4ade80; }
 
         .hs-metric-label {
             font-size: 0.82em;
@@ -763,8 +737,6 @@
         banner.textContent = `[${timestamp}] ${message}`;
         banner.className = 'debug-banner show';
         console.log(`[${type.toUpperCase()}] ${message}`);
-        
-        // Auto-hide after 5 seconds
         setTimeout(() => banner.classList.remove('show'), 5000);
     }
 
@@ -793,53 +765,48 @@
         }
     }
 
-    // ── Visitors with enhanced error handling ──
+    // ── Visitors ──
+    // ✅ FIX: Removed custom headers and explicit mode:'cors' to prevent CORS preflight
     async function loadVisitors() {
         const startTime = Date.now();
         showDebug('📡 Fetching visitor data...', 'info');
-        
+
         try {
             const today = new Date().toLocaleDateString('en-GB');
             const url = `${GOOGLE_SCRIPT_URL}?action=getTodaysVisitors&date=${encodeURIComponent(today)}&cache=${Date.now()}`;
-            
+
             console.log('🌐 Full URL:', url);
-            
-            // Add timeout for TV compatibility
+
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
-            
-            const response = await fetch(url, { 
-                method: 'GET', 
-                headers: { 
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                mode: 'cors',
-                cache: 'no-cache',
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+            // ✅ Simple GET — no custom headers, no mode:'cors' — prevents preflight
+            const response = await fetch(url, {
+                method: 'GET',
                 signal: controller.signal
             });
-            
+
             clearTimeout(timeoutId);
-            
+
             const loadTime = Date.now() - startTime;
             console.log(`⏱️ Load time: ${loadTime}ms`);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
             const textResponse = await response.text();
             console.log('📥 Raw response:', textResponse.substring(0, 200));
-            
+
             let visitors;
             try {
                 visitors = JSON.parse(textResponse);
             } catch (parseError) {
                 throw new Error(`JSON parse failed: ${parseError.message}`);
             }
-            
+
             console.log('✅ Visitors parsed:', visitors ? visitors.length : 0);
-            
+
             errorCount = 0;
             consecutiveErrors = 0;
             lastSuccessfulLoad = new Date();
@@ -861,7 +828,6 @@
 
             const signedIn = visitors.filter(v => v.status === 'Signed In');
 
-            // Check for new visitors
             signedIn.forEach(visitor => {
                 const id = `${visitor.visitorName}_${visitor.timeIn}`;
                 if (!lastVisitorIds.has(id)) {
@@ -897,14 +863,14 @@
         } catch (error) {
             errorCount++;
             consecutiveErrors++;
-            
-            const errorMsg = error.name === 'AbortError' 
+
+            const errorMsg = error.name === 'AbortError'
                 ? 'Request timeout (15s) - Check network connection'
                 : error.message;
-            
+
             console.error('❌ Visitor load error:', error);
             showDebug(`❌ Error #${consecutiveErrors}: ${errorMsg}`, 'error');
-            
+
             const list = document.getElementById('visitorsList');
             list.innerHTML = `
                 <div class="error-state">
@@ -915,29 +881,25 @@
                         Retrying in 30 seconds...
                     </div>
                 </div>`;
-            
-            // After 5 consecutive errors, try longer interval
-            if (consecutiveErrors >= 5) {
-                showDebug('⚠️ Multiple errors detected - extending retry interval', 'warning');
-            }
         }
     }
 
     // ── Health & Safety ──
+    // ✅ FIX: Simple fetch, no custom headers
     async function loadHealthSafety() {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000);
-            
+
             const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getHealthSafety&cache=${Date.now()}`, {
                 signal: controller.signal
             });
             clearTimeout(timeoutId);
-            
+
             const data = await response.json();
             document.getElementById('currentMonthAccidents').textContent = data.currentMonthAccidents ?? '0';
-            document.getElementById('daysSinceAccident').textContent   = data.daysSinceAccident    ?? '0';
-            document.getElementById('ytdAccidents').textContent        = data.ytdAccidents         ?? '0';
+            document.getElementById('daysSinceAccident').textContent     = data.daysSinceAccident    ?? '0';
+            document.getElementById('ytdAccidents').textContent          = data.ytdAccidents         ?? '0';
             console.log('✅ H&S data loaded');
         } catch (e) {
             console.warn('⚠️ H&S load failed:', e.message);
@@ -948,16 +910,17 @@
     }
 
     // ── Week Count ──
+    // ✅ FIX: Simple fetch, no custom headers
     async function loadWeekVisitors() {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000);
-            
+
             const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getWeekVisitors&cache=${Date.now()}`, {
                 signal: controller.signal
             });
             clearTimeout(timeoutId);
-            
+
             const data = await response.json();
             document.getElementById('weekCount').textContent = data.count ?? '0';
             console.log('✅ Week count loaded:', data.count);
@@ -972,7 +935,7 @@
         try {
             const overlay = document.getElementById('videoOverlay');
             const iframe = document.getElementById('youtubeVideo');
-            iframe.src = iframe.src; // Force reload
+            iframe.src = iframe.src;
             overlay.classList.add('show');
             setTimeout(() => overlay.classList.remove('show'), 60000);
             showDebug('▶️ Video playing', 'info');
@@ -981,13 +944,13 @@
         }
     }
 
-    // ── Boot Sequence ──
+    // ── Boot ──
     console.log('🚀 Dashboard initializing...');
     console.log('📱 User Agent:', navigator.userAgent);
     console.log('🌐 Online:', navigator.onLine);
-    
+
     showDebug('🚀 Dashboard starting...', 'info');
-    
+
     updateClock();
     loadVisitors();
     loadWeekVisitors();
@@ -998,19 +961,17 @@
     setInterval(loadWeekVisitors, 60000);
     setInterval(loadHealthSafety, 60000);
 
-    // Video: 10s initial, then every 2 min
-    setTimeout(() => { 
-        showVideo(); 
-        setInterval(showVideo, 120000); 
+    setTimeout(() => {
+        showVideo();
+        setInterval(showVideo, 120000);
     }, 10000);
 
-    // Network monitoring
     window.addEventListener('online', () => {
         showDebug('🌐 Network connection restored', 'success');
         consecutiveErrors = 0;
         loadVisitors();
     });
-    
+
     window.addEventListener('offline', () => {
         showDebug('⚠️ Network connection lost', 'error');
     });
