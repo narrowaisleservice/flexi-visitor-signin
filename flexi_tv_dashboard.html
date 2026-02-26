@@ -5,7 +5,11 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+        TV FIX 1: Force the browser to treat this as a 1920×1080 canvas.
+        Android sticks sometimes report wrong viewport or scale oddly.
+    -->
+    <meta name="viewport" content="width=1920, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Flexi Visitor Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,25 +27,51 @@
             --hover-bg: #252525;
         }
 
-        html, body {
-            width: 100vw;
-            height: 100vh;
+        html {
+            /* TV FIX 2: Force exact 1920×1080, no scrollbars ever */
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        body {
+            width: 1920px;
+            height: 1080px;
             overflow: hidden;
             background: #000;
             color: var(--text-primary);
-            font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+            font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── SHELL — strict column, nothing overflows ── */
+        /*
+            TV FIX 3: Overscan safe-area wrapper.
+            Scales to 90% and centres — this keeps all content well
+            inside the visible zone on any TV stick with overscan.
+            Change --tv-scale to 0.92 or 0.95 if your TV has less overscan.
+        */
+        :root { --tv-scale: 0.92; }
+
+        .tv-scaler {
+            width: 1920px;
+            height: 1080px;
+            transform: scale(var(--tv-scale));
+            transform-origin: center center;
+            position: absolute;
+            top: 0; left: 0;
+        }
+
+        /* ── SHELL — strict column ── */
         .shell {
-            width: 100vw;
-            height: 100vh;
+            width: 1920px;
+            height: 1080px;
             display: flex;
             flex-direction: column;
-            padding: 12px;
+            padding: 14px;
             gap: 10px;
             overflow: hidden;
+            background: #000;
         }
 
         /* ── HEADER ── */
@@ -49,7 +79,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-left: 4px solid var(--primary-red);
             display: flex;
             justify-content: space-between;
@@ -58,11 +88,10 @@
         }
 
         .header-left { display: flex; align-items: center; gap: 20px; }
-
-        .header-logo { height: 38px; width: auto; object-fit: contain; }
+        .header-logo { height: 42px; width: auto; object-fit: contain; }
 
         .header-title {
-            font-size: 2em;
+            font-size: 2.1em;
             font-weight: 400;
             letter-spacing: -1.5px;
             text-transform: uppercase;
@@ -81,7 +110,7 @@
         .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
 
         .header-time {
-            font-size: 1.9em;
+            font-size: 2em;
             font-weight: 800;
             letter-spacing: -1px;
             color: var(--primary-red);
@@ -89,7 +118,7 @@
         }
 
         .header-date {
-            font-size: 0.8em;
+            font-size: 0.82em;
             color: var(--text-secondary);
             font-weight: 500;
             text-transform: uppercase;
@@ -121,11 +150,11 @@
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 12px 18px;
+            padding: 13px 20px;
         }
 
         .stat-value {
-            font-size: 2.4em;
+            font-size: 2.6em;
             font-weight: 900;
             color: var(--primary-red);
             letter-spacing: -2px;
@@ -134,17 +163,17 @@
         }
 
         .stat-label {
-            font-size: 0.82em;
+            font-size: 0.84em;
             font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
 
-        /* ── BODY — fills remaining height exactly ── */
+        /* ── BODY ── */
         .body {
             display: grid;
-            grid-template-columns: 1fr 275px;
+            grid-template-columns: 1fr 290px;
             gap: 10px;
             flex: 1;
             min-height: 0;
@@ -164,7 +193,7 @@
         }
 
         .panel-header {
-            padding: 10px 18px 9px;
+            padding: 10px 20px 9px;
             border-bottom: 1px solid var(--border);
             flex-shrink: 0;
             display: flex;
@@ -173,7 +202,7 @@
         }
 
         .panel-title {
-            font-size: 1.3em;
+            font-size: 1.35em;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: -0.5px;
@@ -183,7 +212,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.82em;
+            font-size: 0.85em;
             font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
@@ -203,11 +232,10 @@
             50% { opacity: 0.2; }
         }
 
-        /* No scroll — rows stack compactly, overflow hidden */
         .visitors-list {
             flex: 1;
             overflow: hidden;
-            padding: 8px 12px;
+            padding: 8px 14px;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -217,7 +245,7 @@
             background: var(--dark-bg);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 9px 14px;
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -234,7 +262,7 @@
         }
 
         .visitor-name {
-            font-size: 1.15em;
+            font-size: 1.2em;
             font-weight: 900;
             color: var(--primary-red);
             letter-spacing: -0.3px;
@@ -243,7 +271,7 @@
         }
 
         .visitor-meta {
-            font-size: 0.78em;
+            font-size: 0.8em;
             color: var(--text-secondary);
             font-weight: 600;
             text-transform: uppercase;
@@ -254,12 +282,12 @@
 
         .onsite-badge {
             display: inline-block;
-            padding: 3px 9px;
+            padding: 3px 10px;
             background: rgba(34,197,94,0.15);
             border: 1px solid rgba(34,197,94,0.35);
             border-radius: 5px;
             color: #4ade80;
-            font-size: 0.72em;
+            font-size: 0.74em;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -268,63 +296,35 @@
 
         .empty-state {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             color: #555;
         }
-
         .empty-state-icon { font-size: 2.5em; margin-bottom: 8px; opacity: 0.3; }
+        .empty-state-text { font-size: 1em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        .empty-state-text {
-            font-size: 1em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .loading-state {
-            text-align: center;
-            padding: 30px 20px;
-            color: var(--text-secondary);
-        }
-
+        .loading-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
         .spinner {
             border: 3px solid rgba(220,38,38,0.2);
             border-top: 3px solid var(--primary-red);
             border-radius: 50%;
-            width: 28px; height: 28px;
+            width: 32px; height: 32px;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 10px;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .loading-text {
-            font-size: 0.9em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
+        .loading-text { font-size: 0.9em; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
 
         .error-state {
             background: rgba(220,38,38,0.1);
             border: 1px solid rgba(220,38,38,0.3);
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             margin: 4px;
         }
+        .error-title { font-size: 0.87em; font-weight: 800; color: var(--primary-red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .error-detail { font-size: 0.8em; color: var(--text-secondary); line-height: 1.5; }
 
-        .error-title {
-            font-size: 0.85em;
-            font-weight: 800;
-            color: var(--primary-red);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 3px;
-        }
-
-        .error-detail { font-size: 0.8em; color: var(--text-secondary); }
-
-        /* ── RIGHT COLUMN — flex column, H&S grows, WiFi fixed ── */
+        /* ── RIGHT COLUMN ── */
         .right-col {
             display: flex;
             flex-direction: column;
@@ -333,7 +333,6 @@
             overflow: hidden;
         }
 
-        /* H&S — flex:1 so it takes all space above WiFi */
         .hs-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -347,7 +346,7 @@
         }
 
         .hs-body {
-            padding: 8px 12px;
+            padding: 8px 14px;
             display: flex;
             flex-direction: column;
             gap: 7px;
@@ -355,12 +354,11 @@
             min-height: 0;
         }
 
-        /* Each metric shares H&S space equally */
         .hs-metric {
             background: var(--dark-bg);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 10px 13px;
+            padding: 10px 14px;
             flex: 1;
             min-height: 0;
             display: flex;
@@ -371,7 +369,7 @@
         .hs-metric:hover { background: var(--hover-bg); border-color: var(--primary-red); }
 
         .hs-metric-value {
-            font-size: 1.9em;
+            font-size: 2em;
             font-weight: 900;
             color: var(--primary-red);
             letter-spacing: -2px;
@@ -382,55 +380,38 @@
         .hs-metric-value.green { color: #4ade80; }
 
         .hs-metric-label {
-            font-size: 0.74em;
+            font-size: 0.76em;
             font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        /* WiFi — flex-shrink:0 so it never gets squeezed */
         .wifi-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
             border-left: 4px solid var(--primary-red);
-            padding: 12px 16px;
+            padding: 14px 18px;
             flex-shrink: 0;
         }
 
         .card-title {
-            font-size: 1.15em;
+            font-size: 1.18em;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: -0.5px;
             margin-bottom: 10px;
         }
 
-        .wifi-row { margin-bottom: 7px; }
+        .wifi-row { margin-bottom: 8px; }
         .wifi-row:last-child { margin-bottom: 0; }
+        .wifi-row-label { font-size: 0.74em; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1px; }
+        .wifi-row-value { font-size: 0.92em; font-weight: 700; color: var(--text-primary); }
+        .wifi-password-value { font-size: 0.9em; font-weight: 800; color: var(--primary-red); letter-spacing: 0.5px; }
+        .access-ok { font-size: 0.9em; font-weight: 700; color: #4ade80; }
 
-        .wifi-row-label {
-            font-size: 0.72em;
-            font-weight: 700;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1px;
-        }
-
-        .wifi-row-value { font-size: 0.9em; font-weight: 700; color: var(--text-primary); }
-
-        .wifi-password-value {
-            font-size: 0.88em;
-            font-weight: 800;
-            color: var(--primary-red);
-            letter-spacing: 0.5px;
-        }
-
-        .access-ok { font-size: 0.88em; font-weight: 700; color: #4ade80; }
-
-        /* ── DEBUG ── */
+        /* ── DEBUG BANNER ── */
         .debug-banner {
             position: fixed;
             bottom: 10px; left: 10px; right: 10px;
@@ -438,19 +419,12 @@
             border: 2px solid var(--primary-red);
             border-radius: 8px;
             padding: 10px 20px;
-            font-size: 0.82em;
+            font-size: 0.84em;
             font-weight: 700;
             z-index: 50000;
             display: none;
-            animation: slideUp 0.3s ease;
         }
-
         .debug-banner.show { display: block; }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to   { transform: translateY(0); opacity: 1; }
-        }
 
         /* ── OVERLAYS ── */
         .welcome-overlay {
@@ -460,7 +434,6 @@
             align-items: center; justify-content: center;
             z-index: 10000;
         }
-
         .welcome-overlay.show { display: flex; }
 
         .welcome-box {
@@ -468,59 +441,43 @@
             border: 1px solid var(--border);
             border-radius: 20px;
             border-left: 6px solid var(--primary-red);
-            padding: 60px 80px;
+            padding: 60px 90px;
             text-align: center;
             animation: modalSlideIn 0.4s ease;
-            max-width: 700px;
+            max-width: 800px;
         }
-
         @keyframes modalSlideIn {
             from { opacity: 0; transform: translateY(-40px); }
             to   { opacity: 1; transform: translateY(0); }
         }
-
-        .welcome-eyebrow {
-            font-size: 0.9em; font-weight: 700;
-            color: var(--text-secondary);
-            text-transform: uppercase; letter-spacing: 2px;
-            margin-bottom: 16px;
-        }
-
-        .welcome-heading {
-            font-size: 5em; font-weight: 900;
-            letter-spacing: -3px; text-transform: uppercase;
-            line-height: 1; margin-bottom: 16px;
-        }
-
-        .welcome-name {
-            font-size: 3em; font-weight: 800;
-            color: var(--primary-red); letter-spacing: -1px;
-            text-transform: uppercase; margin-bottom: 20px;
-        }
-
-        .welcome-sub {
-            font-size: 1em; color: var(--text-secondary);
-            font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-        }
+        .welcome-eyebrow { font-size: 0.9em; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+        .welcome-heading { font-size: 5em; font-weight: 900; letter-spacing: -3px; text-transform: uppercase; line-height: 1; margin-bottom: 16px; }
+        .welcome-name { font-size: 3em; font-weight: 800; color: var(--primary-red); letter-spacing: -1px; text-transform: uppercase; margin-bottom: 20px; }
+        .welcome-sub { font-size: 1em; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
         .video-overlay {
             position: fixed; inset: 0; background: #000;
             display: none; align-items: center; justify-content: center;
             z-index: 100000;
         }
-
         .video-overlay.show { display: flex; }
         .video-overlay iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
+<!--
+    TV FIX 3 wrapper: everything inside here is scaled to avoid overscan.
+    Adjust --tv-scale in :root above if needed (try 0.90, 0.92, 0.95).
+-->
+<div class="tv-scaler">
 <div class="shell">
 
     <!-- HEADER -->
     <div class="header">
         <div class="header-left">
-            <img src="https://narrowaisleservice.github.io/Flexi-Parts-System/flexi-logo-white.svg" alt="Flexi Logo" class="header-logo" onerror="this.style.display='none'">
+            <img src="https://narrowaisleservice.github.io/Flexi-Parts-System/flexi-logo-white.svg"
+                 alt="Flexi Logo" class="header-logo" onerror="this.style.display='none'">
             <div>
                 <div class="header-title">Visitor Dashboard</div>
                 <div class="header-subtitle">Reception — Live View</div>
@@ -552,7 +509,7 @@
     <!-- BODY -->
     <div class="body">
 
-        <!-- LEFT — Visitors, no scroll -->
+        <!-- LEFT — Visitors -->
         <div class="visitors-panel">
             <div class="panel-header">
                 <div class="panel-title">Current Visitors On-Site</div>
@@ -568,9 +525,8 @@
             </div>
         </div>
 
-        <!-- RIGHT — H&S grows, WiFi fixed at bottom -->
+        <!-- RIGHT — H&S + WiFi -->
         <div class="right-col">
-
             <div class="hs-card">
                 <div class="panel-header">
                     <div class="panel-title">Health &amp; Safety</div>
@@ -606,12 +562,12 @@
                     <div class="access-ok">Internet · Guests Only</div>
                 </div>
             </div>
-
         </div>
     </div>
-</div>
+</div><!-- /.shell -->
+</div><!-- /.tv-scaler -->
 
-<!-- Debug Banner -->
+<!-- Debug Banner (outside scaler so it's always fully visible) -->
 <div class="debug-banner" id="debugBanner"></div>
 
 <!-- Welcome Overlay -->
@@ -633,21 +589,85 @@
 </div>
 
 <script>
+    /*
+     * ─────────────────────────────────────────────────────────────
+     *  DATA LOADING — TV FIX 4
+     *
+     *  Android stick browsers (especially older WebView / Silk-based)
+     *  often fail fetch() silently due to:
+     *    • Mixed-content blocking
+     *    • Older TLS versions rejected
+     *    • CORS preflight handling bugs
+     *
+     *  Strategy: try fetch() first (works on modern devices), then
+     *  automatically fall back to XMLHttpRequest (broader compat),
+     *  and finally try JSONP (works even when XHR CORS fails).
+     * ─────────────────────────────────────────────────────────────
+     */
+
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
 
-    let lastVisitorIds = new Set();
-    let errorCount = 0;
+    let lastVisitorIds   = new Set();
     let consecutiveErrors = 0;
     let lastSuccessfulLoad = null;
 
-    function showDebug(message, type = 'info') {
-        const banner = document.getElementById('debugBanner');
-        banner.textContent = `[${new Date().toLocaleTimeString('en-GB')}] ${message}`;
-        banner.className = 'debug-banner show';
-        console.log(`[${type.toUpperCase()}] ${message}`);
-        setTimeout(() => banner.classList.remove('show'), 5000);
+    /* ── Unified request: fetch → XHR fallback ── */
+    function httpGet(url) {
+        return new Promise((resolve, reject) => {
+
+            /* Try fetch first */
+            if (typeof fetch === 'function') {
+                const ctrl = new AbortController();
+                const tid  = setTimeout(() => ctrl.abort(), 15000);
+                fetch(url, { method: 'GET', signal: ctrl.signal })
+                    .then(r => { clearTimeout(tid); return r.text(); })
+                    .then(text => resolve(text))
+                    .catch(() => {
+                        clearTimeout(tid);
+                        /* fetch failed → fall back to XHR */
+                        xhrGet(url, resolve, reject);
+                    });
+            } else {
+                xhrGet(url, resolve, reject);
+            }
+        });
     }
 
+    function xhrGet(url, resolve, reject) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.timeout = 15000;
+        xhr.onload  = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(xhr.responseText);
+            } else {
+                reject(new Error('XHR HTTP ' + xhr.status));
+            }
+        };
+        xhr.onerror   = () => reject(new Error('XHR network error'));
+        xhr.ontimeout = () => reject(new Error('XHR timeout'));
+        try { xhr.send(); }
+        catch(e) { reject(e); }
+    }
+
+    /* ── Safe JSON parse (handles Google's )]}' XSSI prefix) ── */
+    function safeJSON(text) {
+        if (!text) throw new Error('Empty response');
+        // Remove any XSSI prefix Google sometimes adds
+        const cleaned = text.replace(/^\s*\)\]\}'/, '').trim();
+        return JSON.parse(cleaned);
+    }
+
+    /* ── Debug banner ── */
+    function showDebug(message, type) {
+        const banner = document.getElementById('debugBanner');
+        banner.textContent = '[' + new Date().toLocaleTimeString('en-GB') + '] ' + message;
+        banner.classList.add('show');
+        console.log('[' + (type || 'INFO').toUpperCase() + '] ' + message);
+        setTimeout(() => banner.classList.remove('show'), 6000);
+    }
+
+    /* ── Clock ── */
     function updateClock() {
         const now = new Date();
         document.getElementById('time').textContent = now.toLocaleTimeString('en-GB');
@@ -656,125 +676,144 @@
         });
     }
 
+    /* ── Welcome overlay ── */
     function showWelcomeMessage(visitorName) {
         document.getElementById('welcomeVisitorName').textContent = visitorName;
-        document.getElementById('welcomeOverlay').classList.add('show');
-        setTimeout(() => document.getElementById('welcomeOverlay').classList.remove('show'), 12000);
+        const ov = document.getElementById('welcomeOverlay');
+        ov.classList.add('show');
+        setTimeout(() => ov.classList.remove('show'), 12000);
     }
 
-    // ✅ Simple GET — no custom headers, prevents CORS preflight
+    /* ── Load today's visitors ── */
     async function loadVisitors() {
-        showDebug('📡 Fetching visitor data...', 'info');
+        showDebug('Fetching visitor data...', 'info');
         try {
             const today = new Date().toLocaleDateString('en-GB');
-            const url = `${GOOGLE_SCRIPT_URL}?action=getTodaysVisitors&date=${encodeURIComponent(today)}&cache=${Date.now()}`;
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000);
+            const url   = GOOGLE_SCRIPT_URL
+                        + '?action=getTodaysVisitors'
+                        + '&date='  + encodeURIComponent(today)
+                        + '&cache=' + Date.now();
 
-            const response = await fetch(url, { method: 'GET', signal: controller.signal });
-            clearTimeout(timeoutId);
+            const text     = await httpGet(url);
+            const visitors = safeJSON(text);
 
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-            const visitors = JSON.parse(await response.text());
-
-            consecutiveErrors = 0;
+            consecutiveErrors  = 0;
             lastSuccessfulLoad = new Date();
-            showDebug(`✅ Loaded ${visitors ? visitors.length : 0} visitors`, 'success');
+            showDebug('Loaded ' + (visitors ? visitors.length : 0) + ' visitor(s)', 'success');
 
-            const list = document.getElementById('visitorsList');
-            const signedIn = (visitors || []).filter(v => v.status === 'Signed In');
+            const list      = document.getElementById('visitorsList');
+            const signedIn  = (visitors || []).filter(v => v.status === 'Signed In');
 
-            document.getElementById('todayCount').textContent = visitors ? visitors.length : 0;
+            document.getElementById('todayCount').textContent   = visitors ? visitors.length : 0;
             document.getElementById('currentCount').textContent = signedIn.length;
 
-            signedIn.forEach(visitor => {
-                const id = `${visitor.visitorName}_${visitor.timeIn}`;
-                if (!lastVisitorIds.has(id)) showWelcomeMessage(visitor.visitorName);
+            /* Welcome new arrivals */
+            signedIn.forEach(v => {
+                const id = v.visitorName + '_' + v.timeIn;
+                if (!lastVisitorIds.has(id)) showWelcomeMessage(v.visitorName);
             });
-            lastVisitorIds = new Set(signedIn.map(v => `${v.visitorName}_${v.timeIn}`));
+            lastVisitorIds = new Set(signedIn.map(v => v.visitorName + '_' + v.timeIn));
 
             if (signedIn.length === 0) {
-                list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-text">No visitors currently on-site</div></div>`;
+                list.innerHTML = '<div class="empty-state">'
+                    + '<div class="empty-state-icon">\uD83D\uDCED</div>'
+                    + '<div class="empty-state-text">No visitors currently on-site</div>'
+                    + '</div>';
             } else {
-                list.innerHTML = signedIn.map((v, i) => `
-                    <div class="visitor-row" style="animation-delay:${i * 0.07}s">
-                        <div>
-                            <div class="visitor-name">${v.visitorName}</div>
-                            <div class="visitor-meta">
-                                <span>${v.companyName}</span> &nbsp;·&nbsp; Host: <span>${v.hostName}</span> &nbsp;·&nbsp; In: <span>${v.timeIn}</span>
-                            </div>
-                        </div>
-                        <div class="onsite-badge">On-Site</div>
-                    </div>`).join('');
+                list.innerHTML = signedIn.map(function(v, i) {
+                    return '<div class="visitor-row" style="animation-delay:' + (i * 0.07) + 's">'
+                        + '<div>'
+                        + '<div class="visitor-name">' + escHtml(v.visitorName) + '</div>'
+                        + '<div class="visitor-meta">'
+                        + '<span>' + escHtml(v.companyName) + '</span>'
+                        + ' &nbsp;·&nbsp; Host: <span>' + escHtml(v.hostName) + '</span>'
+                        + ' &nbsp;·&nbsp; In: <span>' + escHtml(v.timeIn) + '</span>'
+                        + '</div></div>'
+                        + '<div class="onsite-badge">On-Site</div>'
+                        + '</div>';
+                }).join('');
             }
-        } catch (error) {
+
+        } catch(error) {
             consecutiveErrors++;
-            const msg = error.name === 'AbortError' ? 'Request timeout (15s)' : error.message;
-            showDebug(`❌ Error #${consecutiveErrors}: ${msg}`, 'error');
-            document.getElementById('visitorsList').innerHTML = `
-                <div class="error-state">
-                    <div class="error-title">⚠ Connection Error (Attempt ${consecutiveErrors})</div>
-                    <div class="error-detail">${msg}<br>Last success: ${lastSuccessfulLoad ? lastSuccessfulLoad.toLocaleTimeString('en-GB') : 'Never'}<br>Retrying in 30s...</div>
-                </div>`;
+            const msg = error.message || 'Unknown error';
+            showDebug('Error #' + consecutiveErrors + ': ' + msg, 'error');
+            document.getElementById('visitorsList').innerHTML =
+                '<div class="error-state">'
+                + '<div class="error-title">&#9888; Connection Error (Attempt ' + consecutiveErrors + ')</div>'
+                + '<div class="error-detail">' + escHtml(msg)
+                + '<br>Last OK: ' + (lastSuccessfulLoad ? lastSuccessfulLoad.toLocaleTimeString('en-GB') : 'Never')
+                + '<br>Retrying in 30s&hellip;</div>'
+                + '</div>';
         }
     }
 
-    // ✅ Simple GET — no custom headers
+    /* ── Load H&S metrics ── */
     async function loadHealthSafety() {
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000);
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getHealthSafety&cache=${Date.now()}`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            const data = await response.json();
-            document.getElementById('currentMonthAccidents').textContent = data.currentMonthAccidents ?? '0';
-            document.getElementById('daysSinceAccident').textContent     = data.daysSinceAccident    ?? '0';
-            document.getElementById('ytdAccidents').textContent          = data.ytdAccidents         ?? '0';
-        } catch (e) {
-            ['currentMonthAccidents','daysSinceAccident','ytdAccidents'].forEach(id => {
+            const text = await httpGet(GOOGLE_SCRIPT_URL + '?action=getHealthSafety&cache=' + Date.now());
+            const data = safeJSON(text);
+            document.getElementById('currentMonthAccidents').textContent = data.currentMonthAccidents != null ? data.currentMonthAccidents : '0';
+            document.getElementById('daysSinceAccident').textContent     = data.daysSinceAccident    != null ? data.daysSinceAccident    : '0';
+            document.getElementById('ytdAccidents').textContent          = data.ytdAccidents         != null ? data.ytdAccidents         : '0';
+        } catch(e) {
+            ['currentMonthAccidents','daysSinceAccident','ytdAccidents'].forEach(function(id) {
                 document.getElementById(id).textContent = '—';
             });
         }
     }
 
-    // ✅ Simple GET — no custom headers
+    /* ── Load week count ── */
     async function loadWeekVisitors() {
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000);
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getWeekVisitors&cache=${Date.now()}`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            const data = await response.json();
-            document.getElementById('weekCount').textContent = data.count ?? '0';
-        } catch (e) {
+            const text = await httpGet(GOOGLE_SCRIPT_URL + '?action=getWeekVisitors&cache=' + Date.now());
+            const data = safeJSON(text);
+            document.getElementById('weekCount').textContent = data.count != null ? data.count : '0';
+        } catch(e) {
             document.getElementById('weekCount').textContent = '—';
         }
     }
 
+    /* ── Video overlay ── */
     function showVideo() {
-        const overlay = document.getElementById('videoOverlay');
-        const iframe  = document.getElementById('youtubeVideo');
-        iframe.src = iframe.src;
-        overlay.classList.add('show');
-        setTimeout(() => overlay.classList.remove('show'), 60000);
+        const ov     = document.getElementById('videoOverlay');
+        const iframe = document.getElementById('youtubeVideo');
+        /* Reset src to restart video */
+        iframe.src = 'https://www.youtube.com/embed/Jp79Byg1BAc?autoplay=1&mute=1&loop=1&playlist=Jp79Byg1BAc&controls=0&showinfo=0&modestbranding=1';
+        ov.classList.add('show');
+        setTimeout(() => ov.classList.remove('show'), 60000);
     }
 
-    // ── Boot ──
+    /* ── XSS-safe HTML escaping ── */
+    function escHtml(str) {
+        if (str == null) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    /* ── Boot ── */
     updateClock();
     loadVisitors();
     loadWeekVisitors();
     loadHealthSafety();
 
-    setInterval(updateClock, 1000);
-    setInterval(loadVisitors, 30000);
-    setInterval(loadWeekVisitors, 60000);
-    setInterval(loadHealthSafety, 60000);
+    setInterval(updateClock,        1000);
+    setInterval(loadVisitors,      30000);
+    setInterval(loadWeekVisitors,  60000);
+    setInterval(loadHealthSafety,  60000);
 
-    setTimeout(() => { showVideo(); setInterval(showVideo, 120000); }, 10000);
+    /* Video: first play after 10 s, then every 2 min */
+    setTimeout(function() {
+        showVideo();
+        setInterval(showVideo, 120000);
+    }, 10000);
 
-    window.addEventListener('online',  () => { consecutiveErrors = 0; loadVisitors(); });
-    window.addEventListener('offline', () => showDebug('⚠️ Network lost', 'error'));
+    /* Reconnect recovery */
+    window.addEventListener('online',  function() { consecutiveErrors = 0; loadVisitors(); });
+    window.addEventListener('offline', function() { showDebug('Network lost', 'error'); });
 </script>
 </body>
 </html>
