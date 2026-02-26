@@ -428,12 +428,20 @@
         .welcome-sub { font-size: 18px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
         .video-overlay {
-            position: fixed; inset: 0; background: #000;
-            display: none; align-items: center; justify-content: center;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #000;
+            display: none;
             z-index: 100000;
         }
-        .video-overlay.show { display: flex; }
-        .video-overlay iframe { width: 100%; height: 100%; border: none; }
+        .video-overlay.show { display: block; }
+        .video-overlay iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -450,7 +458,7 @@
                 <div class="header-subtitle">Reception — Live View</div>
             </div>
         </div>
-        <div><div class="version-badge">V — 330</div></div>
+        <div><div class="version-badge">V — 331</div></div>
         <div class="header-right">
             <div class="header-time" id="time">00:00:00</div>
             <div class="header-date" id="date">Loading...</div>
@@ -532,6 +540,10 @@
 
 <div class="debug-banner" id="debugBanner"></div>
 
+<div class="video-overlay" id="videoOverlay">
+    <iframe id="youtubeVideo" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
+
 <div class="welcome-overlay" id="welcomeOverlay">
     <div class="welcome-box">
         <div class="welcome-eyebrow">Flexi — Narrow Aisle Ltd</div>
@@ -541,25 +553,24 @@
     </div>
 </div>
 
-<div class="video-overlay" id="videoOverlay">
-    <iframe id="youtubeVideo" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-</div>
-
 <script>
     /* ─── SCALE TO FIT ───────────────────────────────────────────
-       The canvas is always 1920×1080.
-       This function works out what scale fits the actual screen,
-       centres it, and applies it — handles any TV/stick resolution
-       and any amount of overscan automatically.
+       Uses screen.width/height (physical resolution) rather than
+       window.innerWidth which Android sticks misreport badly.
+       Also forces body to exact screen size to kill any scroll.
     ─────────────────────────────────────────────────────────────── */
     function scaleCanvas() {
-        var canvas  = document.getElementById('canvas');
-        var scaleX  = window.innerWidth  / 1920;
-        var scaleY  = window.innerHeight / 1080;
-        var scale   = Math.min(scaleX, scaleY);
-        var offsetX = (window.innerWidth  - 1920 * scale) / 2;
-        var offsetY = (window.innerHeight - 1080 * scale) / 2;
-        canvas.style.transform = 'translate(' + offsetX + 'px, ' + offsetY + 'px) scale(' + scale + ')';
+        var canvas = document.getElementById('canvas');
+        // Try multiple sources — Android sticks lie about viewport
+        var W = Math.max(screen.width, window.innerWidth,  document.documentElement.clientWidth);
+        var H = Math.max(screen.height, window.innerHeight, document.documentElement.clientHeight);
+        var scale   = Math.min(W / 1920, H / 1080);
+        var offsetX = (W - 1920 * scale) / 2;
+        var offsetY = (H - 1080 * scale) / 2;
+        canvas.style.transformOrigin = 'top left';
+        canvas.style.transform = 'translate(' + offsetX + 'px,' + offsetY + 'px) scale(' + scale + ')';
+        // Show dimensions in debug so we can see what the stick reports
+        showDebug('Screen: ' + W + 'x' + H + ' | Scale: ' + scale.toFixed(3) + ' | inner: ' + window.innerWidth + 'x' + window.innerHeight + ' | screen: ' + screen.width + 'x' + screen.height, 'SCALE');
     }
 
     scaleCanvas();
