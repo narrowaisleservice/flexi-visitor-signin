@@ -255,7 +255,7 @@
             border: 1px solid #dc2626;
         }
 
-        /* ─── FORM ─── */
+        /* ─── FORM INPUTS (text/select only) ─── */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -285,7 +285,7 @@
             margin-left: 2px;
         }
 
-        input, select {
+        input:not([type="checkbox"]), select {
             width: 100%;
             background: var(--card2);
             border: 1px solid var(--border);
@@ -299,13 +299,13 @@
             -webkit-appearance: none;
         }
 
-        input:focus, select:focus {
+        input:not([type="checkbox"]):focus, select:focus {
             outline: none;
             border-color: var(--red);
             background: #1f1f1f;
         }
 
-        input::placeholder { color: rgba(255,255,255,0.25); }
+        input:not([type="checkbox"])::placeholder { color: rgba(255,255,255,0.25); }
 
         select option {
             background: #1a1a1a;
@@ -382,29 +382,65 @@
         .check-group {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
-            padding: 10px 0;
+            gap: 12px;
+            padding: 12px 0;
             border-bottom: 1px solid var(--border);
         }
 
         .check-group:last-of-type { border-bottom: none; }
 
+        /* Custom checkbox styling */
         .check-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            min-width: 18px;
-            margin-top: 2px;
+            appearance: none;
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            min-height: 22px;
+            margin-top: 1px;
             cursor: pointer;
-            accent-color: var(--red);
+            background: var(--card2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            position: relative;
+            transition: background 0.15s, border-color 0.15s;
+            flex-shrink: 0;
+        }
+
+        .check-group input[type="checkbox"]:checked {
+            background: var(--red);
+            border-color: var(--red);
+        }
+
+        /* The tick mark */
+        .check-group input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 8px;
+            height: 13px;
+            border: 3px solid #fff;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+        }
+
+        .check-group input[type="checkbox"]:focus {
+            outline: none;
+            border-color: var(--red-hover);
+            box-shadow: 0 0 0 3px rgba(220,38,38,0.25);
         }
 
         .check-group label {
             text-transform: none;
             letter-spacing: 0;
-            font-size: 0.9em;
+            font-size: 0.95em;
             color: var(--text);
             font-weight: 400;
             margin: 0;
+            cursor: pointer;
+            line-height: 1.4;
         }
 
         /* ─── VISITOR LIST ─── */
