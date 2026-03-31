@@ -422,11 +422,11 @@
             z-index: 100000;
         }
         .video-overlay.show { display: block; }
-        .video-overlay iframe {
+        .video-overlay video {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            border: none;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -443,7 +443,7 @@
                 <div class="header-subtitle">Reception — Live View</div>
             </div>
         </div>
-        <div><div class="version-badge">V — 333</div></div>
+        <div><div class="version-badge">V — 334</div></div>
         <div class="header-right">
             <div class="header-time" id="time">00:00:00</div>
             <div class="header-date" id="date">Loading...</div>
@@ -523,7 +523,7 @@
     </div>
 </div>
 
-<!-- These three are outside .shell so they're always truly fullscreen -->
+<!-- These are outside .shell so they're always truly fullscreen -->
 <div class="debug-banner" id="debugBanner"></div>
 
 <div class="welcome-overlay" id="welcomeOverlay">
@@ -536,7 +536,12 @@
 </div>
 
 <div class="video-overlay" id="videoOverlay">
-    <iframe id="youtubeVideo" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <video id="hostedVideo"
+           src="https://narrowaisleservice.github.io/flexi-visitor-signin/Welcome%20Video.mp4"
+           muted
+           playsinline
+           loop>
+    </video>
 </div>
 
 <script>
@@ -669,15 +674,15 @@
     function showVideo() {
         if (videoShowing) return;
         videoShowing = true;
-        var ov     = document.getElementById('videoOverlay');
-        var iframe = document.getElementById('youtubeVideo');
-        iframe.src = 'https://www.youtube-nocookie.com/embed/Jp79Byg1BAc'
-                   + '?autoplay=1&mute=1&loop=1&playlist=Jp79Byg1BAc'
-                   + '&controls=0&showinfo=0&modestbranding=1&rel=0';
+        var ov    = document.getElementById('videoOverlay');
+        var video = document.getElementById('hostedVideo');
+        video.currentTime = 0;
+        video.play();
         ov.classList.add('show');
         setTimeout(function() {
             ov.classList.remove('show');
-            iframe.src = '';
+            video.pause();
+            video.currentTime = 0;
             videoShowing = false;
         }, 60000);
     }
