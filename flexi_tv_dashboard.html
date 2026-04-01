@@ -20,9 +20,11 @@
       width:100vw;height:100vh;
       opacity:0;pointer-events:none;
       transition:opacity 0.8s ease;
+      z-index:1;
     }
     .tv-screen.tv-active{
       opacity:1;pointer-events:all;
+      z-index:10;
     }
 
     /* Master screen indicator - bottom right */
@@ -67,31 +69,31 @@
       --hover-bg:    #252525;
     }
 
-    .shell {
-      width: 100vw; height: 100vh;
+    #screen-visitor .shell {
+      width: 100%; height: 100%;
       display: flex; flex-direction: column;
       padding: 1vh 1vw; gap: 1vh; overflow: hidden;
     }
-    .header {
+    #screen-visitor .header {
       background: var(--card-bg); border: 1px solid var(--border);
       border-left: 0.4vw solid var(--primary-red); border-radius: 0.8vw;
       padding: 1vh 1.5vw; display: flex; justify-content: space-between;
       align-items: center; flex-shrink: 0;
     }
-    .header-left { display: flex; align-items: center; gap: 1vw; }
-    .header-logo { height: 4vh; width: auto; object-fit: contain; }
-    .header-title { font-size: 2.2vw; font-weight: 400; letter-spacing: -0.05vw; text-transform: uppercase; line-height: 1; color:#fff; }
-    .header-subtitle { font-size: 0.8vw; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.1vw; text-transform: uppercase; margin-top: 0.3vh; }
-    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2vh; }
-    .header-time { font-size: 2.8vw; font-weight: 800; letter-spacing: -0.1vw; color: var(--primary-red); line-height: 1; }
-    .header-date { font-size: 0.8vw; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05vw; }
-    .version-badge { display: inline-block; padding: 0.4vh 0.8vw; background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.3); border-radius: 999px; color: var(--primary-red); font-size: 0.7vw; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1vw; }
-    .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1vw; flex-shrink: 0; }
-    .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 0.6vw; padding: 1vh 1.2vw; }
-    .stat-value { font-size: 3.5vw; font-weight: 900; color: var(--primary-red); letter-spacing: -0.15vw; line-height: 1; margin-bottom: 0.2vh; }
-    .stat-label { font-size: 0.75vw; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1vw; }
-    .body { display: grid; grid-template-columns: 1fr 18vw; gap: 1vw; flex: 1; min-height: 0; overflow: hidden; }
-    .visitors-panel { background: var(--card-bg); border: 1px solid var(--border); border-left: 0.4vw solid var(--primary-red); border-radius: 0.8vw; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+    #screen-visitor .header-left { display: flex; align-items: center; gap: 1vw; }
+    #screen-visitor .header-logo { height: 4vh; width: auto; object-fit: contain; }
+    #screen-visitor .header-title { font-size: 2.2vw; font-weight: 400; letter-spacing: -0.05vw; text-transform: uppercase; line-height: 1; color:#fff; }
+    #screen-visitor .header-subtitle { font-size: 0.8vw; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.1vw; text-transform: uppercase; margin-top: 0.3vh; }
+    #screen-visitor .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2vh; }
+    #screen-visitor .header-time { font-size: 2.8vw; font-weight: 800; letter-spacing: -0.1vw; color: var(--primary-red); line-height: 1; }
+    #screen-visitor .header-date { font-size: 0.8vw; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05vw; }
+    #screen-visitor .version-badge { display: inline-block; padding: 0.4vh 0.8vw; background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.3); border-radius: 999px; color: var(--primary-red); font-size: 0.7vw; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1vw; }
+    #screen-visitor .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1vw; flex-shrink: 0; }
+    #screen-visitor .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 0.6vw; padding: 1vh 1.2vw; }
+    #screen-visitor .stat-value { font-size: 3.5vw; font-weight: 900; color: var(--primary-red); letter-spacing: -0.15vw; line-height: 1; margin-bottom: 0.2vh; }
+    #screen-visitor .stat-label { font-size: 0.75vw; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1vw; }
+    #screen-visitor .vis-body { display: grid; grid-template-columns: 1fr 18vw; gap: 1vw; flex: 1; min-height: 0; overflow: hidden; }
+    #screen-visitor .visitors-panel { background: var(--card-bg); border: 1px solid var(--border); border-left: 0.4vw solid var(--primary-red); border-radius: 0.8vw; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
     .panel-header { padding: 0.8vh 1.2vw; border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
     .panel-title { font-size: 1.1vw; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03vw; color:#fff; }
     .live-indicator { display: flex; align-items: center; gap: 0.4vw; font-size: 0.75vw; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08vw; }
@@ -168,6 +170,18 @@
 
 /* ── SLIDE 1: HERO ── */
 #s1{background:var(--flexi-dark);overflow:hidden}
+/* ── LINES WATERMARK ── */
+.lines-watermark{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0.5;
+  pointer-events:none;
+  z-index:1;
+}
+
 .hero-bg{position:absolute;inset:0}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,0,29,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(232,0,29,0.04) 1px,transparent 1px);background-size:60px 60px;animation:gridPan 20s linear infinite}
 @keyframes gridPan{from{background-position:0 0}to{background-position:60px 60px}}
@@ -213,8 +227,8 @@
 
 /* ── SLIDE 3: KEY SPECS BARS ── */
 #s3{background:var(--flexi-dark)}
-.specs-layout{position:relative;z-index:10;padding:90px 48px 40px;height:100%;display:flex;gap:48px}
-.specs-left{flex:0 0 300px;display:flex;flex-direction:column;justify-content:center}
+.specs-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;height:100%;display:flex;gap:3vw}
+.specs-left{flex:0 0 22vw;display:flex;flex-direction:column;justify-content:center}
 .specs-right{flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px}
 .spec-row{display:flex;flex-direction:column;gap:6px}
 .spec-header{display:flex;justify-content:space-between;align-items:baseline}
@@ -241,7 +255,7 @@
 
 /* ── SLIDE 4: COMPARISON ── */
 #s4{background:var(--flexi-dark)}
-.compare-layout{position:relative;z-index:10;padding:90px 48px 40px;height:100%;display:flex;flex-direction:column}
+.compare-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;height:100%;display:flex;flex-direction:column}
 .compare-grid{flex:1;display:grid;grid-template-columns:200px 1fr 1fr 1fr;gap:0;border:1px solid var(--flexi-line);border-radius:4px;overflow:hidden}
 .compare-col{display:flex;flex-direction:column}
 .compare-col-header{padding:20px 16px;background:var(--flexi-panel);border-bottom:1px solid var(--flexi-line);display:flex;flex-direction:column;gap:4px}
@@ -266,7 +280,7 @@
 
 /* ── SLIDE 5: AISLE ADVANTAGE ── */
 #s5{background:var(--flexi-dark)}
-.aisle-layout{position:relative;z-index:10;padding:90px 48px 40px;height:100%;display:flex;gap:48px}
+.aisle-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;height:100%;display:flex;gap:3vw}
 .aisle-left{flex:0 0 380px;display:flex;flex-direction:column;justify-content:center}
 .aisle-right{flex:1;display:flex;align-items:center;justify-content:center}
 .aisle-diagram{position:relative;width:100%;max-width:500px}
@@ -326,7 +340,7 @@
           <div class="header-subtitle">Reception — Live View</div>
         </div>
       </div>
-      <div><div class="version-badge">V — 338</div></div>
+      <div><div class="version-badge">V — 341</div></div>
       <div class="header-right">
         <div class="header-time" id="time">00:00:00</div>
         <div class="header-date" id="date">Loading...</div>
@@ -337,7 +351,7 @@
       <div class="stat-card"><div class="stat-value" id="currentCount">0</div><div class="stat-label">Currently On-Site</div></div>
       <div class="stat-card"><div class="stat-value" id="weekCount">0</div><div class="stat-label">This Week</div></div>
     </div>
-    <div class="body">
+    <div class="vis-body">
       <div class="visitors-panel">
         <div class="panel-header">
           <div class="panel-title">Current Visitors On-Site</div>
@@ -391,6 +405,7 @@
 <!-- ═══════════════════════════════════════════ SLIDE 1: HERO -->
 <div class="slide active" id="s1">
   <div class="hero-bg">
+    <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
     <div class="hero-grid"></div>
     <div class="hero-glow"></div>
     <div class="hero-line top"></div>
@@ -424,6 +439,7 @@
 <!-- ═══════════════════════════════════════════ SLIDE 2: MODEL LINEUP -->
 <div class="slide" id="s2">
   <div class="lineup-bg"></div>
+  <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
   <div class="lineup-content">
     <div class="section-label">Model Range</div>
     <h2 class="section-title">Six Models.<br>Every Application.</h2>
@@ -538,6 +554,7 @@
 <!-- ═══════════════════════════════════════════ SLIDE 3: SPECS VISUALISED -->
 <div class="slide" id="s3">
   <div class="specs-layout">
+    <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
     <div class="specs-left">
       <div class="section-label">Technical Specs</div>
       <h2 class="section-title" style="font-size:42px">Performance<br>at Every Level</h2>
@@ -587,6 +604,7 @@
 <!-- ═══════════════════════════════════════════ SLIDE 4: COMPARISON TABLE -->
 <div class="slide" id="s4">
   <div class="compare-layout">
+    <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
     <div class="section-label">Competitor Comparison</div>
     <h2 class="section-title" style="margin-bottom:20px">Flexi vs The Competition</h2>
     <div class="compare-grid">
@@ -692,6 +710,7 @@
 <!-- ═══════════════════════════════════════════ SLIDE 5: AISLE ADVANTAGE -->
 <div class="slide" id="s5">
   <div class="aisle-layout">
+    <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
     <div class="aisle-left">
       <div class="section-label">The Flexi Advantage</div>
       <h2 class="section-title">Up to 50% More<br>Storage Density</h2>
