@@ -15,18 +15,9 @@
     *{margin:0;padding:0;box-sizing:border-box}
     html,body{width:100%;height:100%;overflow:hidden;background:#000}
 
-    /* ── ANDROID SCALE FIX ── */
-    #masterScaler {
-      position: fixed;
-      top: 0; left: 0;
-      width: 1920px;
-      height: 1080px;
-      transform-origin: top left;
-    }
-
     .tv-screen{
-      position:absolute;inset:0;
-      width:1920px;height:1080px;
+      position:fixed;top:0;left:0;
+      width:100vw;height:100vh;
       opacity:0;pointer-events:none;
       transition:opacity 0.8s ease;
     }
@@ -36,7 +27,7 @@
 
     /* Master screen indicator - bottom right */
     .master-indicator{
-      position:absolute;bottom:24px;right:24px;
+      position:fixed;bottom:24px;right:24px;
       display:flex;gap:10px;z-index:999999;
     }
     .master-dot{
@@ -50,7 +41,7 @@
 
     /* Master progress bar */
     .master-progress{
-      position:absolute;top:0;left:0;height:3px;
+      position:fixed;top:0;left:0;height:3px;
       background:#E8001D;z-index:999999;
       transition:width 0.1s linear;
     }
@@ -75,7 +66,7 @@
     }
 
     .shell {
-      width: 1920px; height: 1080px;
+      width: 100vw; height: 100vh;
       display: flex; flex-direction: column;
       padding: 1vh 1vw; gap: 1vh; overflow: hidden;
     }
@@ -139,7 +130,6 @@
     .wifi-password-value { font-size: 0.85vw; font-weight: 800; color: var(--primary-red); letter-spacing: 0.03vw; }
     .access-ok { font-size: 0.85vw; font-weight: 700; color: #4ade80; }
     .debug-banner { position:absolute; bottom:1vh;left:1vw;right:1vw; background:rgba(20,20,20,0.97); border:1px solid var(--primary-red); border-radius:0.5vw; padding:0.8vh 1.5vw; font-size:0.75vw; font-weight:700; color:#fff; z-index:50000; display:none; }
-    .debug-banner { position:absolute; bottom:1vh;left:1vw;right:1vw; background:rgba(20,20,20,0.97); border:1px solid var(--primary-red); border-radius:0.5vw; padding:0.8vh 1.5vw; font-size:0.75vw; font-weight:700; color:#fff; z-index:50000; display:none; }
     .debug-banner.show{display:block;}
     .welcome-overlay { position:absolute;inset:0; background:rgba(0,0,0,0.95); display:none; align-items:center;justify-content:center; z-index:10000; }
     .welcome-overlay.show{display:flex;}
@@ -153,22 +143,19 @@
     /* ═══════════════════════════════════════════════════
        SCREEN 2: FLEXI SHOWCASE
     ═══════════════════════════════════════════════════ */
-    #screen-flexi{ overflow:hidden; }
-    
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --flexi-red:#E8001D;
-  --flexi-dark:#0A0A0F;
-  --flexi-mid:#12121A;
-  --flexi-panel:#1A1A26;
-  --flexi-line:#2A2A3A;
-  --flexi-text:#E8E8F0;
-  --flexi-muted:#7878A0;
-  --flexi-accent:#FF2040;
-}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--flexi-dark);font-family:'Barlow',sans-serif;color:var(--flexi-text)}
-
-/* ── SLIDES ── */
+    #screen-flexi{ overflow:hidden; width:100vw; height:100vh;
+      --flexi-red:#E8001D;
+      --flexi-dark:#0A0A0F;
+      --flexi-mid:#12121A;
+      --flexi-panel:#1A1A26;
+      --flexi-line:#2A2A3A;
+      --flexi-text:#E8E8F0;
+      --flexi-muted:#7878A0;
+      --flexi-accent:#FF2040;
+      font-family:'Barlow',sans-serif;
+      color:#E8E8F0;
+      background:#0A0A0F;
+    }
 .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.8s ease}
 .slide.active{opacity:1;pointer-events:all}
 
@@ -288,20 +275,20 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--flexi-dark);fo
 .benefit-text-sub{font-size:12px;color:var(--flexi-muted)}
 
 /* ── NAV DOTS ── */
-.nav-dots{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:200}
+.nav-dots{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:200}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--flexi-line);cursor:pointer;transition:all 0.3s}
 .dot.active{width:24px;border-radius:4px;background:var(--flexi-red)}
 .dot:hover:not(.active){background:var(--flexi-muted)}
 
 /* ── NAV ARROWS ── */
-.nav-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:200;width:48px;height:48px;background:rgba(255,255,255,0.05);border:1px solid var(--flexi-line);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s}
+.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:200;width:48px;height:48px;background:rgba(255,255,255,0.05);border:1px solid var(--flexi-line);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s}
 .nav-arrow:hover{background:rgba(232,0,29,0.2);border-color:var(--flexi-red)}
 .nav-arrow svg{width:20px;height:20px;stroke:var(--flexi-text);stroke-width:2;fill:none}
 #nav-prev{left:20px}
 #nav-next{right:20px}
 
 /* AUTO PROGRESS BAR */
-.progress-bar{position:absolute;top:0;left:0;height:2px;background:var(--flexi-red);z-index:300;transition:width 0.1s linear}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--flexi-red);z-index:300;transition:width 0.1s linear}
 
 
     /* ═══════════════════════════════════════════════════
@@ -316,8 +303,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--flexi-dark);fo
   </style>
 </head>
 <body>
-
-<div id="masterScaler">
 
 <!-- ═══════════ MASTER PROGRESS BAR ═══════════ -->
 <div class="master-progress" id="masterProgress"></div>
@@ -339,7 +324,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--flexi-dark);fo
           <div class="header-subtitle">Reception — Live View</div>
         </div>
       </div>
-      <div><div class="version-badge">V — 336</div></div>
+      <div><div class="version-badge">V — 337</div></div>
       <div class="header-right">
         <div class="header-time" id="time">00:00:00</div>
         <div class="header-date" id="date">Loading...</div>
@@ -929,19 +914,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--flexi-dark);fo
   </video>
 </div>
 
-</div><!-- end masterScaler -->
-
 <script>
-/* ── ANDROID / FULLY KIOSK SCALE FIX ── */
-function applyScale() {
-  var scaler = document.getElementById('masterScaler');
-  var sw = window.innerWidth  || screen.width;
-  var sh = window.innerHeight || screen.height;
-  scaler.style.transform = 'scale(' + (sw/1920) + ',' + (sh/1080) + ')';
-}
-applyScale();
-window.addEventListener('resize', applyScale);
-
 /* ═══════════════════════════════════════════════════════
    MASTER SCREEN CONTROLLER
    Screens: 0=Visitor(30s), 1=Flexi Showcase(~60s), 2=Video(full video)
