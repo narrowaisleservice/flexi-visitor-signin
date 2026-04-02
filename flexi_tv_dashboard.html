@@ -27,7 +27,6 @@
       z-index:10;
     }
 
-    /* Master screen indicator - bottom right */
     .master-indicator{
       position:fixed;bottom:24px;right:24px;
       display:flex;gap:10px;z-index:999999;
@@ -41,7 +40,6 @@
       width:24px;border-radius:4px;background:#E8001D;
     }
 
-    /* Master progress bar */
     .master-progress{
       position:fixed;top:0;left:0;height:3px;
       background:#E8001D;z-index:999999;
@@ -146,8 +144,14 @@
 
     /* ═══════════════════════════════════════════════════
        SCREEN 2: FLEXI SHOWCASE
+       FIX: position:relative on #screen-flexi so absolute
+       slides are contained within it, not the viewport
     ═══════════════════════════════════════════════════ */
-    #screen-flexi{ overflow:hidden; width:100vw; height:100vh;
+    #screen-flexi{
+      overflow:hidden;
+      width:100vw;
+      height:100vh;
+      position:relative; /* ← KEY FIX */
       --flexi-red:#E8001D;
       --flexi-dark:#0A0A0F;
       --flexi-mid:#12121A;
@@ -160,156 +164,128 @@
       color:#E8E8F0;
       background:#0A0A0F;
     }
-#screen-flexi .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.8s ease}
-#screen-flexi .slide.active{opacity:1;pointer-events:all}
 
-/* ── SHARED HEADER ── */
-.logo-bar{position:absolute;top:0;left:0;right:0;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:linear-gradient(180deg,rgba(10,10,15,0.95) 0%,transparent 100%);z-index:100}
-.logo-bar svg{height:36px;width:auto}
-.slide-counter{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:3px;color:var(--flexi-muted);text-transform:uppercase}
+    #screen-flexi .slide{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.8s ease;
+    }
+    #screen-flexi .slide.active{opacity:1;pointer-events:all;}
 
-/* ── SLIDE 1: HERO ── */
-#s1{background:var(--flexi-dark);overflow:hidden}
-/* ── LINES WATERMARK ── */
-.lines-watermark{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  opacity:0.35;
-  pointer-events:none;
-  z-index:1;
-}
+    /* ── SHARED HEADER ── */
+    .logo-bar{position:absolute;top:0;left:0;right:0;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:linear-gradient(180deg,rgba(10,10,15,0.95) 0%,transparent 100%);z-index:100}
+    .logo-bar svg{height:36px;width:auto}
+    .slide-counter{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:3px;color:var(--flexi-muted);text-transform:uppercase}
 
-.hero-bg{position:absolute;inset:0}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,0,29,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(232,0,29,0.04) 1px,transparent 1px);background-size:60px 60px;animation:gridPan 20s linear infinite}
-@keyframes gridPan{from{background-position:0 0}to{background-position:60px 60px}}
-.hero-glow{position:absolute;bottom:-20%;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(232,0,29,0.18) 0%,transparent 70%);animation:glowPulse 4s ease-in-out infinite}
-@keyframes glowPulse{0%,100%{opacity:0.6}50%{opacity:1}}
-.hero-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--flexi-red),transparent)}
-.hero-line.top{top:72px}
-.hero-line.bottom{bottom:80px}
-.hero-content{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:80px 40px}
-.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:6px;color:var(--flexi-red);text-transform:uppercase;margin-bottom:24px;opacity:0;animation:fadeUp 0.8s 0.3s forwards}
-.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(72px,10vw,130px);font-weight:900;line-height:0.9;text-transform:uppercase;letter-spacing:-2px;margin-bottom:16px}
-.hero-title .line1{display:block;color:var(--flexi-text);opacity:0;animation:fadeUp 0.8s 0.5s forwards}
-.hero-title .line2{display:block;color:var(--flexi-red);opacity:0;animation:fadeUp 0.8s 0.7s forwards}
-.hero-subtitle{font-size:18px;font-weight:300;color:var(--flexi-muted);letter-spacing:1px;max-width:500px;margin:24px auto 0;opacity:0;animation:fadeUp 0.8s 0.9s forwards}
-.hero-stats{display:flex;gap:48px;margin-top:56px;opacity:0;animation:fadeUp 0.8s 1.1s forwards}
-.hero-stat{text-align:center}
-.hero-stat-num{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:700;color:var(--flexi-red);line-height:1}
-.hero-stat-label{font-size:11px;letter-spacing:3px;color:var(--flexi-muted);text-transform:uppercase;margin-top:6px}
-.hero-divider{width:1px;height:60px;background:var(--flexi-line);align-self:center}
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    /* ── SLIDE 1: HERO ── */
+    #s1{background:var(--flexi-dark);overflow:hidden}
 
-/* ── SLIDE 2: MODEL LINEUP ── */
-#s2{background:var(--flexi-dark)}
-.lineup-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--flexi-dark) 60%,rgba(232,0,29,0.05) 100%)}
-.lineup-content{position:relative;z-index:10;padding:90px 48px 40px;height:100%;display:flex;flex-direction:column}
-.section-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:5px;color:var(--flexi-red);text-transform:uppercase;margin-bottom:12px}
-.section-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,58px);font-weight:800;text-transform:uppercase;letter-spacing:-1px;margin-bottom:32px;line-height:1}
-.models-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;flex:1}
-.model-card{background:var(--flexi-panel);border:1px solid var(--flexi-line);border-radius:4px;padding:20px 16px;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:border-color 0.3s,transform 0.3s;cursor:pointer}
-.model-card:hover{border-color:var(--flexi-red);transform:translateY(-4px)}
-.model-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--flexi-red);transform:scaleX(0);transition:transform 0.3s;transform-origin:left}
-.model-card:hover::before{transform:scaleX(1)}
-.model-card.featured{border-color:rgba(232,0,29,0.4)}
-.model-card.featured::before{transform:scaleX(1)}
-.model-name{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:var(--flexi-text);letter-spacing:1px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.model-cap{font-size:12px;color:var(--flexi-red);font-weight:600;letter-spacing:2px;margin-bottom:16px}
-.model-stat{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--flexi-line);padding-top:8px;margin-top:8px}
-.model-stat-label{font-size:10px;color:var(--flexi-muted);letter-spacing:1px;text-transform:uppercase}
-.model-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;color:var(--flexi-text)}
-.model-stat-unit{font-size:10px;color:var(--flexi-muted);margin-left:2px}
-.model-badge{position:absolute;top:12px;right:12px;background:var(--flexi-red);color:#fff;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:2px}
-.model-cards-anim .model-card{opacity:0;transform:translateY(20px)}
+    .lines-watermark{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:0.35;
+      pointer-events:none;
+      z-index:1;
+    }
 
-/* ── SLIDE 3: KEY SPECS BARS ── */
-#s3{background:var(--flexi-dark)}
-.specs-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;height:100%;display:flex;gap:3vw}
-.specs-left{flex:0 0 22vw;display:flex;flex-direction:column;justify-content:center}
-.specs-right{flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px}
-.spec-row{display:flex;flex-direction:column;gap:6px}
-.spec-header{display:flex;justify-content:space-between;align-items:baseline}
-.spec-name{font-size:13px;color:var(--flexi-muted);letter-spacing:1px;text-transform:uppercase}
-.spec-vals{display:flex;gap:16px}
-.spec-val-item{text-align:right}
-.spec-model-label{font-size:10px;color:var(--flexi-muted)}
-.spec-model-num{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700}
-.spec-bar-track{height:6px;background:var(--flexi-line);border-radius:3px;position:relative;overflow:hidden}
-.spec-bar-fill{height:100%;border-radius:3px;width:0;transition:width 1.2s cubic-bezier(0.4,0,0.2,1)}
-.spec-bars-group{display:flex;flex-direction:column;gap:3px}
-.bar-segment{height:6px;border-radius:3px;width:0;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);display:inline-block}
-.spec-row-bars{display:flex;gap:4px;height:12px;align-items:center}
-.spec-bar-multi{flex:1;background:var(--flexi-line);border-radius:3px;height:8px;overflow:hidden}
-.spec-bar-inner{height:100%;width:0;transition:width 1.2s ease;border-radius:3px}
-.animated .spec-bar-inner{width:var(--target-w)!important}
-.spec-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:4px}
-.spec-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--flexi-muted)}
-.spec-legend-dot{width:8px;height:8px;border-radius:50%}
-.big-stat{margin-bottom:40px}
-.big-stat-label{font-size:11px;letter-spacing:3px;color:var(--flexi-muted);text-transform:uppercase;margin-bottom:8px}
-.big-stat-num{font-family:'Barlow Condensed',sans-serif;font-size:80px;font-weight:900;color:var(--flexi-red);line-height:1}
-.big-stat-sub{font-size:14px;color:var(--flexi-muted);margin-top:4px}
+    .hero-bg{position:absolute;inset:0;width:100%;height:100%;}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,0,29,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(232,0,29,0.04) 1px,transparent 1px);background-size:60px 60px;animation:gridPan 20s linear infinite}
+    @keyframes gridPan{from{background-position:0 0}to{background-position:60px 60px}}
+    .hero-glow{position:absolute;bottom:-20%;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(232,0,29,0.18) 0%,transparent 70%);animation:glowPulse 4s ease-in-out infinite}
+    @keyframes glowPulse{0%,100%{opacity:0.6}50%{opacity:1}}
+    .hero-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--flexi-red),transparent)}
+    .hero-line.top{top:72px}
+    .hero-line.bottom{bottom:80px}
+    .hero-content{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;text-align:center;padding:80px 40px}
+    .hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:6px;color:var(--flexi-red);text-transform:uppercase;margin-bottom:24px;opacity:0;animation:fadeUp 0.8s 0.3s forwards}
+    .hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(72px,10vw,130px);font-weight:900;line-height:0.9;text-transform:uppercase;letter-spacing:-2px;margin-bottom:16px}
+    .hero-title .line1{display:block;color:var(--flexi-text);opacity:0;animation:fadeUp 0.8s 0.5s forwards}
+    .hero-title .line2{display:block;color:var(--flexi-red);opacity:0;animation:fadeUp 0.8s 0.7s forwards}
+    .hero-subtitle{font-size:18px;font-weight:300;color:var(--flexi-muted);letter-spacing:1px;max-width:500px;margin:24px auto 0;opacity:0;animation:fadeUp 0.8s 0.9s forwards}
+    .hero-stats{display:flex;gap:48px;margin-top:56px;opacity:0;animation:fadeUp 0.8s 1.1s forwards}
+    .hero-stat{text-align:center}
+    .hero-stat-num{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:700;color:var(--flexi-red);line-height:1}
+    .hero-stat-label{font-size:11px;letter-spacing:3px;color:var(--flexi-muted);text-transform:uppercase;margin-top:6px}
+    .hero-divider{width:1px;height:60px;background:var(--flexi-line);align-self:center}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── SLIDE 4: COMPARISON ── */
-#s4{background:var(--flexi-dark)}
-.compare-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;height:100%;display:flex;flex-direction:column}
-.compare-grid{flex:1;display:grid;grid-template-columns:200px 1fr 1fr 1fr;gap:0;border:1px solid var(--flexi-line);border-radius:4px;overflow:hidden}
-.compare-col{display:flex;flex-direction:column}
-.compare-col-header{padding:20px 16px;background:var(--flexi-panel);border-bottom:1px solid var(--flexi-line);display:flex;flex-direction:column;gap:4px}
-.compare-col-header.flexi-col{background:rgba(232,0,29,0.12);border-bottom:2px solid var(--flexi-red)}
-.col-brand{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase}
-.col-brand.flexi{color:var(--flexi-red)}
-.col-brand.rival{color:var(--flexi-muted)}
-.col-model-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700}
-.col-tagline{font-size:11px;color:var(--flexi-muted)}
-.compare-row{display:contents}
-.compare-cell{padding:14px 16px;border-bottom:1px solid var(--flexi-line);border-right:1px solid var(--flexi-line);display:flex;flex-direction:column;justify-content:center}
-.compare-cell:last-child{border-right:none}
-.compare-cell.flexi-cell{background:rgba(232,0,29,0.05)}
-.compare-cell.label-cell{background:var(--flexi-panel)}
-.cell-label{font-size:11px;color:var(--flexi-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
-.cell-val{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600}
-.cell-val.win{color:#4ADE80}
-.cell-val.lose{color:var(--flexi-muted)}
-.cell-val.draw{color:var(--flexi-text)}
-.win-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);border-radius:2px;padding:2px 8px;font-size:10px;letter-spacing:2px;color:#4ADE80;text-transform:uppercase;margin-top:4px}
-.compare-note{margin-top:16px;font-size:12px;color:var(--flexi-muted);font-style:italic}
+    /* ── SLIDE 2: MODEL LINEUP ── */
+    #s2{background:var(--flexi-dark)}
+    .lineup-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--flexi-dark) 60%,rgba(232,0,29,0.05) 100%)}
+    .lineup-content{position:relative;z-index:10;padding:90px 48px 40px;width:100%;height:100%;display:flex;flex-direction:column}
+    .section-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:5px;color:var(--flexi-red);text-transform:uppercase;margin-bottom:12px}
+    .section-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,58px);font-weight:800;text-transform:uppercase;letter-spacing:-1px;margin-bottom:32px;line-height:1}
+    .models-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;flex:1}
+    .model-card{background:var(--flexi-panel);border:1px solid var(--flexi-line);border-radius:4px;padding:20px 16px;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:border-color 0.3s,transform 0.3s;cursor:pointer}
+    .model-card:hover{border-color:var(--flexi-red);transform:translateY(-4px)}
+    .model-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--flexi-red);transform:scaleX(0);transition:transform 0.3s;transform-origin:left}
+    .model-card:hover::before{transform:scaleX(1)}
+    .model-card.featured{border-color:rgba(232,0,29,0.4)}
+    .model-card.featured::before{transform:scaleX(1)}
+    .model-name{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:var(--flexi-text);letter-spacing:1px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .model-cap{font-size:12px;color:var(--flexi-red);font-weight:600;letter-spacing:2px;margin-bottom:16px}
+    .model-stat{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--flexi-line);padding-top:8px;margin-top:8px}
+    .model-stat-label{font-size:10px;color:var(--flexi-muted);letter-spacing:1px;text-transform:uppercase}
+    .model-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;color:var(--flexi-text)}
+    .model-stat-unit{font-size:10px;color:var(--flexi-muted);margin-left:2px}
+    .model-badge{position:absolute;top:12px;right:12px;background:var(--flexi-red);color:#fff;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:2px}
+    .model-cards-anim .model-card{opacity:0;transform:translateY(20px)}
 
-/* ── SLIDE 5: AISLE ADVANTAGE ── */
-#s5{background:var(--flexi-dark)}
-.aisle-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;height:100%;display:flex;gap:3vw}
-.aisle-left{flex:0 0 380px;display:flex;flex-direction:column;justify-content:center}
-.aisle-right{flex:1;display:flex;align-items:center;justify-content:center}
-.aisle-diagram{position:relative;width:100%;max-width:500px}
-.aisle-benefit-list{display:flex;flex-direction:column;gap:16px;margin-top:32px}
-.aisle-benefit{display:flex;align-items:flex-start;gap:16px;padding:16px;background:var(--flexi-panel);border-left:3px solid var(--flexi-red);border-radius:0 4px 4px 0}
-.benefit-icon{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--flexi-red);line-height:1;flex-shrink:0;width:32px}
-.benefit-text-title{font-size:14px;font-weight:600;color:var(--flexi-text);margin-bottom:2px}
-.benefit-text-sub{font-size:12px;color:var(--flexi-muted)}
+    /* ── SLIDE 3: KEY SPECS BARS ── */
+    #s3{background:var(--flexi-dark)}
+    .specs-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;gap:3vw}
+    .specs-left{flex:0 0 22vw;display:flex;flex-direction:column;justify-content:center}
+    .specs-right{flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px}
+    .spec-row{display:flex;flex-direction:column;gap:6px}
+    .spec-header{display:flex;justify-content:space-between;align-items:baseline}
+    .spec-name{font-size:13px;color:var(--flexi-muted);letter-spacing:1px;text-transform:uppercase}
+    .spec-bar-inner{height:100%;width:0;transition:width 1.2s ease;border-radius:3px}
+    .spec-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:4px}
 
-/* ── NAV DOTS ── */
-.nav-dots{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:200}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--flexi-line);cursor:pointer;transition:all 0.3s}
-.dot.active{width:24px;border-radius:4px;background:var(--flexi-red)}
-.dot:hover:not(.active){background:var(--flexi-muted)}
+    /* ── SLIDE 4: COMPARISON ── */
+    #s4{background:var(--flexi-dark)}
+    .compare-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;flex-direction:column}
+    .compare-grid{flex:1;display:grid;grid-template-columns:200px 1fr 1fr 1fr;gap:0;border:1px solid var(--flexi-line);border-radius:4px;overflow:hidden}
+    .compare-col-header{padding:20px 16px;background:var(--flexi-panel);border-bottom:1px solid var(--flexi-line);display:flex;flex-direction:column;gap:4px}
+    .compare-col-header.flexi-col{background:rgba(232,0,29,0.12);border-bottom:2px solid var(--flexi-red)}
+    .col-brand{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase}
+    .col-brand.flexi{color:var(--flexi-red)}
+    .col-brand.rival{color:var(--flexi-muted)}
+    .col-model-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700}
+    .col-tagline{font-size:11px;color:var(--flexi-muted)}
+    .compare-cell{padding:14px 16px;border-bottom:1px solid var(--flexi-line);border-right:1px solid var(--flexi-line);display:flex;flex-direction:column;justify-content:center}
+    .compare-cell:last-child{border-right:none}
+    .compare-cell.flexi-cell{background:rgba(232,0,29,0.05)}
+    .compare-cell.label-cell{background:var(--flexi-panel)}
+    .cell-label{font-size:11px;color:var(--flexi-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+    .cell-val{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600}
+    .cell-val.win{color:#4ADE80}
+    .cell-val.lose{color:var(--flexi-muted)}
+    .cell-val.draw{color:var(--flexi-text)}
+    .win-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);border-radius:2px;padding:2px 8px;font-size:10px;letter-spacing:2px;color:#4ADE80;text-transform:uppercase;margin-top:4px}
+    .compare-note{margin-top:16px;font-size:12px;color:var(--flexi-muted);font-style:italic}
 
-/* ── NAV ARROWS ── */
-.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:200;width:48px;height:48px;background:rgba(255,255,255,0.05);border:1px solid var(--flexi-line);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s}
-.nav-arrow:hover{background:rgba(232,0,29,0.2);border-color:var(--flexi-red)}
-.nav-arrow svg{width:20px;height:20px;stroke:var(--flexi-text);stroke-width:2;fill:none}
-#nav-prev{left:20px}
-#nav-next{right:20px}
+    /* ── SLIDE 5: AISLE ADVANTAGE ── */
+    #s5{background:var(--flexi-dark)}
+    .aisle-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;gap:3vw}
+    .aisle-left{flex:0 0 380px;display:flex;flex-direction:column;justify-content:center}
+    .aisle-right{flex:1;display:flex;align-items:center;justify-content:center}
+    .aisle-benefit-list{display:flex;flex-direction:column;gap:16px;margin-top:32px}
+    .aisle-benefit{display:flex;align-items:flex-start;gap:16px;padding:16px;background:var(--flexi-panel);border-left:3px solid var(--flexi-red);border-radius:0 4px 4px 0}
+    .benefit-icon{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--flexi-red);line-height:1;flex-shrink:0;width:32px}
+    .benefit-text-title{font-size:14px;font-weight:600;color:var(--flexi-text);margin-bottom:2px}
+    .benefit-text-sub{font-size:12px;color:var(--flexi-muted)}
 
-/* AUTO PROGRESS BAR */
-.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--flexi-red);z-index:300;transition:width 0.1s linear}
-
-
-    /* ═══════════════════════════════════════════════════
-       SCREEN 3: VIDEO
-    ═══════════════════════════════════════════════════ */
+    /* ── SCREEN 3: VIDEO ── */
     #screen-video{ background:#000; }
     #screen-video video{
       position:absolute;inset:0;
@@ -320,10 +296,7 @@
 </head>
 <body>
 
-<!-- ═══════════ MASTER PROGRESS BAR ═══════════ -->
 <div class="master-progress" id="masterProgress"></div>
-
-<!-- ═══════════ SCREEN INDICATOR ═══════════ -->
 <div class="master-indicator" id="masterIndicator"></div>
 
 <!-- ══════════════════════════════════════════════
@@ -340,7 +313,7 @@
           <div class="header-subtitle">Reception — Live View</div>
         </div>
       </div>
-      <div><div class="version-badge">V — 342</div></div>
+      <div><div class="version-badge">V — 2604</div></div>
       <div class="header-right">
         <div class="header-time" id="time">00:00:00</div>
         <div class="header-date" id="date">Loading...</div>
@@ -394,534 +367,234 @@
      SCREEN 2: FLEXI SHOWCASE
 ══════════════════════════════════════════════ -->
 <div class="tv-screen" id="screen-flexi">
-  
 
-<!-- LOGO BAR (shared) -->
-<div class="logo-bar" style="position:absolute;z-index:150">
-  <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBpZD0iTGF5ZXJfMSIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA4NDEuOSA0OTcuMyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgODQxLjkgNDk3LjM7IiB4bWw6c3BhY2U9InByZXNlcnZlIj48c3R5bGUgdHlwZT0idGV4dC9jc3MiPgkuc3Qwe2ZpbGw6I0ZGRkZGRjt9PC9zdHlsZT48Zz4JPHBhdGggY2xhc3M9InN0MCIgZD0iTTcyNC45LDI1MS44bDkuOC00LjRjMC43LTAuMywxLjUtMC4yLDIuMSwwLjJsMjEuNCwxMy45YzEuNCwwLjksMS40LDMuMS0wLjEsMy45bC04LjUsNC45ICBjLTAuNywwLjQtMS42LDAuNC0yLjMtMC4xbC0yMi43LTE0LjRDNzIzLjEsMjU0LjgsNzIzLjIsMjUyLjUsNzI0LjksMjUxLjgiPjwvcGF0aD4JPHBhdGggY2xhc3M9InN0MCIgZD0iTTQ2NS41LDM1NC4zYy0zLjktMS45LTYuMi0xNS4zLDQuMS0zNC44YzgtMTUuMSwxNy42LTIwLjgsMjIuNi0yMi42YzUuMi0xLjksOC45LTAuMSwxMCwxICBjNS42LDUuOCwwLjYsMjAtNi41LDMxLjRDNDg3LjEsMzQzLjIsNDcxLjEsMzU3LDQ2NS41LDM1NC4zIE04MDYsMzUyLjhjLTguNiwxNC43LTIwLjMsMTQtMjkuMSw4LjNjLTcuNy01LTEzLjMtMjYtMTYuMi0zNC42ICBjLTMuMS05LTExLjctMTkuOS0yMS44LTE5LjljLTEzLjEsMC0zMC44LDM2LjUtMzUuOCw0Mi4xYy0xMS42LDEyLjgtMzguMywyOC02MC4zLDE0LjFjLTEyLjEtNy42LTI4LjMtMjktMjguMy0yOSAgczQ5LjYtNDkuNCw1MS42LTUyLjNsLTE4LjgtMTkuMWMtMi4zLDMuOC00OC42LDUxLjYtNTAuNCw1MS42Yy0xLjgsMC0yMi43LTM0LjgtMjUuMy0zOGMwLDAtMzEuMS0zLTMyLjUtMS42ICBjMCwwLDQwLjEsNTUuMiwzOC44LDU3LjVjLTIsMy4zLTQ1LjUsMzQuOS01Niw0MC41Yy0yMS4xLDExLjEtMzguNSw2LjQtMzguNSw2LjRzMzAuMi0yNS41LDQwLjMtNDUuNWM1LTkuOCwyMy4xLTQyLjItMTYuNi02MC40ICBjLTIzLjYtMTAuOC00NC40LTEuNi02My42LDI2LjhjLTIxLjEsMzEtNC4zLDc1LjctNC4zLDc1LjdzLTIzLjYsMTYuNy00NC42LDEuM2MtMTUuNC0xMS4yLTI2LjItNDkuNi0yOC44LTg1LjIgIGMtMy45LTUyLjYsNi44LTE1OC40LDYuOC0xNTguNGwtNDcuMy0xMy45YzAsMCw2LDUxLjMtNS4yLDkzLjljLTI2LjksMTAyLjMtOTcsMTI4LjQtMTA0LjYsMTI5LjNjLTcuNiwwLjktNy42LTUyLjMtNTkuMS0xNDUgIEMxMjIuNywxMzYuOCw2MCw2OC43LDYwLjksNjUuNWMwLjktMy4yLDgxLjMtMjYuNSwxNTAuMy0yOC40Yzk2LjgtMi43LDE4NS4zLDMsMTkxLjUsOS4zYzYuMyw2LjQtMjUuNSwxNi42LDYuNywzMS40ICBjMTUuMSw2LjksMjcuMy01LjksMzIuOS0xMy41YzIuMy0zLjIsMi4xLTcuNi0wLjQtMTAuNUM0MzAuMyw0MC40LDM4Ny40LDcuMiwyNDksMTEuOUM3Ni42LDE3LjgsMTUuNyw0NC4yLDEyLjEsNTAuMSAgczEwNy4xLDEzMC45LDEzOCwyMDYuM2MyNC43LDYwLjIsMzIuMyw5Ny4zLDMxLjQsMTAxLjRjLTAuOSw0LjEtNDQuNCwxLjQtNDQuNCwxLjRsMTMsMjEuNGwzNS40LTFjMCwwLDMuOSwyNC4zLTEuOCw0Mi43ICBjLTcuOSwyNS40LTIyLjgsMzcuNy0yMi44LDQyLjNsMzAuOSwxNy43YzAsMCwxOS41LTE0LjMsMjUuNS01NC42YzMtMjAuMiwwLTQ3LjcsMC00Ny43czMwLjEtOC44LDYwLjUtMzEuNCAgYzMwLjItMjIuNSw1Mi40LTYwLDUyLjQtNjBzMTYuNSw3My42LDM3LjcsOTQuOWMyNS45LDI1LjksNTksMjYuNSw5NCwxMS41YzguMSwzLjksMTUuNSw2LjYsMjIuMSw4LjVjMTkuNSw1LjcsNDAuNCwyLjUsNTcuNi04LjUgIGMxNi40LTEwLjQsNDEtMzAuMyw1NS41LTQzLjRjMi43LTIuNCwzNy4yLDQyLjcsODMuMSwzNy42YzMwLjktMy40LDQyLjgtMTksNTUuNi0zOWM2LjYtMTAuMiwxMy43LDIwLjcsNDUuOSwzMi41ICBjMTguNCw2LjcsMzcuNSwwLjIsNDQuMy0xMUM4MzcsMzU0LDgxNC43LDMzNy45LDgwNiwzNTIuOCI+PC9wYXRoPjwvZz48L3N2Zz4=" style="height:38px;width:auto" alt="Flexi">
-  <div class="slide-counter" id="slide-counter">01 / 05</div>
-</div>
+  <div class="logo-bar" style="z-index:150">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBpZD0iTGF5ZXJfMSIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA4NDEuOSA0OTcuMyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgODQxLjkgNDk3LjM7IiB4bWw6c3BhY2U9InByZXNlcnZlIj48c3R5bGUgdHlwZT0idGV4dC9jc3MiPgkuc3Qwe2ZpbGw6I0ZGRkZGRjt9PC9zdHlsZT48Zz4JPHBhdGggY2xhc3M9InN0MCIgZD0iTTcyNC45LDI1MS44bDkuOC00LjRjMC43LTAuMywxLjUtMC4yLDIuMSwwLjJsMjEuNCwxMy45YzEuNCwwLjksMS40LDMuMS0wLjEsMy45bC04LjUsNC45ICBjLTAuNywwLjQtMS42LDAuNC0yLjMtMC4xbC0yMi43LTE0LjRDNzIzLjEsMjU0LjgsNzIzLjIsMjUyLjUsNzI0LjksMjUxLjgiPjwvcGF0aD4JPHBhdGggY2xhc3M9InN0MCIgZD0iTTQ2NS41LDM1NC4zYy0zLjktMS45LTYuMi0xNS4zLDQuMS0zNC44YzgtMTUuMSwxNy42LTIwLjgsMjIuNi0yMi42YzUuMi0xLjksOC45LTAuMSwxMCwxICBjNS42LDUuOCwwLjYsMjAtNi41LDMxLjRDNDg3LjEsMzQzLjIsNDcxLjEsMzU3LDQ2NS41LDM1NC4zIE04MDYsMzUyLjhjLTguNiwxNC43LTIwLjMsMTQtMjkuMSw4LjNjLTcuNy01LTEzLjMtMjYtMTYuMi0zNC42ICBjLTMuMS05LTExLjctMTkuOS0yMS44LTE5LjljLTEzLjEsMC0zMC44LDM2LjUtMzUuOCw0Mi4xYy0xMS42LDEyLjgtMzguMywyOC02MC4zLDE0LjFjLTEyLjEtNy42LTI4LjMtMjktMjguMy0yOSAgczQ5LjYtNDkuNCw1MS42LTUyLjNsLTE4LjgtMTkuMWMtMi4zLDMuOC00OC42LDUxLjYtNTAuNCw1MS42Yy0xLjgsMC0yMi43LTM0LjgtMjUuMy0zOGMwLDAtMzEuMS0zLTMyLjUtMS42ICBjMCwwLDQwLjEsNTUuMiwzOC44LDU3LjVjLTIsMy4zLTQ1LjUsMzQuOS01Niw0MC41Yy0yMS4xLDExLjEtMzguNSw2LjQtMzguNSw2LjRzMzAuMi0yNS41LDQwLjMtNDUuNWM1LTkuOCwyMy4xLTQyLjItMTYuNi02MC40ICBjLTIzLjYtMTAuOC00NC40LTEuNi02My42LDI2LjhjLTIxLjEsMzEtNC4zLDc1LjctNC4zLDc1LjdzLTIzLjYsMTYuNy00NC42LDEuM2MtMTUuNC0xMS4yLTI2LjItNDkuNi0yOC44LTg1LjIgIGMtMy45LTUyLjYsNi44LTE1OC40LDYuOC0xNTguNGwtNDcuMy0xMy45YzAsMCw2LDUxLjMtNS4yLDkzLjljLTI2LjksMTAyLjMtOTcsMTI4LjQtMTA0LjYsMTI5LjNjLTcuNiwwLjktNy42LTUyLjMtNTkuMS0xNDUgIEMxMjIuNywxMzYuOCw2MCw2OC43LDYwLjksNjUuNWMwLjktMy4yLDgxLjMtMjYuNSwxNTAuMy0yOC40Yzk2LjgtMi43LDE4NS4zLDMsMTkxLjUsOS4zYzYuMyw2LjQtMjUuNSwxNi42LDYuNywzMS40ICBjMTUuMSw2LjksMjcuMy01LjksMzIuOS0xMy41YzIuMy0zLjIsMi4xLTcuNi0wLjQtMTAuNUM0MzAuMyw0MC40LDM4Ny40LDcuMiwyNDksMTEuOUM3Ni42LDE3LjgsMTUuNyw0NC4yLDEyLjEsNTAuMSAgczEwNy4xLDEzMC45LDEzOCwyMDYuM2MyNC43LDYwLjIsMzIuMyw5Ny4zLDMxLjQsMTAxLjRjLTAuOSw0LjEtNDQuNCwxLjQtNDQuNCwxLjRsMTMsMjEuNGwzNS40LTFjMCwwLDMuOSwyNC4zLTEuOCw0Mi43ICBjLTcuOSwyNS40LTIyLjgsMzcuNy0yMi44LDQyLjNsMzAuOSwxNy43YzAsMCwxOS41LTE0LjMsMjUuNS01NC42YzMtMjAuMiwwLTQ3LjcsMC00Ny43czMwLjEtOC44LDYwLjUtMzEuNCAgYzMwLjItMjIuNSw1Mi40LTYwLDUyLjQtNjBzMTYuNSw3My42LDM3LjcsOTQuOWMyNS45LDI1LjksNTksMjYuNSw5NCwxMS41YzguMSwzLjksMTUuNSw2LjYsMjIuMSw4LjVjMTkuNSw1LjcsNDAuNCwyLjUsNTcuNi04LjUgIGMxNi40LTEwLjQsNDEtMzAuMyw1NS41LTQzLjRjMi43LTIuNCwzNy4yLDQyLjcsODMuMSwzNy42YzMwLjktMy40LDQyLjgtMTksNTUuNi0zOWM2LjYtMTAuMiwxMy43LDIwLjcsNDUuOSwzMi41ICBjMTguNCw2LjcsMzcuNSwwLjIsNDQuMy0xMUM4MzcsMzU0LDgxNC43LDMzNy45LDgwNiwzNTIuOCI+PC9wYXRoPjwvZz48L3N2Zz4=" style="height:38px;width:auto" alt="Flexi">
+    <div class="slide-counter" id="slide-counter">01 / 05</div>
+  </div>
 
-<!-- ═══════════════════════════════════════════ SLIDE 1: HERO -->
-<div class="slide active" id="s1">
-  <div class="hero-bg">
+  <!-- SLIDE 1: HERO -->
+  <div class="slide active" id="s1">
+    <div class="hero-bg">
+      <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-line top"></div>
+      <div class="hero-line bottom"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="line1">Built for</span>
+        <span class="line2">Tight Spaces</span>
+      </h1>
+      <p class="hero-subtitle">Six models. One purpose. Maximum storage density where it matters most.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">15m</div>
+          <div class="hero-stat-label">Max lift height</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">2500<span style="font-size:22px">kg</span></div>
+          <div class="hero-stat-label">Max capacity</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">1600<span style="font-size:22px">mm</span></div>
+          <div class="hero-stat-label">Min aisle width</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: MODEL LINEUP -->
+  <div class="slide" id="s2">
+    <div class="lineup-bg"></div>
     <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
-    <div class="hero-grid"></div>
-    <div class="hero-glow"></div>
-    <div class="hero-line top"></div>
-    <div class="hero-line bottom"></div>
-  </div>
-  <div class="hero-content">
-    <h1 class="hero-title">
-      <span class="line1">Built for</span>
-      <span class="line2">Tight Spaces</span>
-    </h1>
-    <p class="hero-subtitle">Six models. One purpose. Maximum storage density where it matters most.</p>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="hero-stat-num">15m</div>
-        <div class="hero-stat-label">Max lift height</div>
-      </div>
-      <div class="hero-divider"></div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">2500<span style="font-size:22px">kg</span></div>
-        <div class="hero-stat-label">Max capacity</div>
-      </div>
-      <div class="hero-divider"></div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">1600<span style="font-size:22px">mm</span></div>
-        <div class="hero-stat-label">Min aisle width</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════ SLIDE 2: MODEL LINEUP -->
-<div class="slide" id="s2">
-  <div class="lineup-bg"></div>
-  <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
-  <div class="lineup-content">
-    <div class="section-label">Model Range</div>
-    <h2 class="section-title">Six Models.<br>Every Application.</h2>
-    <div class="models-grid model-cards-anim" id="model-grid">
-
-      <div class="model-card">
-        <div class="model-name">Flexi 15VN</div>
-        <div class="model-cap">1300 kg</div>
-        <div class="model-stat">
-          <span class="model-stat-label">Lift</span>
-          <span><span class="model-stat-val">7,620</span><span class="model-stat-unit">mm</span></span>
+    <div class="lineup-content">
+      <div class="section-label">Model Range</div>
+      <h2 class="section-title">Six Models.<br>Every Application.</h2>
+      <div class="models-grid model-cards-anim" id="model-grid">
+        <div class="model-card">
+          <div class="model-name">Flexi 15VN</div><div class="model-cap">1300 kg</div>
+          <div class="model-stat"><span class="model-stat-label">Lift</span><span><span class="model-stat-val">7,620</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Width</span><span><span class="model-stat-val">1,060</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Aisle</span><span><span class="model-stat-val">1,800</span><span class="model-stat-unit">mm</span></span></div>
         </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Width</span>
-          <span><span class="model-stat-val">1,060</span><span class="model-stat-unit">mm</span></span>
+        <div class="model-card">
+          <div class="model-name">Flexi 17N</div><div class="model-cap">1500 kg</div>
+          <div class="model-stat"><span class="model-stat-label">Lift</span><span><span class="model-stat-val">8,220</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Width</span><span><span class="model-stat-val">1,060</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Aisle</span><span><span class="model-stat-val">2,000</span><span class="model-stat-unit">mm</span></span></div>
         </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Aisle</span>
-          <span><span class="model-stat-val">1,800</span><span class="model-stat-unit">mm</span></span>
+        <div class="model-card featured">
+          <div class="model-name">Flexi 20S</div><div class="model-cap">2000 kg</div>
+          <div class="model-stat"><span class="model-stat-label">Lift</span><span><span class="model-stat-val">9,500</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Width</span><span><span class="model-stat-val">1,200</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Aisle</span><span><span class="model-stat-val">2,100</span><span class="model-stat-unit">mm</span></span></div>
         </div>
-      </div>
-
-      <div class="model-card">
-        <div class="model-name">Flexi 17N</div>
-        <div class="model-cap">1500 kg</div>
-        <div class="model-stat">
-          <span class="model-stat-label">Lift</span>
-          <span><span class="model-stat-val">8,220</span><span class="model-stat-unit">mm</span></span>
+        <div class="model-card featured">
+          <div class="model-name">Flexi 22S+</div><div class="model-cap">2000 kg</div>
+          <div class="model-stat"><span class="model-stat-label">Lift</span><span><span class="model-stat-val">10,560</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Width</span><span><span class="model-stat-val">1,250</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Aisle</span><span><span class="model-stat-val">2,200</span><span class="model-stat-unit">mm</span></span></div>
         </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Width</span>
-          <span><span class="model-stat-val">1,060</span><span class="model-stat-unit">mm</span></span>
+        <div class="model-card">
+          <div class="model-name">Flexi 25W</div><div class="model-cap">2500 kg</div>
+          <div class="model-stat"><span class="model-stat-label">Lift</span><span><span class="model-stat-val">12,720</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Width</span><span><span class="model-stat-val">1,350</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Aisle</span><span><span class="model-stat-val">2,300</span><span class="model-stat-unit">mm</span></span></div>
         </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Aisle</span>
-          <span><span class="model-stat-val">2,000</span><span class="model-stat-unit">mm</span></span>
-        </div>
-      </div>
-
-      <div class="model-card featured">
-        <div class="model-name">Flexi 20S</div>
-        <div class="model-cap">2000 kg</div>
-        <div class="model-stat">
-          <span class="model-stat-label">Lift</span>
-          <span><span class="model-stat-val">9,500</span><span class="model-stat-unit">mm</span></span>
-        </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Width</span>
-          <span><span class="model-stat-val">1,200</span><span class="model-stat-unit">mm</span></span>
-        </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Aisle</span>
-          <span><span class="model-stat-val">2,100</span><span class="model-stat-unit">mm</span></span>
-        </div>
-      </div>
-
-      <div class="model-card featured">
-        <div class="model-name">Flexi 22S+</div>
-        <div class="model-cap">2000 kg</div>
-        <div class="model-stat">
-          <span class="model-stat-label">Lift</span>
-          <span><span class="model-stat-val">10,560</span><span class="model-stat-unit">mm</span></span>
-        </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Width</span>
-          <span><span class="model-stat-val">1,250</span><span class="model-stat-unit">mm</span></span>
-        </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Aisle</span>
-          <span><span class="model-stat-val">2,200</span><span class="model-stat-unit">mm</span></span>
-        </div>
-      </div>
-
-      <div class="model-card">
-        <div class="model-name">Flexi 25W</div>
-        <div class="model-cap">2500 kg</div>
-        <div class="model-stat">
-          <span class="model-stat-label">Lift</span>
-          <span><span class="model-stat-val">12,720</span><span class="model-stat-unit">mm</span></span>
-        </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Width</span>
-          <span><span class="model-stat-val">1,350</span><span class="model-stat-unit">mm</span></span>
-        </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Aisle</span>
-          <span><span class="model-stat-val">2,300</span><span class="model-stat-unit">mm</span></span>
-        </div>
-      </div>
-
-      <div class="model-card">
-        <div class="model-name" style="font-size:17px">Flexi 25WHL</div>
-        <div class="model-cap">2500 kg</div>
-        <div class="model-stat">
-          <span class="model-stat-label">Lift</span>
-          <span><span class="model-stat-val">15,000</span><span class="model-stat-unit">mm</span></span>
-        </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Width</span>
-          <span><span class="model-stat-val">1,500</span><span class="model-stat-unit">mm</span></span>
-        </div>
-        <div class="model-stat">
-          <span class="model-stat-label">Aisle</span>
-          <span><span class="model-stat-val">2,400</span><span class="model-stat-unit">mm</span></span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════ SLIDE 3: SPECS VISUALISED -->
-<div class="slide" id="s3">
-  <div class="specs-layout">
-    <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
-    <div class="specs-left">
-      <div class="section-label">Technical Specs</div>
-      <h2 class="section-title" style="font-size:42px">Performance<br>at Every Level</h2>
-      <div style="margin-top:24px;font-size:14px;color:var(--flexi-muted);line-height:1.7">Each Flexi model is engineered for a specific application — from compact warehouse entry to maximum high-bay storage.</div>
-      <div style="margin-top:32px;display:flex;flex-direction:column;gap:16px">
-        <div style="padding:16px;background:var(--flexi-panel);border-left:3px solid var(--flexi-red)">
-          <div style="font-size:11px;letter-spacing:2px;color:var(--flexi-muted);text-transform:uppercase;margin-bottom:4px">Battery</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700">48V System</div>
-          <div style="font-size:12px;color:var(--flexi-muted)">620–930 Ah across range</div>
-        </div>
-        <div style="padding:16px;background:var(--flexi-panel);border-left:3px solid var(--flexi-red)">
-          <div style="font-size:11px;letter-spacing:2px;color:var(--flexi-muted);text-transform:uppercase;margin-bottom:4px">Travel Speed</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700">11 kph</div>
-          <div style="font-size:12px;color:var(--flexi-muted)">Consistent across all models</div>
+        <div class="model-card">
+          <div class="model-name" style="font-size:17px">Flexi 25WHL</div><div class="model-cap">2500 kg</div>
+          <div class="model-stat"><span class="model-stat-label">Lift</span><span><span class="model-stat-val">15,000</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Width</span><span><span class="model-stat-val">1,500</span><span class="model-stat-unit">mm</span></span></div>
+          <div class="model-stat"><span class="model-stat-label">Aisle</span><span><span class="model-stat-val">2,400</span><span class="model-stat-unit">mm</span></span></div>
         </div>
       </div>
     </div>
-    <div class="specs-right" id="spec-bars">
-      <div class="section-label" style="margin-bottom:0">All Six Models Compared</div>
-
-      <div class="spec-row">
-        <div class="spec-header">
-          <span class="spec-name">Max Lift Height (mm)</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:4px" id="lift-bars"></div>
-        <div class="spec-legend" id="model-legend"></div>
-      </div>
-
-      <div class="spec-row" style="margin-top:8px">
-        <div class="spec-header"><span class="spec-name">Max Capacity (kg)</span></div>
-        <div style="display:flex;flex-direction:column;gap:4px" id="cap-bars"></div>
-      </div>
-
-      <div class="spec-row" style="margin-top:8px">
-        <div class="spec-header"><span class="spec-name">Aisle Width at 600mm load centre (mm)</span></div>
-        <div style="display:flex;flex-direction:column;gap:4px" id="aisle-bars"></div>
-      </div>
-
-      <div class="spec-row" style="margin-top:8px">
-        <div class="spec-header"><span class="spec-name">Truck Width (mm)</span></div>
-        <div style="display:flex;flex-direction:column;gap:4px" id="width-bars"></div>
-      </div>
-    </div>
   </div>
-</div>
 
-<!-- ═══════════════════════════════════════════ SLIDE 4: COMPARISON TABLE -->
-<div class="slide" id="s4">
-  <div class="compare-layout">
-    <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
-    <div class="section-label">Competitor Comparison</div>
-    <h2 class="section-title" style="margin-bottom:20px">Flexi vs The Competition</h2>
-    <div class="compare-grid">
-      <!-- Header row -->
-      <div class="compare-col-header label-cell" style="background:var(--flexi-panel);border-right:1px solid var(--flexi-line)">
-        <span style="font-size:11px;color:var(--flexi-muted);letter-spacing:2px;text-transform:uppercase">Specification</span>
-      </div>
-      <div class="compare-col-header flexi-col" style="border-right:1px solid var(--flexi-line)">
-        <span class="col-brand flexi">Flexi</span>
-        <span class="col-model-name">20S / 22S+</span>
-        <span class="col-tagline">2000 kg · 9.5–10.56m</span>
-      </div>
-      <div class="compare-col-header" style="border-right:1px solid var(--flexi-line)">
-        <span class="col-brand rival">Aisle Master</span>
-        <span class="col-model-name">AM20NE</span>
-        <span class="col-tagline">2000 kg · ~9.0m</span>
-      </div>
-      <div class="compare-col-header">
-        <span class="col-brand rival">Bendi</span>
-        <span class="col-model-name">B3/1000</span>
-        <span class="col-tagline">~1000 kg · ~8.0m</span>
-      </div>
-
-      <!-- Row: Lift Height -->
-      <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-label">Max Lift Height</div>
-      </div>
-      <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val win">Up to 10,560mm</div>
-        <div class="win-badge">▲ Industry-leading</div>
-      </div>
-      <div class="compare-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val lose">~9,000mm</div>
-      </div>
-      <div class="compare-cell">
-        <div class="cell-val lose">~8,000mm</div>
-      </div>
-
-      <!-- Row: Capacity -->
-      <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-label">Max Capacity</div>
-      </div>
-      <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val win">2,000 kg</div>
-        <div class="win-badge">▲ Matched or better</div>
-      </div>
-      <div class="compare-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val draw">2,000 kg</div>
-      </div>
-      <div class="compare-cell">
-        <div class="cell-val lose">~1,000 kg</div>
-      </div>
-
-      <!-- Row: Aisle Width -->
-      <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-label">Min Aisle Width</div>
-      </div>
-      <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val win">1,900–2,100mm</div>
-        <div class="win-badge">▲ Narrower aisle</div>
-      </div>
-      <div class="compare-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val lose">~2,400mm</div>
-      </div>
-      <div class="compare-cell">
-        <div class="cell-val lose">~2,400mm</div>
-      </div>
-
-      <!-- Row: Truck Width -->
-      <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-label">Truck Width</div>
-      </div>
-      <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val win">1,200–1,250mm</div>
-        <div class="win-badge">▲ More compact</div>
-      </div>
-      <div class="compare-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val lose">~1,400mm</div>
-      </div>
-      <div class="compare-cell">
-        <div class="cell-val lose">~1,350mm</div>
-      </div>
-
-      <!-- Row: Indoor/Outdoor -->
-      <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-label">Dual Use</div>
-      </div>
-      <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val win">Indoor + Outdoor</div>
-        <div class="win-badge">▲ Flexi advantage</div>
-      </div>
-      <div class="compare-cell" style="border-right:1px solid var(--flexi-line)">
-        <div class="cell-val lose">Indoor only</div>
-      </div>
-      <div class="compare-cell">
-        <div class="cell-val lose">Indoor only</div>
-      </div>
-    </div>
-    <div class="compare-note">* Competitor figures are typical published specs. Exact values vary by configuration. Flexi values from RC16A data sheet.</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════ SLIDE 5: AISLE ADVANTAGE -->
-<div class="slide" id="s5">
-  <div class="aisle-layout">
-    <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
-    <div class="aisle-left">
-      <div class="section-label">The Flexi Advantage</div>
-      <h2 class="section-title">Up to 50% More<br>Storage Density</h2>
-      <p style="font-size:14px;color:var(--flexi-muted);line-height:1.7;margin-top:16px">By operating in narrower aisles, Flexi trucks reclaim floor space that conventional forklifts waste. More aisles means more racking — and more racking means more product stored in the same building footprint.</p>
-      <div class="aisle-benefit-list">
-        <div class="aisle-benefit">
-          <div class="benefit-icon">01</div>
-          <div>
-            <div class="benefit-text-title">Narrower aisles from 1,600mm</div>
-            <div class="benefit-text-sub">vs 3,000–4,000mm for conventional trucks</div>
+  <!-- SLIDE 3: SPECS -->
+  <div class="slide" id="s3">
+    <div class="specs-layout">
+      <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
+      <div class="specs-left">
+        <div class="section-label">Technical Specs</div>
+        <h2 class="section-title" style="font-size:42px">Performance<br>at Every Level</h2>
+        <div style="margin-top:24px;font-size:14px;color:var(--flexi-muted);line-height:1.7">Each Flexi model is engineered for a specific application — from compact warehouse entry to maximum high-bay storage.</div>
+        <div style="margin-top:32px;display:flex;flex-direction:column;gap:16px">
+          <div style="padding:16px;background:var(--flexi-panel);border-left:3px solid var(--flexi-red)">
+            <div style="font-size:11px;letter-spacing:2px;color:var(--flexi-muted);text-transform:uppercase;margin-bottom:4px">Battery</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700">48V System</div>
+            <div style="font-size:12px;color:var(--flexi-muted)">620–930 Ah across range</div>
           </div>
-        </div>
-        <div class="aisle-benefit">
-          <div class="benefit-icon">02</div>
-          <div>
-            <div class="benefit-text-title">Works indoors AND outdoors</div>
-            <div class="benefit-text-sub">One truck, two environments — rivals can't match this</div>
-          </div>
-        </div>
-        <div class="aisle-benefit">
-          <div class="benefit-icon">03</div>
-          <div>
-            <div class="benefit-text-title">Up to 15m lift height</div>
-            <div class="benefit-text-sub">Maximise vertical space, not just floor area</div>
-          </div>
-        </div>
-        <div class="aisle-benefit">
-          <div class="benefit-icon">04</div>
-          <div>
-            <div class="benefit-text-title">No building conversion needed</div>
-            <div class="benefit-text-sub">Flexi works in existing warehouse layouts</div>
+          <div style="padding:16px;background:var(--flexi-panel);border-left:3px solid var(--flexi-red)">
+            <div style="font-size:11px;letter-spacing:2px;color:var(--flexi-muted);text-transform:uppercase;margin-bottom:4px">Travel Speed</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700">11 kph</div>
+            <div style="font-size:12px;color:var(--flexi-muted)">Consistent across all models</div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="aisle-right">
-      <svg viewBox="0 0 540 520" width="100%" style="max-height:72vh">
-        <defs>
-          <pattern id="floor" patternUnits="userSpaceOnUse" width="24" height="24">
-            <rect width="24" height="24" fill="#0E0E16"/>
-            <line x1="0" y1="24" x2="24" y2="24" stroke="#161620" stroke-width="0.5"/>
-            <line x1="24" y1="0" x2="24" y2="24" stroke="#161620" stroke-width="0.5"/>
-          </pattern>
-        </defs>
-
-        <!-- Floor -->
-        <rect x="0" y="36" width="540" height="464" fill="url(#floor)"/>
-
-        <!-- ═══ COLUMN HEADERS ═══ -->
-        <rect x="0" y="0" width="248" height="36" fill="rgba(232,0,29,0.12)"/>
-        <text x="124" y="23" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="#E8001D">FLEXI</text>
-
-        <rect x="252" y="0" width="288" height="36" fill="rgba(120,120,160,0.08)"/>
-        <text x="396" y="23" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="#7878A0">CONVENTIONAL</text>
-
-        <!-- Divider line -->
-        <line x1="250" y1="0" x2="250" y2="520" stroke="#2A2A3A" stroke-width="1.5" stroke-dasharray="6,4"/>
-
-        <!-- ═══════════════════════════════════
-             FLEXI SIDE  (x: 0–248)
-             Layout: rack(46) | aisle(60) | rack(46) | aisle(60) | rack(46)  = 258... 
-             Tighten: rack(42) aisle(58) rack(42) aisle(58) rack(42) = 242
-        ═══════════════════════════════════ -->
-
-        <!-- Rack A (x=4, w=44) -->
-        <rect x="4" y="44" width="44" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
-        <!-- uprights -->
-        <rect x="4"  y="44" width="4" height="390" fill="#222230"/>
-        <rect x="44" y="44" width="4" height="390" fill="#222230"/>
-        <!-- shelves -->
-        <rect x="4" y="44"  width="44" height="3" fill="#2E2E42"/>
-        <rect x="4" y="107" width="44" height="3" fill="#2E2E42"/>
-        <rect x="4" y="170" width="44" height="3" fill="#2E2E42"/>
-        <rect x="4" y="233" width="44" height="3" fill="#2E2E42"/>
-        <rect x="4" y="296" width="44" height="3" fill="#2E2E42"/>
-        <rect x="4" y="359" width="44" height="3" fill="#2E2E42"/>
-        <!-- pallets -->
-        <rect x="7"  y="47"  width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="7"  y="110" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="7"  y="173" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="7"  y="236" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="7"  y="299" width="38" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="7"  y="362" width="38" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
-
-        <!-- Aisle A (x=48, w=58) — Flexi truck here -->
-        <!-- Aisle floor highlight -->
-        <rect x="48" y="44" width="58" height="390" fill="rgba(232,0,29,0.03)"/>
-        <!-- Flexi truck body — top-down view -->
-        <rect x="54" y="160" width="46" height="110" rx="4" fill="rgba(232,0,29,0.08)" stroke="#E8001D" stroke-width="1.5"/>
-        <!-- mast crossbar -->
-        <rect x="56" y="163" width="42" height="8" rx="2" fill="rgba(232,0,29,0.5)"/>
-        <!-- forks (pointing left into rack A) -->
-        <rect x="48" y="170" width="8" height="4" rx="1" fill="#E8001D" opacity="0.7"/>
-        <rect x="48" y="179" width="8" height="4" rx="1" fill="#E8001D" opacity="0.7"/>
-        <!-- cab detail -->
-        <rect x="62" y="218" width="30" height="24" rx="2" fill="rgba(232,0,29,0.15)" stroke="#E8001D" stroke-width="0.5"/>
-        <!-- wheel hints -->
-        <rect x="54" y="160" width="6" height="10" rx="2" fill="#E8001D" opacity="0.4"/>
-        <rect x="88" y="160" width="6" height="10" rx="2" fill="#E8001D" opacity="0.4"/>
-        <rect x="54" y="258" width="6" height="10" rx="2" fill="#E8001D" opacity="0.4"/>
-        <rect x="88" y="258" width="6" height="10" rx="2" fill="#E8001D" opacity="0.4"/>
-        <!-- Aisle width dim line -->
-        <line x1="48"  y1="460" x2="106" y2="460" stroke="#E8001D" stroke-width="1"/>
-        <line x1="48"  y1="454" x2="48"  y2="466" stroke="#E8001D" stroke-width="1"/>
-        <line x1="106" y1="454" x2="106" y2="466" stroke="#E8001D" stroke-width="1"/>
-        <text x="77" y="478" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="11" font-weight="700" fill="#E8001D">1,800mm</text>
-
-        <!-- Rack B (x=106, w=44) -->
-        <rect x="106" y="44" width="44" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
-        <rect x="106" y="44" width="4"  height="390" fill="#222230"/>
-        <rect x="146" y="44" width="4"  height="390" fill="#222230"/>
-        <rect x="106" y="44"  width="44" height="3" fill="#2E2E42"/>
-        <rect x="106" y="107" width="44" height="3" fill="#2E2E42"/>
-        <rect x="106" y="170" width="44" height="3" fill="#2E2E42"/>
-        <rect x="106" y="233" width="44" height="3" fill="#2E2E42"/>
-        <rect x="106" y="296" width="44" height="3" fill="#2E2E42"/>
-        <rect x="106" y="359" width="44" height="3" fill="#2E2E42"/>
-        <rect x="109" y="47"  width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="109" y="110" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="109" y="173" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="109" y="236" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="109" y="299" width="38" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="109" y="362" width="38" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
-
-        <!-- Aisle B (x=150, w=58) -->
-        <rect x="150" y="44" width="58" height="390" fill="rgba(232,0,29,0.02)"/>
-        <line x1="150" y1="460" x2="208" y2="460" stroke="#E8001D" stroke-width="1"/>
-        <line x1="150" y1="454" x2="150" y2="466" stroke="#E8001D" stroke-width="1"/>
-        <line x1="208" y1="454" x2="208" y2="466" stroke="#E8001D" stroke-width="1"/>
-        <text x="179" y="478" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="11" font-weight="700" fill="#E8001D">1,800mm</text>
-
-        <!-- Rack C (x=208, w=40) -->
-        <rect x="208" y="44" width="40" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
-        <rect x="208" y="44" width="4"  height="390" fill="#222230"/>
-        <rect x="244" y="44" width="4"  height="390" fill="#222230"/>
-        <rect x="208" y="44"  width="40" height="3" fill="#2E2E42"/>
-        <rect x="208" y="107" width="40" height="3" fill="#2E2E42"/>
-        <rect x="208" y="170" width="40" height="3" fill="#2E2E42"/>
-        <rect x="208" y="233" width="40" height="3" fill="#2E2E42"/>
-        <rect x="208" y="296" width="40" height="3" fill="#2E2E42"/>
-        <rect x="208" y="359" width="40" height="3" fill="#2E2E42"/>
-        <rect x="210" y="47"  width="34" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="210" y="110" width="34" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="210" y="173" width="34" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="210" y="236" width="34" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="210" y="299" width="34" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
-        <rect x="210" y="362" width="34" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
-
-
-
-        <!-- ═══════════════════════════════════
-             CONVENTIONAL SIDE (x: 252–540)
-             Only 1 aisle fits — rack(44) big aisle(148) rack(44)
-        ═══════════════════════════════════ -->
-
-        <!-- Rack D (x=254, w=48) -->
-        <rect x="254" y="44" width="48" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
-        <rect x="254" y="44" width="4"  height="390" fill="#222230"/>
-        <rect x="298" y="44" width="4"  height="390" fill="#222230"/>
-        <!-- fewer shelves = less storage density -->
-        <rect x="254" y="44"  width="48" height="3" fill="#2E2E42"/>
-        <rect x="254" y="167" width="48" height="3" fill="#2E2E42"/>
-        <rect x="254" y="290" width="48" height="3" fill="#2E2E42"/>
-        <!-- only 3 levels per rack -->
-        <rect x="257" y="47"  width="40" height="117" rx="1" fill="#4A4A6A" opacity="0.25" stroke="#7878A0" stroke-width="0.5"/>
-        <rect x="257" y="170" width="40" height="117" rx="1" fill="#4A4A6A" opacity="0.2"  stroke="#7878A0" stroke-width="0.5"/>
-        <rect x="257" y="293" width="40" height="138" rx="1" fill="#4A4A6A" opacity="0.15" stroke="#7878A0" stroke-width="0.5"/>
-
-        <!-- Wide aisle (x=302, w=184) -->
-        <rect x="302" y="44" width="184" height="390" fill="rgba(120,120,160,0.03)"/>
-        <!-- Conventional truck — noticeably wider/bulkier top-down -->
-        <rect x="318" y="145" width="100" height="150" rx="5" fill="rgba(120,120,160,0.1)" stroke="#7878A0" stroke-width="1.5"/>
-        <!-- mast crossbar -->
-        <rect x="320" y="148" width="96" height="10" rx="2" fill="rgba(120,120,160,0.35)"/>
-        <!-- forks -->
-        <rect x="302" y="157" width="18" height="5" rx="1" fill="#7878A0" opacity="0.5"/>
-        <rect x="302" y="167" width="18" height="5" rx="1" fill="#7878A0" opacity="0.5"/>
-        <!-- cab -->
-        <rect x="336" y="245" width="64" height="34" rx="2" fill="rgba(120,120,160,0.15)" stroke="#7878A0" stroke-width="0.5"/>
-        <!-- counterweight bump at rear -->
-        <rect x="334" y="287" width="68" height="14" rx="3" fill="rgba(120,120,160,0.25)" stroke="#7878A0" stroke-width="0.5"/>
-        <!-- wheels -->
-        <rect x="318" y="145" width="8" height="14" rx="3" fill="#7878A0" opacity="0.4"/>
-        <rect x="410" y="145" width="8" height="14" rx="3" fill="#7878A0" opacity="0.4"/>
-        <rect x="318" y="282" width="8" height="14" rx="3" fill="#7878A0" opacity="0.4"/>
-        <rect x="410" y="282" width="8" height="14" rx="3" fill="#7878A0" opacity="0.4"/>
-        <!-- Aisle dim line -->
-        <line x1="302" y1="460" x2="486" y2="460" stroke="#7878A0" stroke-width="1"/>
-        <line x1="302" y1="454" x2="302" y2="466" stroke="#7878A0" stroke-width="1"/>
-        <line x1="486" y1="454" x2="486" y2="466" stroke="#7878A0" stroke-width="1"/>
-        <text x="394" y="478" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="11" font-weight="700" fill="#7878A0">3,500mm</text>
-
-        <!-- Rack E (x=488, w=48) -->
-        <rect x="488" y="44" width="48" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
-        <rect x="488" y="44" width="4"  height="390" fill="#222230"/>
-        <rect x="532" y="44" width="4"  height="390" fill="#222230"/>
-        <rect x="488" y="44"  width="48" height="3" fill="#2E2E42"/>
-        <rect x="488" y="167" width="48" height="3" fill="#2E2E42"/>
-        <rect x="488" y="290" width="48" height="3" fill="#2E2E42"/>
-        <rect x="491" y="47"  width="40" height="117" rx="1" fill="#4A4A6A" opacity="0.25" stroke="#7878A0" stroke-width="0.5"/>
-        <rect x="491" y="170" width="40" height="117" rx="1" fill="#4A4A6A" opacity="0.2"  stroke="#7878A0" stroke-width="0.5"/>
-        <rect x="491" y="293" width="40" height="138" rx="1" fill="#4A4A6A" opacity="0.15" stroke="#7878A0" stroke-width="0.5"/>
-
-
-      </svg>
+      <div class="specs-right" id="spec-bars">
+        <div class="section-label" style="margin-bottom:0">All Six Models Compared</div>
+        <div class="spec-row"><div class="spec-header"><span class="spec-name">Max Lift Height (mm)</span></div><div style="display:flex;flex-direction:column;gap:4px" id="lift-bars"></div></div>
+        <div class="spec-row" style="margin-top:8px"><div class="spec-header"><span class="spec-name">Max Capacity (kg)</span></div><div style="display:flex;flex-direction:column;gap:4px" id="cap-bars"></div></div>
+        <div class="spec-row" style="margin-top:8px"><div class="spec-header"><span class="spec-name">Aisle Width at 600mm load centre (mm)</span></div><div style="display:flex;flex-direction:column;gap:4px" id="aisle-bars"></div></div>
+        <div class="spec-row" style="margin-top:8px"><div class="spec-header"><span class="spec-name">Truck Width (mm)</span></div><div style="display:flex;flex-direction:column;gap:4px" id="width-bars"></div></div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- NAV -->
+  <!-- SLIDE 4: COMPARISON -->
+  <div class="slide" id="s4">
+    <div class="compare-layout">
+      <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
+      <div class="section-label">Competitor Comparison</div>
+      <h2 class="section-title" style="margin-bottom:20px">Flexi vs The Competition</h2>
+      <div class="compare-grid">
+        <div class="compare-col-header label-cell" style="background:var(--flexi-panel);border-right:1px solid var(--flexi-line)"><span style="font-size:11px;color:var(--flexi-muted);letter-spacing:2px;text-transform:uppercase">Specification</span></div>
+        <div class="compare-col-header flexi-col" style="border-right:1px solid var(--flexi-line)"><span class="col-brand flexi">Flexi</span><span class="col-model-name">20S / 22S+</span><span class="col-tagline">2000 kg · 9.5–10.56m</span></div>
+        <div class="compare-col-header" style="border-right:1px solid var(--flexi-line)"><span class="col-brand rival">Aisle Master</span><span class="col-model-name">AM20NE</span><span class="col-tagline">2000 kg · ~9.0m</span></div>
+        <div class="compare-col-header"><span class="col-brand rival">Bendi</span><span class="col-model-name">B3/1000</span><span class="col-tagline">~1000 kg · ~8.0m</span></div>
 
+        <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-label">Max Lift Height</div></div>
+        <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val win">Up to 10,560mm</div><div class="win-badge">▲ Industry-leading</div></div>
+        <div class="compare-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val lose">~9,000mm</div></div>
+        <div class="compare-cell"><div class="cell-val lose">~8,000mm</div></div>
+
+        <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-label">Max Capacity</div></div>
+        <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val win">2,000 kg</div><div class="win-badge">▲ Matched or better</div></div>
+        <div class="compare-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val draw">2,000 kg</div></div>
+        <div class="compare-cell"><div class="cell-val lose">~1,000 kg</div></div>
+
+        <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-label">Min Aisle Width</div></div>
+        <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val win">1,900–2,100mm</div><div class="win-badge">▲ Narrower aisle</div></div>
+        <div class="compare-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val lose">~2,400mm</div></div>
+        <div class="compare-cell"><div class="cell-val lose">~2,400mm</div></div>
+
+        <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-label">Truck Width</div></div>
+        <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val win">1,200–1,250mm</div><div class="win-badge">▲ More compact</div></div>
+        <div class="compare-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val lose">~1,400mm</div></div>
+        <div class="compare-cell"><div class="cell-val lose">~1,350mm</div></div>
+
+        <div class="compare-cell label-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-label">Dual Use</div></div>
+        <div class="compare-cell flexi-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val win">Indoor + Outdoor</div><div class="win-badge">▲ Flexi advantage</div></div>
+        <div class="compare-cell" style="border-right:1px solid var(--flexi-line)"><div class="cell-val lose">Indoor only</div></div>
+        <div class="compare-cell"><div class="cell-val lose">Indoor only</div></div>
+      </div>
+      <div class="compare-note">* Competitor figures are typical published specs. Exact values vary by configuration. Flexi values from RC16A data sheet.</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: AISLE ADVANTAGE -->
+  <div class="slide" id="s5">
+    <div class="aisle-layout">
+      <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
+      <div class="aisle-left">
+        <div class="section-label">The Flexi Advantage</div>
+        <h2 class="section-title">Up to 50% More<br>Storage Density</h2>
+        <p style="font-size:14px;color:var(--flexi-muted);line-height:1.7;margin-top:16px">By operating in narrower aisles, Flexi trucks reclaim floor space that conventional forklifts waste. More aisles means more racking — and more racking means more product stored in the same building footprint.</p>
+        <div class="aisle-benefit-list">
+          <div class="aisle-benefit"><div class="benefit-icon">01</div><div><div class="benefit-text-title">Narrower aisles from 1,600mm</div><div class="benefit-text-sub">vs 3,000–4,000mm for conventional trucks</div></div></div>
+          <div class="aisle-benefit"><div class="benefit-icon">02</div><div><div class="benefit-text-title">Works indoors AND outdoors</div><div class="benefit-text-sub">One truck, two environments — rivals can't match this</div></div></div>
+          <div class="aisle-benefit"><div class="benefit-icon">03</div><div><div class="benefit-text-title">Up to 15m lift height</div><div class="benefit-text-sub">Maximise vertical space, not just floor area</div></div></div>
+          <div class="aisle-benefit"><div class="benefit-icon">04</div><div><div class="benefit-text-title">No building conversion needed</div><div class="benefit-text-sub">Flexi works in existing warehouse layouts</div></div></div>
+        </div>
+      </div>
+      <div class="aisle-right">
+        <svg viewBox="0 0 540 520" width="100%" style="max-height:72vh">
+          <defs><pattern id="floor" patternUnits="userSpaceOnUse" width="24" height="24"><rect width="24" height="24" fill="#0E0E16"/><line x1="0" y1="24" x2="24" y2="24" stroke="#161620" stroke-width="0.5"/><line x1="24" y1="0" x2="24" y2="24" stroke="#161620" stroke-width="0.5"/></pattern></defs>
+          <rect x="0" y="36" width="540" height="464" fill="url(#floor)"/>
+          <rect x="0" y="0" width="248" height="36" fill="rgba(232,0,29,0.12)"/>
+          <text x="124" y="23" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="#E8001D">FLEXI</text>
+          <rect x="252" y="0" width="288" height="36" fill="rgba(120,120,160,0.08)"/>
+          <text x="396" y="23" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="#7878A0">CONVENTIONAL</text>
+          <line x1="250" y1="0" x2="250" y2="520" stroke="#2A2A3A" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <rect x="4" y="44" width="44" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
+          <rect x="4" y="44" width="4" height="390" fill="#222230"/><rect x="44" y="44" width="4" height="390" fill="#222230"/>
+          <rect x="4" y="44" width="44" height="3" fill="#2E2E42"/><rect x="4" y="107" width="44" height="3" fill="#2E2E42"/><rect x="4" y="170" width="44" height="3" fill="#2E2E42"/><rect x="4" y="233" width="44" height="3" fill="#2E2E42"/><rect x="4" y="296" width="44" height="3" fill="#2E2E42"/><rect x="4" y="359" width="44" height="3" fill="#2E2E42"/>
+          <rect x="7" y="47" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="7" y="110" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="7" y="173" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="7" y="236" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="7" y="299" width="38" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/><rect x="7" y="362" width="38" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
+          <rect x="48" y="44" width="58" height="390" fill="rgba(232,0,29,0.03)"/>
+          <rect x="54" y="160" width="46" height="110" rx="4" fill="rgba(232,0,29,0.08)" stroke="#E8001D" stroke-width="1.5"/>
+          <rect x="56" y="163" width="42" height="8" rx="2" fill="rgba(232,0,29,0.5)"/>
+          <rect x="48" y="170" width="8" height="4" rx="1" fill="#E8001D" opacity="0.7"/><rect x="48" y="179" width="8" height="4" rx="1" fill="#E8001D" opacity="0.7"/>
+          <rect x="62" y="218" width="30" height="24" rx="2" fill="rgba(232,0,29,0.15)" stroke="#E8001D" stroke-width="0.5"/>
+          <rect x="54" y="160" width="6" height="10" rx="2" fill="#E8001D" opacity="0.4"/><rect x="88" y="160" width="6" height="10" rx="2" fill="#E8001D" opacity="0.4"/><rect x="54" y="258" width="6" height="10" rx="2" fill="#E8001D" opacity="0.4"/><rect x="88" y="258" width="6" height="10" rx="2" fill="#E8001D" opacity="0.4"/>
+          <line x1="48" y1="460" x2="106" y2="460" stroke="#E8001D" stroke-width="1"/><line x1="48" y1="454" x2="48" y2="466" stroke="#E8001D" stroke-width="1"/><line x1="106" y1="454" x2="106" y2="466" stroke="#E8001D" stroke-width="1"/>
+          <text x="77" y="478" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="11" font-weight="700" fill="#E8001D">1,800mm</text>
+          <rect x="106" y="44" width="44" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
+          <rect x="106" y="44" width="4" height="390" fill="#222230"/><rect x="146" y="44" width="4" height="390" fill="#222230"/>
+          <rect x="106" y="44" width="44" height="3" fill="#2E2E42"/><rect x="106" y="107" width="44" height="3" fill="#2E2E42"/><rect x="106" y="170" width="44" height="3" fill="#2E2E42"/><rect x="106" y="233" width="44" height="3" fill="#2E2E42"/><rect x="106" y="296" width="44" height="3" fill="#2E2E42"/><rect x="106" y="359" width="44" height="3" fill="#2E2E42"/>
+          <rect x="109" y="47" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="109" y="110" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="109" y="173" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="109" y="236" width="38" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="109" y="299" width="38" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/><rect x="109" y="362" width="38" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
+          <rect x="150" y="44" width="58" height="390" fill="rgba(232,0,29,0.02)"/>
+          <line x1="150" y1="460" x2="208" y2="460" stroke="#E8001D" stroke-width="1"/><line x1="150" y1="454" x2="150" y2="466" stroke="#E8001D" stroke-width="1"/><line x1="208" y1="454" x2="208" y2="466" stroke="#E8001D" stroke-width="1"/>
+          <text x="179" y="478" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="11" font-weight="700" fill="#E8001D">1,800mm</text>
+          <rect x="208" y="44" width="40" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
+          <rect x="208" y="44" width="4" height="390" fill="#222230"/><rect x="244" y="44" width="4" height="390" fill="#222230"/>
+          <rect x="208" y="44" width="40" height="3" fill="#2E2E42"/><rect x="208" y="107" width="40" height="3" fill="#2E2E42"/><rect x="208" y="170" width="40" height="3" fill="#2E2E42"/><rect x="208" y="233" width="40" height="3" fill="#2E2E42"/><rect x="208" y="296" width="40" height="3" fill="#2E2E42"/><rect x="208" y="359" width="40" height="3" fill="#2E2E42"/>
+          <rect x="210" y="47" width="34" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="210" y="110" width="34" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="210" y="173" width="34" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="210" y="236" width="34" height="57" rx="1" fill="#E8001D" opacity="0.22" stroke="#E8001D" stroke-width="0.5"/><rect x="210" y="299" width="34" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/><rect x="210" y="362" width="34" height="57" rx="1" fill="#E8001D" opacity="0.28" stroke="#E8001D" stroke-width="0.5"/>
+          <rect x="254" y="44" width="48" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
+          <rect x="254" y="44" width="4" height="390" fill="#222230"/><rect x="298" y="44" width="4" height="390" fill="#222230"/>
+          <rect x="254" y="44" width="48" height="3" fill="#2E2E42"/><rect x="254" y="167" width="48" height="3" fill="#2E2E42"/><rect x="254" y="290" width="48" height="3" fill="#2E2E42"/>
+          <rect x="257" y="47" width="40" height="117" rx="1" fill="#4A4A6A" opacity="0.25" stroke="#7878A0" stroke-width="0.5"/><rect x="257" y="170" width="40" height="117" rx="1" fill="#4A4A6A" opacity="0.2" stroke="#7878A0" stroke-width="0.5"/><rect x="257" y="293" width="40" height="138" rx="1" fill="#4A4A6A" opacity="0.15" stroke="#7878A0" stroke-width="0.5"/>
+          <rect x="302" y="44" width="184" height="390" fill="rgba(120,120,160,0.03)"/>
+          <rect x="318" y="145" width="100" height="150" rx="5" fill="rgba(120,120,160,0.1)" stroke="#7878A0" stroke-width="1.5"/>
+          <rect x="320" y="148" width="96" height="10" rx="2" fill="rgba(120,120,160,0.35)"/>
+          <rect x="302" y="157" width="18" height="5" rx="1" fill="#7878A0" opacity="0.5"/><rect x="302" y="167" width="18" height="5" rx="1" fill="#7878A0" opacity="0.5"/>
+          <rect x="336" y="245" width="64" height="34" rx="2" fill="rgba(120,120,160,0.15)" stroke="#7878A0" stroke-width="0.5"/>
+          <rect x="334" y="287" width="68" height="14" rx="3" fill="rgba(120,120,160,0.25)" stroke="#7878A0" stroke-width="0.5"/>
+          <rect x="318" y="145" width="8" height="14" rx="3" fill="#7878A0" opacity="0.4"/><rect x="410" y="145" width="8" height="14" rx="3" fill="#7878A0" opacity="0.4"/><rect x="318" y="282" width="8" height="14" rx="3" fill="#7878A0" opacity="0.4"/><rect x="410" y="282" width="8" height="14" rx="3" fill="#7878A0" opacity="0.4"/>
+          <line x1="302" y1="460" x2="486" y2="460" stroke="#7878A0" stroke-width="1"/><line x1="302" y1="454" x2="302" y2="466" stroke="#7878A0" stroke-width="1"/><line x1="486" y1="454" x2="486" y2="466" stroke="#7878A0" stroke-width="1"/>
+          <text x="394" y="478" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="11" font-weight="700" fill="#7878A0">3,500mm</text>
+          <rect x="488" y="44" width="48" height="390" rx="2" fill="#1C1C28" stroke="#2A2A3A" stroke-width="1"/>
+          <rect x="488" y="44" width="4" height="390" fill="#222230"/><rect x="532" y="44" width="4" height="390" fill="#222230"/>
+          <rect x="488" y="44" width="48" height="3" fill="#2E2E42"/><rect x="488" y="167" width="48" height="3" fill="#2E2E42"/><rect x="488" y="290" width="48" height="3" fill="#2E2E42"/>
+          <rect x="491" y="47" width="40" height="117" rx="1" fill="#4A4A6A" opacity="0.25" stroke="#7878A0" stroke-width="0.5"/><rect x="491" y="170" width="40" height="117" rx="1" fill="#4A4A6A" opacity="0.2" stroke="#7878A0" stroke-width="0.5"/><rect x="491" y="293" width="40" height="138" rx="1" fill="#4A4A6A" opacity="0.15" stroke="#7878A0" stroke-width="0.5"/>
+        </svg>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -931,30 +604,25 @@
 <div class="tv-screen" id="screen-video">
   <video id="tvVideo"
          src="https://narrowaisleservice.github.io/flexi-visitor-signin/Welcome%20Video.mp4"
-         muted playsinline preload="auto">
+         autoplay
+         muted
+         playsinline
+         preload="auto">
   </video>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   MASTER SCREEN CONTROLLER
-   Screens: 0=Visitor(30s), 1=Flexi Showcase(~60s), 2=Video(full video)
-═══════════════════════════════════════════════════════ */
-const SCREEN_NAMES   = ['visitor','flexi','video'];
-const SCREEN_LABELS  = ['Visitor Dashboard','Flexi Showcase','Welcome Video'];
-// Durations in ms: visitor=45s, flexi=60s, video=plays to end (max 90s)
+const SCREEN_NAMES     = ['visitor','flexi','video'];
 const SCREEN_DURATIONS = [45000, 60000, 90000];
 
 let masterCurrent = 0;
 let masterTimer   = null;
 let masterProg    = 0;
 let masterProgTimer = null;
-let videoDuration = 90000;
 
 const indicator = document.getElementById('masterIndicator');
 const progBar   = document.getElementById('masterProgress');
 
-// Build indicator dots
 SCREEN_NAMES.forEach((_, i) => {
   const d = document.createElement('div');
   d.className = 'master-dot' + (i === 0 ? ' active' : '');
@@ -965,27 +633,23 @@ SCREEN_NAMES.forEach((_, i) => {
 function masterGoTo(n) {
   const prev = masterCurrent;
   masterCurrent = n % SCREEN_NAMES.length;
-
-  // Deactivate old screen
   document.getElementById('screen-' + SCREEN_NAMES[prev]).classList.remove('tv-active');
   document.getElementById('mdot-' + prev).classList.remove('active');
-
-  // Activate new screen
   document.getElementById('screen-' + SCREEN_NAMES[masterCurrent]).classList.add('tv-active');
   document.getElementById('mdot-' + masterCurrent).classList.add('active');
 
-  // Handle flexi showcase - restart slide rotation
   if (masterCurrent === 1) {
-    // Reset flexi to slide 0
-    if (typeof flexiGoTo === 'function') { flexiGoTo(0); }
+    if (typeof flexiGoTo === 'function') flexiGoTo(0);
   }
 
-  // Handle video screen
   if (masterCurrent === 2) {
     const video = document.getElementById('tvVideo');
+    video.muted = true;
     video.currentTime = 0;
-    video.play().catch(() => {});
-    // Advance when video ends, or after max duration
+    const p = video.play();
+    if (p !== undefined) {
+      p.catch(() => { setTimeout(() => video.play().catch(() => {}), 800); });
+    }
     video.onended = () => masterAdvance();
   } else {
     const video = document.getElementById('tvVideo');
@@ -996,87 +660,67 @@ function masterGoTo(n) {
   masterResetProgress();
 }
 
-function masterAdvance() {
-  masterGoTo(masterCurrent + 1);
-}
+function masterAdvance() { masterGoTo(masterCurrent + 1); }
 
 function masterResetProgress() {
   clearInterval(masterTimer);
   clearInterval(masterProgTimer);
   masterProg = 0;
   progBar.style.width = '0%';
-  const duration = masterCurrent === 2 ? videoDuration : SCREEN_DURATIONS[masterCurrent];
-
+  const duration = masterCurrent === 2 ? 90000 : SCREEN_DURATIONS[masterCurrent];
   masterProgTimer = setInterval(() => {
     masterProg += 100 / (duration / 100);
     progBar.style.width = Math.min(masterProg, 100) + '%';
   }, 100);
-
-  // Only auto-advance non-video screens (video advances on ended event)
   if (masterCurrent !== 2) {
     masterTimer = setTimeout(masterAdvance, duration);
   } else {
-    // Fallback max duration for video
-    masterTimer = setTimeout(masterAdvance, videoDuration);
+    masterTimer = setTimeout(masterAdvance, 90000);
   }
 }
 
-// ─── Flexi showcase internal nav ───────────────────────
+/* ── Flexi showcase ── */
+const F_SLIDES = 5, F_DURATION = 8000;
+let fCurrent = 0, fTimer = null, fProgress = 0, fProgressTimer = null;
+const fSlides  = document.querySelectorAll('#screen-flexi .slide');
+const fCounter = document.getElementById('slide-counter');
 
-const F_SLIDES=5;const F_DURATION=8000;
-let fCurrent=0,fTimer=null,fProgress=0,fProgressTimer=null;
-
-const fSlides=document.querySelectorAll('#screen-flexi .slide');
-const fDots=document.getElementById('nav-dots');
-const fBar=document.getElementById('progress');
-const fCounter=document.getElementById('slide-counter');
-
-if(fDots){for(let i=0;i<F_SLIDES;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>flexiGoTo(i);fDots.appendChild(d);}}
-
-function flexiGoTo(n){
+function flexiGoTo(n) {
   fSlides[fCurrent].classList.remove('active');
-  fDots&&fDots.querySelectorAll('.dot')[fCurrent].classList.remove('active');
-  fCurrent=(n+F_SLIDES)%F_SLIDES;
+  fCurrent = (n + F_SLIDES) % F_SLIDES;
   fSlides[fCurrent].classList.add('active');
-  fDots&&fDots.querySelectorAll('.dot')[fCurrent].classList.add('active');
-  if(fCounter)fCounter.textContent=String(fCurrent+1).padStart(2,'0')+' / '+String(F_SLIDES).padStart(2,'0');
+  if (fCounter) fCounter.textContent = String(fCurrent + 1).padStart(2,'0') + ' / ' + String(F_SLIDES).padStart(2,'0');
   flexiResetTimer();
   flexiOnSlideEnter(fCurrent);
 }
 
-function flexiNavigate(d){flexiGoTo(fCurrent+d)}
-
-function flexiResetTimer(){
-  clearInterval(fTimer);clearInterval(fProgressTimer);
-  fProgress=0;if(fBar)fBar.style.width='0%';
-  fProgressTimer=setInterval(()=>{fProgress+=100/(F_DURATION/100);if(fBar)fBar.style.width=Math.min(fProgress,100)+'%';},100);
-  fTimer=setTimeout(()=>flexiNavigate(1),F_DURATION);
+function flexiResetTimer() {
+  clearInterval(fTimer); clearInterval(fProgressTimer);
+  fProgress = 0;
+  fProgressTimer = setInterval(() => { fProgress += 100 / (F_DURATION / 100); }, 100);
+  fTimer = setTimeout(() => flexiGoTo(fCurrent + 1), F_DURATION);
 }
 
-// Keyboard nav
-
-
-// ── Slide-specific animations
-const models=[
-  {name:'Flexi 15VN',lift:7620,cap:1300,aisle:1800,width:1060},
-  {name:'Flexi 17N', lift:8220,cap:1500,aisle:2000,width:1060},
-  {name:'Flexi 20S', lift:9500,cap:2000,aisle:2100,width:1200},
+const models = [
+  {name:'Flexi 15VN',lift:7620, cap:1300,aisle:1800,width:1060},
+  {name:'Flexi 17N', lift:8220, cap:1500,aisle:2000,width:1060},
+  {name:'Flexi 20S', lift:9500, cap:2000,aisle:2100,width:1200},
   {name:'Flexi 22S+',lift:10560,cap:2000,aisle:2200,width:1250},
   {name:'Flexi 25W', lift:12720,cap:2500,aisle:2300,width:1350},
   {name:'Flexi 25WHL',lift:15000,cap:2500,aisle:2400,width:1500},
 ];
-const colours=['#E8001D','#FF4060','#FF6080','#E83050','#C02040','#A01030'];
+const colours = ['#E8001D','#FF4060','#FF6080','#E83050','#C02040','#A01030'];
 
-function buildBars(containerId,values,maxVal,unit){
-  const el=document.getElementById(containerId);
-  if(!el)return;
-  el.innerHTML='';
-  values.forEach((v,i)=>{
-    if(v===null)return;
-    const pct=(v/maxVal*100).toFixed(1);
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;gap:8px';
-    row.innerHTML=`<span style="font-size:10px;color:#7878A0;width:72px;text-align:right;flex-shrink:0">${models[i].name}</span>
+function buildBars(containerId, values, maxVal, unit) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  values.forEach((v, i) => {
+    if (v === null) return;
+    const pct = (v / maxVal * 100).toFixed(1);
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px';
+    row.innerHTML = `<span style="font-size:10px;color:#7878A0;width:72px;text-align:right;flex-shrink:0">${models[i].name}</span>
       <div style="flex:1;background:#1A1A26;border-radius:3px;height:14px;overflow:hidden">
         <div class="spec-bar-inner" style="--target-w:${pct}%;height:100%;background:${colours[i]};border-radius:3px;width:0;transition:width 1.2s cubic-bezier(0.4,0,0.2,1) ${i*0.1}s"></div>
       </div>
@@ -1085,35 +729,34 @@ function buildBars(containerId,values,maxVal,unit){
   });
 }
 
-function animateBars(){
-  document.querySelectorAll('.spec-bar-inner').forEach(b=>{b.style.width=b.style.getPropertyValue('--target-w')||'0%'});
+function animateBars() {
+  document.querySelectorAll('.spec-bar-inner').forEach(b => { b.style.width = b.style.getPropertyValue('--target-w') || '0%'; });
 }
 
-function flexiOnSlideEnter(n){
-  if(n===1){
-    const cards=document.querySelectorAll('.model-card');
-    cards.forEach((c,i)=>{c.style.opacity='0';c.style.transform='translateY(20px)';setTimeout(()=>{c.style.transition='opacity 0.5s, transform 0.5s';c.style.opacity='1';c.style.transform='translateY(0)'},i*80+100)});
+function flexiOnSlideEnter(n) {
+  if (n === 1) {
+    const cards = document.querySelectorAll('.model-card');
+    cards.forEach((c, i) => {
+      c.style.opacity = '0'; c.style.transform = 'translateY(20px)';
+      setTimeout(() => { c.style.transition = 'opacity 0.5s, transform 0.5s'; c.style.opacity = '1'; c.style.transform = 'translateY(0)'; }, i * 80 + 100);
+    });
   }
-  if(n===2){
-    buildBars('lift-bars',models.map(m=>m.lift),16000,'mm');
-    buildBars('cap-bars',models.map(m=>m.cap),3000,'kg');
-    buildBars('aisle-bars',models.map(m=>m.aisle),3000,'mm');
-    buildBars('width-bars',models.map(m=>m.width),2000,'mm');
-    setTimeout(animateBars,200);
+  if (n === 2) {
+    buildBars('lift-bars',  models.map(m => m.lift),  16000, 'mm');
+    buildBars('cap-bars',   models.map(m => m.cap),   3000,  'kg');
+    buildBars('aisle-bars', models.map(m => m.aisle), 3000,  'mm');
+    buildBars('width-bars', models.map(m => m.width), 2000,  'mm');
+    setTimeout(animateBars, 200);
   }
 }
 
 flexiResetTimer();
 flexiOnSlideEnter(0);
 
-// Touch swipe
-
-
-
-// ─── Visitor dashboard logic ───────────────────────────
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
-var lastVisitorIds    = {};
-var consecutiveErrors = 0;
+/* ── Visitor dashboard ── */
+var GOOGLE_SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
+var lastVisitorIds     = {};
+var consecutiveErrors  = 0;
 var lastSuccessfulLoad = null;
 
 function httpGet(url) {
@@ -1143,24 +786,16 @@ function safeJSON(text) {
   return JSON.parse(text.replace(/^\s*\)\]\'/, '').trim());
 }
 
-function showDebug(msg, type) {
-  var b = document.getElementById('debugBanner');
-  b.textContent = '[' + new Date().toLocaleTimeString('en-GB') + '] ' + msg;
-  b.classList.add('show');
-  setTimeout(function() { b.classList.remove('show'); }, 7000);
-}
-
 function updateClock() {
   var now = new Date();
   document.getElementById('time').textContent = now.toLocaleTimeString('en-GB');
-  document.getElementById('date').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('date').textContent = now.toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 }
 
 function showWelcome(name) {
   document.getElementById('welcomeVisitorName').textContent = name;
   var ov = document.getElementById('welcomeOverlay');
   ov.classList.add('show');
-  // Only show welcome if on visitor screen
   if (masterCurrent !== 0) masterGoTo(0);
   setTimeout(function() { ov.classList.remove('show'); }, 12000);
 }
@@ -1228,7 +863,6 @@ function loadWeekVisitors() {
   }).catch(function() { document.getElementById('weekCount').textContent = '—'; });
 }
 
-// ─── Boot ───────────────────────────────────────────────
 updateClock();
 loadVisitors();
 loadWeekVisitors();
@@ -1241,7 +875,11 @@ setInterval(loadWeekVisitors, 60000);
 setInterval(loadHealthSafety, 60000);
 
 window.addEventListener('online',  function() { consecutiveErrors = 0; loadVisitors(); });
-window.addEventListener('offline', function() { showDebug('Network offline', 'ERR'); });
+window.addEventListener('offline', function() {
+  var b = document.getElementById('debugBanner');
+  b.textContent = 'Network offline'; b.classList.add('show');
+  setTimeout(function() { b.classList.remove('show'); }, 7000);
+});
 </script>
 </body>
 </html>
