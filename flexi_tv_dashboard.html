@@ -880,6 +880,9 @@ window.addEventListener('offline', function() {
   b.textContent = 'Network offline'; b.classList.add('show');
   setTimeout(function() { b.classList.remove('show'); }, 7000);
 });
+
+// Auto-reload every 25 minutes to prevent Android memory/video decoder issues
+setTimeout(function() { location.reload(); }, 25 * 60 * 1000);
 </script>
 </body>
 </html>
