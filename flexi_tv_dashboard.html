@@ -144,14 +144,12 @@
 
     /* ═══════════════════════════════════════════════════
        SCREEN 2: FLEXI SHOWCASE
-       FIX: position:relative on #screen-flexi so absolute
-       slides are contained within it, not the viewport
     ═══════════════════════════════════════════════════ */
     #screen-flexi{
       overflow:hidden;
       width:100vw;
       height:100vh;
-      position:relative; /* ← KEY FIX */
+      position:relative;
       --flexi-red:#E8001D;
       --flexi-dark:#0A0A0F;
       --flexi-mid:#12121A;
@@ -178,25 +176,12 @@
     }
     #screen-flexi .slide.active{opacity:1;pointer-events:all;}
 
-    /* ── SHARED HEADER ── */
     .logo-bar{position:absolute;top:0;left:0;right:0;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:linear-gradient(180deg,rgba(10,10,15,0.95) 0%,transparent 100%);z-index:100}
     .logo-bar svg{height:36px;width:auto}
     .slide-counter{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:3px;color:var(--flexi-muted);text-transform:uppercase}
 
-    /* ── SLIDE 1: HERO ── */
     #s1{background:var(--flexi-dark);overflow:hidden}
-
-    .lines-watermark{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      opacity:0.35;
-      pointer-events:none;
-      z-index:1;
-    }
-
+    .lines-watermark{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.35;pointer-events:none;z-index:1;}
     .hero-bg{position:absolute;inset:0;width:100%;height:100%;}
     .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,0,29,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(232,0,29,0.04) 1px,transparent 1px);background-size:60px 60px;animation:gridPan 20s linear infinite}
     @keyframes gridPan{from{background-position:0 0}to{background-position:60px 60px}}
@@ -218,7 +203,6 @@
     .hero-divider{width:1px;height:60px;background:var(--flexi-line);align-self:center}
     @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 
-    /* ── SLIDE 2: MODEL LINEUP ── */
     #s2{background:var(--flexi-dark)}
     .lineup-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--flexi-dark) 60%,rgba(232,0,29,0.05) 100%)}
     .lineup-content{position:relative;z-index:10;padding:90px 48px 40px;width:100%;height:100%;display:flex;flex-direction:column}
@@ -240,7 +224,6 @@
     .model-badge{position:absolute;top:12px;right:12px;background:var(--flexi-red);color:#fff;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:2px}
     .model-cards-anim .model-card{opacity:0;transform:translateY(20px)}
 
-    /* ── SLIDE 3: KEY SPECS BARS ── */
     #s3{background:var(--flexi-dark)}
     .specs-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;gap:3vw}
     .specs-left{flex:0 0 22vw;display:flex;flex-direction:column;justify-content:center}
@@ -251,7 +234,6 @@
     .spec-bar-inner{height:100%;width:0;transition:width 1.2s ease;border-radius:3px}
     .spec-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:4px}
 
-    /* ── SLIDE 4: COMPARISON ── */
     #s4{background:var(--flexi-dark)}
     .compare-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;flex-direction:column}
     .compare-grid{flex:1;display:grid;grid-template-columns:200px 1fr 1fr 1fr;gap:0;border:1px solid var(--flexi-line);border-radius:4px;overflow:hidden}
@@ -274,7 +256,6 @@
     .win-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);border-radius:2px;padding:2px 8px;font-size:10px;letter-spacing:2px;color:#4ADE80;text-transform:uppercase;margin-top:4px}
     .compare-note{margin-top:16px;font-size:12px;color:var(--flexi-muted);font-style:italic}
 
-    /* ── SLIDE 5: AISLE ADVANTAGE ── */
     #s5{background:var(--flexi-dark)}
     .aisle-layout{position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;gap:3vw}
     .aisle-left{flex:0 0 380px;display:flex;flex-direction:column;justify-content:center}
@@ -284,14 +265,6 @@
     .benefit-icon{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--flexi-red);line-height:1;flex-shrink:0;width:32px}
     .benefit-text-title{font-size:14px;font-weight:600;color:var(--flexi-text);margin-bottom:2px}
     .benefit-text-sub{font-size:12px;color:var(--flexi-muted)}
-
-    /* ── SCREEN 3: VIDEO ── */
-    #screen-video{ background:#000; }
-    #screen-video video{
-      position:absolute;inset:0;
-      width:100%;height:100%;
-      object-fit:cover;
-    }
   </style>
 </head>
 <body>
@@ -313,7 +286,7 @@
           <div class="header-subtitle">Reception — Live View</div>
         </div>
       </div>
-      <div><div class="version-badge">V — 2604</div></div>
+      <div><div class="version-badge">NEO</div></div>
       <div class="header-right">
         <div class="header-time" id="time">00:00:00</div>
         <div class="header-date" id="date">Loading...</div>
@@ -596,24 +569,169 @@
     </div>
   </div>
 
-</div>
+  <!-- SLIDE 6: WHY FLEXI — BENEFITS -->
+  <div class="slide" id="s6">
+    <div style="position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;flex-direction:column;">
+      <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
+      <div class="section-label">Why Choose Flexi</div>
+      <h2 class="section-title" style="margin-bottom:2.5vh">Key Benefits</h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:1.2vw;flex:1;min-height:0;">
+        <div style="background:var(--flexi-red);border-radius:6px;padding:2.2vh 1.6vw;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:2.4vw;height:2.4vw;border-radius:50%;border:2px solid rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;margin-bottom:1.2vh;flex-shrink:0;"><svg width="55%" height="55%" viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3vw;font-weight:700;color:#fff;margin-bottom:0.8vh;">Space Efficiency</div>
+          <div style="font-size:0.8vw;color:rgba(255,255,255,0.85);line-height:1.6;">Designed for narrow aisles, maximising storage density and making full use of your warehouse footprint.</div>
+        </div>
+        <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-radius:6px;padding:2.2vh 1.6vw;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:2.4vw;height:2.4vw;border-radius:50%;border:2px solid rgba(232,0,29,0.6);display:flex;align-items:center;justify-content:center;margin-bottom:1.2vh;flex-shrink:0;"><svg width="55%" height="55%" viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.8vh;">Manoeuvrability</div>
+          <div style="font-size:0.8vw;color:var(--flexi-muted);line-height:1.6;">Articulated design enables sharp turns in tight spaces, ideal for narrow aisles and confined areas.</div>
+        </div>
+        <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-radius:6px;padding:2.2vh 1.6vw;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:2.4vw;height:2.4vw;border-radius:50%;border:2px solid rgba(232,0,29,0.6);display:flex;align-items:center;justify-content:center;margin-bottom:1.2vh;flex-shrink:0;"><svg width="55%" height="55%" viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.8vh;">Versatility</div>
+          <div style="font-size:0.8vw;color:var(--flexi-muted);line-height:1.6;">Suitable for indoor and outdoor use across a wide variety of load types and material handling applications.</div>
+        </div>
+        <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-radius:6px;padding:2.2vh 1.6vw;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:2.4vw;height:2.4vw;border-radius:50%;border:2px solid rgba(232,0,29,0.6);display:flex;align-items:center;justify-content:center;margin-bottom:1.2vh;flex-shrink:0;"><svg width="55%" height="55%" viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.8vh;">Increased Productivity</div>
+          <div style="font-size:0.8vw;color:var(--flexi-muted);line-height:1.6;">Narrow aisle operation reduces travel distance between racks, resulting in faster load retrieval and more efficient operations.</div>
+        </div>
+        <div style="background:var(--flexi-red);border-radius:6px;padding:2.2vh 1.6vw;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:2.4vw;height:2.4vw;border-radius:50%;border:2px solid rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;margin-bottom:1.2vh;flex-shrink:0;"><svg width="55%" height="55%" viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3vw;font-weight:700;color:#fff;margin-bottom:0.8vh;">Cost Savings</div>
+          <div style="font-size:0.8vw;color:rgba(255,255,255,0.85);line-height:1.6;">Space optimisation reduces warehouse footprint costs. One truck replaces multiple equipment types in many applications.</div>
+        </div>
+        <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-radius:6px;padding:2.2vh 1.6vw;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:2.4vw;height:2.4vw;border-radius:50%;border:2px solid rgba(232,0,29,0.6);display:flex;align-items:center;justify-content:center;margin-bottom:1.2vh;flex-shrink:0;"><svg width="55%" height="55%" viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.8vh;">Increased Pallet Throughput</div>
+          <div style="font-size:0.8vw;color:var(--flexi-muted);line-height:1.6;">Efficient design in narrow spaces allows for higher pallet throughput — particularly valuable in high-density storage environments.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<!-- ══════════════════════════════════════════════
-     SCREEN 3: VIDEO
-══════════════════════════════════════════════ -->
-<div class="tv-screen" id="screen-video">
-  <video id="tvVideo"
-         src="https://narrowaisleservice.github.io/flexi-visitor-signin/Welcome%20Video.mp4"
-         autoplay
-         muted
-         playsinline
-         preload="auto">
-  </video>
+  <!-- SLIDE 7: USED FLEXI STANDARD -->
+  <div class="slide" id="s7">
+    <div style="position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;gap:3vw;">
+      <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
+      <div style="flex:0 0 40%;display:flex;flex-direction:column;justify-content:center;">
+        <div class="section-label">Pre-Owned</div>
+        <h2 class="section-title" style="font-size:clamp(30px,4vw,52px);">Our Used Flexi<br>Standard Includes</h2>
+        <div style="display:flex;flex-direction:column;gap:0.9vh;margin-top:2vh;">
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;padding:0.8vh 1vw;background:var(--flexi-panel);border-left:3px solid var(--flexi-red);border-radius:0 4px 4px 0;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.85vw;color:var(--flexi-text);">Full service</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;padding:0.8vh 1vw;background:var(--flexi-panel);border-left:3px solid var(--flexi-red);border-radius:0 4px 4px 0;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.85vw;color:var(--flexi-text);">12-month valid LOLER</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;padding:0.8vh 1vw;background:var(--flexi-panel);border-left:3px solid var(--flexi-red);border-radius:0 4px 4px 0;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.85vw;color:var(--flexi-text);">Steam clean and paint respray for a 'like new' finish</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;padding:0.8vh 1vw;background:var(--flexi-panel);border-left:3px solid var(--flexi-red);border-radius:0 4px 4px 0;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.85vw;color:var(--flexi-text);">New battery with a 5-year manufacturer warranty</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;padding:0.8vh 1vw;background:var(--flexi-panel);border-left:3px solid var(--flexi-red);border-radius:0 4px 4px 0;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.85vw;color:var(--flexi-text);">12 months or 1000 hours part warranty (whichever occurs first)</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;padding:0.8vh 1vw;background:var(--flexi-panel);border-left:3px solid var(--flexi-red);border-radius:0 4px 4px 0;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.85vw;color:var(--flexi-text);">A serviceable charger and fork length to suit your application</span></div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.4vh;">
+        <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-left:3px solid var(--flexi-red);border-radius:0 6px 6px 0;padding:1.4vh 1.4vw;"><div style="font-size:0.85vw;color:var(--flexi-text);line-height:1.7;">Our trucks can be used outside — offloading wagons and storing pallets in racking aisles as narrow as <strong style="color:var(--flexi-red)">1600mm</strong> or as high as <strong style="color:var(--flexi-red)">15m</strong>, depending on application.</div></div>
+        <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-left:3px solid var(--flexi-red);border-radius:0 6px 6px 0;padding:1.4vh 1.4vw;"><div style="font-size:0.85vw;color:var(--flexi-text);line-height:1.7;">Site survey available — unlock your warehouse's potential. We'll help find the best truck for your operation.</div></div>
+        <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-left:3px solid var(--flexi-red);border-radius:0 6px 6px 0;padding:1.4vh 1.4vw;"><div style="font-size:0.85vw;color:var(--flexi-text);line-height:1.7;">We have a Flexi for any application, any budget — delivered anywhere in the UK.</div></div>
+        <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-left:3px solid var(--flexi-red);border-radius:0 6px 6px 0;padding:1.4vh 1.4vw;"><div style="font-size:0.85vw;color:var(--flexi-text);line-height:1.7;">Buy sold as seen to refurbish yourself, or let us do the work with our Used Flexi Standard.</div></div>
+        <div style="margin-top:0.5vh;padding:1.6vh 1.4vw;background:rgba(232,0,29,0.08);border:1px solid rgba(232,0,29,0.3);border-radius:6px;">
+          <div style="font-size:0.75vw;font-weight:700;color:var(--flexi-red);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.8vh;">Get In Touch</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5vh 1vw;">
+            <div style="font-size:0.78vw;color:var(--flexi-muted);">07767 680310</div>
+            <div style="font-size:0.78vw;color:var(--flexi-muted);">0121 557 6242</div>
+            <div style="font-size:0.78vw;color:var(--flexi-muted);">Jt.wesley@narrowaisle.co.uk</div>
+            <div style="font-size:0.78vw;color:var(--flexi-muted);">info@flexi.co.uk</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: SHORT TERM RENTAL -->
+  <div class="slide" id="s8">
+    <div style="position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;gap:3vw;">
+      <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
+      <div style="flex:0 0 42%;display:flex;flex-direction:column;justify-content:center;">
+        <div class="section-label">Hire</div>
+        <h2 class="section-title" style="font-size:clamp(30px,4vw,52px);">Short Term<br>Rental</h2>
+        <p style="font-size:0.85vw;color:var(--flexi-muted);line-height:1.7;margin-top:1.2vh;margin-bottom:2vh;">For occasional use or to meet seasonal demand — with a fleet of over <strong style="color:var(--flexi-text);">300 units</strong> ready to deploy.</p>
+        <div style="display:flex;flex-direction:column;gap:0.7vh;">
+          <div style="display:flex;align-items:center;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">1 week to 12 months hire period</span></div>
+          <div style="display:flex;align-items:center;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Often available within 24 hours</span></div>
+          <div style="display:flex;align-items:center;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Full LOLER inspected equipment</span></div>
+          <div style="display:flex;align-items:center;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Includes servicing, parts, labour, tyres, batteries &amp; chargers</span></div>
+          <div style="display:flex;align-items:center;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Operator Conversion Training available from Flexi Training Ltd</span></div>
+          <div style="display:flex;align-items:center;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">All Flexi Range models available for rental</span></div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--flexi-red);margin-bottom:1.6vh;">Advantages of Short Term</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1vw;">
+          <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-top:3px solid var(--flexi-red);border-radius:0 0 6px 6px;padding:1.4vh 1.2vw;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.5vh;">No Long Term Liability</div>
+            <div style="font-size:0.75vw;color:var(--flexi-muted);line-height:1.6;">A variable term with full flexibility — no commitment beyond your hire period.</div>
+          </div>
+          <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-top:3px solid var(--flexi-red);border-radius:0 0 6px 6px;padding:1.4vh 1.2vw;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.5vh;">Variable Pricing</div>
+            <div style="font-size:0.75vw;color:var(--flexi-muted);line-height:1.6;">Price depends on usage and term — only pay for what you need.</div>
+          </div>
+          <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-top:3px solid var(--flexi-red);border-radius:0 0 6px 6px;padding:1.4vh 1.2vw;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.5vh;">Service Included</div>
+            <div style="font-size:0.75vw;color:var(--flexi-muted);line-height:1.6;">All service and repairs included for complete peace of mind throughout hire.</div>
+          </div>
+          <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-top:3px solid var(--flexi-red);border-radius:0 0 6px 6px;padding:1.4vh 1.2vw;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.5vh;">Tax Efficient</div>
+            <div style="font-size:0.75vw;color:var(--flexi-muted);line-height:1.6;">Off-balance sheet treatment. Rentals are a business expense allowable for tax.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: LONG TERM RENTAL -->
+  <div class="slide" id="s9">
+    <div style="position:relative;z-index:10;padding:7vh 3vw 3vh;width:100%;height:100%;display:flex;gap:3vw;">
+      <img src="https://narrowaisleservice.github.io/flexi-visitor-signin/lines.svg" class="lines-watermark" alt="">
+      <div style="flex:0 0 42%;display:flex;flex-direction:column;justify-content:center;">
+        <div class="section-label">Contract Hire</div>
+        <h2 class="section-title" style="font-size:clamp(30px,4vw,52px);">Long Term<br>Rental</h2>
+        <p style="font-size:0.85vw;color:var(--flexi-muted);line-height:1.7;margin-top:1.2vh;margin-bottom:2vh;">Contract hire periods of up to <strong style="color:var(--flexi-text);">10 years</strong> — ideal for long-term use of high-quality Flexi trucks without committing capital, with full maintenance cover included.</p>
+        <div style="display:flex;flex-direction:column;gap:0.7vh;">
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Flexibility of finance package — cash flow, ownership, budgeting</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Monthly or quarterly payments accepted</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Preserves capital and existing credit lines</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Flexi Narrow Aisle takes care of equipment disposal</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Truck properly maintained by the manufacturer throughout</span></div>
+          <div style="display:flex;align-items:flex-start;gap:0.8vw;"><svg width="14" height="14" viewBox="0 0 12 10" style="flex-shrink:0;margin-top:2px"><polyline points="1,5 4,8 11,1" stroke="#E8001D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:0.82vw;color:var(--flexi-text);">Future rentals payable with depreciating pounds</span></div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--flexi-red);margin-bottom:1.6vh;">Advantages of Long Term</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1vw;">
+          <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-top:3px solid var(--flexi-red);border-radius:0 0 6px 6px;padding:1.4vh 1.2vw;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.5vh;">3 to 10-Year Terms</div>
+            <div style="font-size:0.75vw;color:var(--flexi-muted);line-height:1.6;">Flexible contract hire available for 3, 7 or up to 10 years depending on usage.</div>
+          </div>
+          <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-top:3px solid var(--flexi-red);border-radius:0 0 6px 6px;padding:1.4vh 1.2vw;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.5vh;">Fixed Monthly Payment</div>
+            <div style="font-size:0.75vw;color:var(--flexi-muted);line-height:1.6;">One fixed monthly cost covers the full term including maintenance — easy to budget.</div>
+          </div>
+          <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-top:3px solid var(--flexi-red);border-radius:0 0 6px 6px;padding:1.4vh 1.2vw;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.5vh;">Mobile Service Engineers</div>
+            <div style="font-size:0.75vw;color:var(--flexi-muted);line-height:1.6;">Flexi mobile engineers carry out all repairs on-site, minimising downtime.</div>
+          </div>
+          <div style="background:var(--flexi-panel);border:1px solid var(--flexi-line);border-top:3px solid var(--flexi-red);border-radius:0 0 6px 6px;padding:1.4vh 1.2vw;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1vw;font-weight:700;color:var(--flexi-text);margin-bottom:0.5vh;">Planned Preventative Maintenance</div>
+            <div style="font-size:0.75vw;color:var(--flexi-muted);line-height:1.6;">Scheduled maintenance included to keep trucks in peak condition throughout the contract.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-const SCREEN_NAMES     = ['visitor','flexi','video'];
-const SCREEN_DURATIONS = [45000, 60000, 90000];
+// ── Master controller: 2 screens only ──
+const SCREEN_NAMES     = ['visitor', 'flexi'];
+const SCREEN_DURATIONS = [45000, 80000];
 
 let masterCurrent = 0;
 let masterTimer   = null;
@@ -637,26 +755,9 @@ function masterGoTo(n) {
   document.getElementById('mdot-' + prev).classList.remove('active');
   document.getElementById('screen-' + SCREEN_NAMES[masterCurrent]).classList.add('tv-active');
   document.getElementById('mdot-' + masterCurrent).classList.add('active');
-
   if (masterCurrent === 1) {
     if (typeof flexiGoTo === 'function') flexiGoTo(0);
   }
-
-  if (masterCurrent === 2) {
-    const video = document.getElementById('tvVideo');
-    video.muted = true;
-    video.currentTime = 0;
-    const p = video.play();
-    if (p !== undefined) {
-      p.catch(() => { setTimeout(() => video.play().catch(() => {}), 800); });
-    }
-    video.onended = () => masterAdvance();
-  } else {
-    const video = document.getElementById('tvVideo');
-    video.pause();
-    video.currentTime = 0;
-  }
-
   masterResetProgress();
 }
 
@@ -667,20 +768,16 @@ function masterResetProgress() {
   clearInterval(masterProgTimer);
   masterProg = 0;
   progBar.style.width = '0%';
-  const duration = masterCurrent === 2 ? 90000 : SCREEN_DURATIONS[masterCurrent];
+  const duration = SCREEN_DURATIONS[masterCurrent];
   masterProgTimer = setInterval(() => {
     masterProg += 100 / (duration / 100);
     progBar.style.width = Math.min(masterProg, 100) + '%';
   }, 100);
-  if (masterCurrent !== 2) {
-    masterTimer = setTimeout(masterAdvance, duration);
-  } else {
-    masterTimer = setTimeout(masterAdvance, 90000);
-  }
+  masterTimer = setTimeout(masterAdvance, duration);
 }
 
-/* ── Flexi showcase ── */
-const F_SLIDES = 5, F_DURATION = 8000;
+// ── Flexi showcase ──
+const F_SLIDES = 9, F_DURATION = 8000;
 let fCurrent = 0, fTimer = null, fProgress = 0, fProgressTimer = null;
 const fSlides  = document.querySelectorAll('#screen-flexi .slide');
 const fCounter = document.getElementById('slide-counter');
@@ -753,7 +850,7 @@ function flexiOnSlideEnter(n) {
 flexiResetTimer();
 flexiOnSlideEnter(0);
 
-/* ── Visitor dashboard ── */
+// ── Visitor dashboard ──
 var GOOGLE_SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
 var lastVisitorIds     = {};
 var consecutiveErrors  = 0;
@@ -881,7 +978,7 @@ window.addEventListener('offline', function() {
   setTimeout(function() { b.classList.remove('show'); }, 7000);
 });
 
-// Auto-reload every 25 minutes to prevent Android memory/video decoder issues
+// Auto-reload every 25 minutes to prevent Android memory issues
 setTimeout(function() { location.reload(); }, 25 * 60 * 1000);
 </script>
 </body>
