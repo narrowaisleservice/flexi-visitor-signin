@@ -11,8 +11,8 @@
         :root {
             --red: #DC2626;
             --red-hover: #EF4444;
-            --red-dim: rgba(220, 38, 38, 0.15);
-            --red-border: rgba(220, 38, 38, 0.35);
+            --red-dim: rgba(220,38,38,0.15);
+            --red-border: rgba(220,38,38,0.35);
             --bg: #000000;
             --card: #111111;
             --card2: #1A1A1A;
@@ -20,624 +20,410 @@
             --muted: rgba(255,255,255,0.5);
             --border: rgba(255,255,255,0.08);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        html,body { height:100%; overflow:hidden; }
         body {
-            font-family: 'Barlow Condensed', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            top: 0;
-            left: 0;
+            font-family:'Barlow Condensed',sans-serif;
+            background:var(--bg);
+            color:var(--text);
+            position:fixed;
+            width:100vw; height:100vh;
+            top:0; left:0;
         }
 
-        /* ─── LAYOUT ─── */
         .shell {
-            max-width: 860px;
-            margin: 0 auto;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 14px 16px;
+            max-width:860px;
+            margin:0 auto;
+            height:100%;
+            display:flex;
+            flex-direction:column;
+            padding:14px 16px;
         }
 
-        /* ─── HEADER ─── */
+        /* HEADER */
         .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--card);
-            border: 1px solid var(--red-border);
-            border-radius: 10px;
-            padding: 12px 20px;
-            margin-bottom: 12px;
-            flex-shrink: 0;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            background:var(--card);
+            border:1px solid var(--red-border);
+            border-radius:10px;
+            padding:12px 20px;
+            margin-bottom:12px;
+            flex-shrink:0;
         }
+        .header-logo img { height:42px; display:block; }
+        .header-clock { text-align:right; }
+        .header-clock .time { font-size:1.6em; font-weight:700; color:var(--red-hover); letter-spacing:1px; }
+        .header-clock .date { font-size:0.85em; color:var(--muted); }
 
-        .header-logo img {
-            height: 42px;
-            display: block;
-        }
+        /* SCREENS */
+        .screen { display:none; flex:1; flex-direction:column; min-height:0; }
+        .screen.active { display:flex; }
 
-        .header-center {
-            text-align: center;
-        }
-
-        .header-center .site-sub {
-            font-size: 0.95em;
-            color: var(--muted);
-            font-weight: 400;
-        }
-
-        .header-clock {
-            text-align: right;
-        }
-
-        .header-clock .time {
-            font-size: 1.6em;
-            font-weight: 700;
-            color: var(--red-hover);
-            letter-spacing: 1px;
-        }
-
-        .header-clock .date {
-            font-size: 0.85em;
-            color: var(--muted);
-        }
-
-        /* ─── SCREENS ─── */
-        .screen {
-            display: none;
-            flex: 1;
-            overflow-y: auto;
-            min-height: 0;
-        }
-
-        .screen.active {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .screen::-webkit-scrollbar { width: 6px; }
-        .screen::-webkit-scrollbar-track { background: transparent; }
-        .screen::-webkit-scrollbar-thumb { background: var(--red); border-radius: 4px; }
-
-        /* ─── CARDS ─── */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 18px 20px;
-            margin-bottom: 10px;
-        }
-
-        .card.red-accent {
-            border-color: var(--red-border);
-        }
-
-        /* ─── SCREEN TITLES ─── */
-        .screen-title {
-            font-size: 2em;
-            font-weight: 800;
-            color: var(--red-hover);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
-
-        .screen-sub {
-            font-size: 1em;
-            color: var(--muted);
-            margin-bottom: 14px;
-        }
-
-        /* ─── WELCOME SCREEN ─── */
-        #welcomeScreen {
-            gap: 10px;
-        }
-
+        /* WELCOME */
         .welcome-hero {
-            background: var(--card);
-            border: 1px solid var(--red-border);
-            border-radius: 10px;
-            padding: 22px 20px;
-            text-align: center;
+            background:var(--card);
+            border:1px solid var(--red-border);
+            border-radius:10px;
+            padding:28px 20px;
+            text-align:center;
+            margin-bottom:12px;
         }
+        .welcome-hero .title { font-size:2.8em; font-weight:800; color:#fff; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+        .welcome-hero .tagline { font-size:1.2em; color:var(--muted); font-weight:400; }
 
-        .welcome-hero .title {
-            font-size: 2.4em;
-            font-weight: 800;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
+        .stats-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+        .stat-card { background:var(--card); border:1px solid var(--red-border); border-radius:10px; padding:18px 16px; text-align:center; }
+        .stat-label { font-size:0.9em; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+        .stat-value { font-size:3em; font-weight:800; color:var(--red-hover); line-height:1; }
 
-        .welcome-hero .tagline {
-            font-size: 1.1em;
-            color: var(--muted);
-            font-weight: 400;
-        }
+        .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:auto; }
 
-        .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .stat-card {
-            background: var(--card);
-            border: 1px solid var(--red-border);
-            border-radius: 10px;
-            padding: 18px 16px;
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-
-        .stat-value {
-            font-size: 3em;
-            font-weight: 800;
-            color: var(--red-hover);
-            line-height: 1;
-        }
-
-        .btn-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        /* ─── BUTTONS ─── */
+        /* BUTTONS */
         .btn {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.4em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: none;
-            border-radius: 8px;
-            padding: 20px 16px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            width: 100%;
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:1.4em;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            border:none;
+            border-radius:8px;
+            padding:20px 16px;
+            cursor:pointer;
+            transition:all 0.15s ease;
+            width:100%;
+        }
+        .btn-primary { background:var(--red); color:#fff; }
+        .btn-primary:active { background:var(--red-hover); transform:scale(0.98); }
+        .btn-outline { background:transparent; color:var(--text); border:2px solid var(--red-border); }
+        .btn-outline:active { background:var(--red-dim); transform:scale(0.98); }
+        .btn-sm { font-size:1em; padding:12px 16px; }
+        .btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); font-size:1em; padding:12px 16px; }
+
+        /* WIZARD */
+        .wizard-wrap {
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            min-height:0;
         }
 
-        .btn-primary {
-            background: var(--red);
-            color: #fff;
+        /* Step progress dots */
+        .step-dots {
+            display:flex;
+            justify-content:center;
+            gap:8px;
+            margin-bottom:16px;
+            flex-shrink:0;
+        }
+        .step-dot {
+            width:10px; height:10px;
+            border-radius:50%;
+            background:var(--border);
+            transition:all 0.25s;
+        }
+        .step-dot.done { background:rgba(220,38,38,0.5); }
+        .step-dot.active { background:var(--red); transform:scale(1.3); }
+
+        /* Individual step slides */
+        .wizard-step {
+            display:none;
+            flex:1;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            padding:10px 0;
+            animation:fadeSlide 0.25s ease;
+        }
+        .wizard-step.active { display:flex; }
+
+        @keyframes fadeSlide {
+            from { opacity:0; transform:translateX(30px); }
+            to   { opacity:1; transform:translateX(0); }
+        }
+        @keyframes fadeSlideBack {
+            from { opacity:0; transform:translateX(-30px); }
+            to   { opacity:1; transform:translateX(0); }
+        }
+        .wizard-step.going-back { animation:fadeSlideBack 0.25s ease; }
+
+        .step-inner {
+            width:100%;
+            max-width:520px;
+            text-align:center;
         }
 
-        .btn-primary:active {
-            background: var(--red-hover);
-            transform: scale(0.98);
+        .step-num {
+            font-size:0.85em;
+            font-weight:700;
+            color:var(--red);
+            text-transform:uppercase;
+            letter-spacing:2px;
+            margin-bottom:8px;
         }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--text);
-            border: 2px solid var(--red-border);
+        .step-question {
+            font-size:2.2em;
+            font-weight:800;
+            color:#fff;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+            margin-bottom:6px;
+            line-height:1.1;
         }
 
-        .btn-outline:active {
-            background: var(--red-dim);
-            transform: scale(0.98);
+        .step-hint {
+            font-size:1em;
+            color:var(--muted);
+            margin-bottom:24px;
         }
 
-        .btn-sm {
-            font-size: 1em;
-            padding: 12px 16px;
+        /* Big tap-friendly input */
+        .step-input {
+            width:100%;
+            background:var(--card2);
+            border:2px solid var(--border);
+            border-radius:10px;
+            color:#fff;
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:1.6em;
+            font-weight:600;
+            padding:18px 20px;
+            text-align:center;
+            transition:border-color 0.15s;
+            -webkit-appearance:none;
+            margin-bottom:16px;
+        }
+        .step-input:focus {
+            outline:none;
+            border-color:var(--red);
+            background:#1f1f1f;
+        }
+        .step-input::placeholder { color:rgba(255,255,255,0.2); font-weight:400; }
+        .step-input option { background:#1a1a1a; color:#fff; }
+
+        /* Option tiles (for purpose of visit) */
+        .option-grid {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+            margin-bottom:16px;
+            width:100%;
+        }
+        .option-tile {
+            background:var(--card2);
+            border:2px solid var(--border);
+            border-radius:10px;
+            padding:18px 12px;
+            text-align:center;
+            cursor:pointer;
+            transition:all 0.15s;
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:1.2em;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+            color:var(--text);
+        }
+        .option-tile:active { transform:scale(0.97); }
+        .option-tile.selected {
+            border-color:var(--red);
+            background:var(--red-dim);
+            color:#fff;
+        }
+        .option-tile .tile-icon { font-size:1.6em; display:block; margin-bottom:6px; }
+
+        /* Host select styled large */
+        .host-select {
+            width:100%;
+            background:var(--card2);
+            border:2px solid var(--border);
+            border-radius:10px;
+            color:#fff;
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:1.3em;
+            font-weight:600;
+            padding:16px 20px;
+            -webkit-appearance:none;
+            text-align:center;
+            margin-bottom:16px;
+            transition:border-color 0.15s;
+        }
+        .host-select:focus { outline:none; border-color:var(--red); background:#1f1f1f; }
+        .host-select option { background:#1a1a1a; color:#fff; font-size:0.9em; }
+
+        /* Nav buttons */
+        .step-nav {
+            display:grid;
+            grid-template-columns:1fr 2fr;
+            gap:10px;
+            width:100%;
+            max-width:520px;
+            flex-shrink:0;
         }
 
-        .btn-danger {
-            background: #7f1d1d;
-            color: #fca5a5;
-            border: 1px solid #dc2626;
+        /* Info/consent step */
+        .consent-scroll {
+            flex:1;
+            overflow-y:auto;
+            min-height:0;
+            width:100%;
+            max-width:600px;
         }
+        .consent-scroll::-webkit-scrollbar { width:4px; }
+        .consent-scroll::-webkit-scrollbar-thumb { background:var(--red); border-radius:4px; }
 
-        /* ─── FORM INPUTS (text/select only) ─── */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 10px;
-        }
-
-        .form-group.full {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            display: block;
-            font-size: 0.85em;
-            font-weight: 600;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
-
-        .req {
-            color: var(--red-hover);
-            margin-left: 2px;
-        }
-
-        input:not([type="checkbox"]), select {
-            width: 100%;
-            background: var(--card2);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: #fff;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.05em;
-            font-weight: 500;
-            padding: 11px 13px;
-            transition: border-color 0.15s;
-            -webkit-appearance: none;
-        }
-
-        input:not([type="checkbox"]):focus, select:focus {
-            outline: none;
-            border-color: var(--red);
-            background: #1f1f1f;
-        }
-
-        input:not([type="checkbox"])::placeholder { color: rgba(255,255,255,0.25); }
-
-        select option {
-            background: #1a1a1a;
-            color: #fff;
-        }
-
-        /* ─── PROGRESS BAR ─── */
-        .progress-track {
-            height: 4px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 4px;
-            margin-bottom: 14px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--red);
-            border-radius: 4px;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        /* ─── INFO PANELS ─── */
         .info-panel {
-            border-radius: 8px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
+            border-radius:8px;
+            padding:14px 16px;
+            margin-bottom:10px;
         }
+        .info-panel.safety { background:#1a0000; border:1px solid var(--red-border); }
+        .info-panel.gdpr { background:#001020; border:1px solid rgba(59,130,246,0.35); }
+        .info-panel h3 { font-size:1em; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
+        .info-panel.safety h3 { color:var(--red-hover); }
+        .info-panel.gdpr h3 { color:#60a5fa; }
+        .info-panel ul { list-style:none; padding:0; }
+        .info-panel li { font-size:0.9em; color:var(--text); padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+        .info-panel li:last-child { border-bottom:none; }
+        .info-panel p { font-size:0.85em; color:var(--text); margin-bottom:6px; line-height:1.4; }
 
-        .info-panel.safety {
-            background: #1a0000;
-            border: 1px solid var(--red-border);
-        }
-
-        .info-panel.gdpr {
-            background: #001020;
-            border: 1px solid rgba(59,130,246,0.35);
-        }
-
-        .info-panel h3 {
-            font-size: 1em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }
-
-        .info-panel.safety h3 { color: var(--red-hover); }
-        .info-panel.gdpr h3 { color: #60a5fa; }
-
-        .info-panel ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .info-panel li {
-            font-size: 0.95em;
-            color: var(--text);
-            padding: 4px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .info-panel li:last-child { border-bottom: none; }
-
-        .info-panel p {
-            font-size: 0.9em;
-            color: var(--text);
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-
-        /* ─── CHECKBOXES ─── */
         .check-group {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
+            display:flex;
+            align-items:flex-start;
+            gap:12px;
+            padding:12px 0;
+            border-bottom:1px solid var(--border);
         }
-
-        .check-group:last-of-type { border-bottom: none; }
-
-        /* Custom checkbox styling */
+        .check-group:last-of-type { border-bottom:none; }
         .check-group input[type="checkbox"] {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 22px;
-            height: 22px;
-            min-width: 22px;
-            min-height: 22px;
-            margin-top: 1px;
-            cursor: pointer;
-            background: var(--card2);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 5px;
-            position: relative;
-            transition: background 0.15s, border-color 0.15s;
-            flex-shrink: 0;
+            appearance:none;
+            -webkit-appearance:none;
+            width:26px; height:26px;
+            min-width:26px; min-height:26px;
+            cursor:pointer;
+            background:var(--card2);
+            border:2px solid rgba(255,255,255,0.3);
+            border-radius:6px;
+            position:relative;
+            transition:background 0.15s, border-color 0.15s;
+            flex-shrink:0;
         }
-
-        .check-group input[type="checkbox"]:checked {
-            background: var(--red);
-            border-color: var(--red);
-        }
-
-        /* The tick mark */
+        .check-group input[type="checkbox"]:checked { background:var(--red); border-color:var(--red); }
         .check-group input[type="checkbox"]:checked::after {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 2px;
-            width: 8px;
-            height: 13px;
-            border: 3px solid #fff;
-            border-top: none;
-            border-left: none;
-            transform: rotate(45deg);
+            content:'';
+            position:absolute;
+            left:6px; top:2px;
+            width:10px; height:16px;
+            border:3px solid #fff;
+            border-top:none; border-left:none;
+            transform:rotate(45deg);
         }
-
-        .check-group input[type="checkbox"]:focus {
-            outline: none;
-            border-color: var(--red-hover);
-            box-shadow: 0 0 0 3px rgba(220,38,38,0.25);
-        }
-
         .check-group label {
-            text-transform: none;
-            letter-spacing: 0;
-            font-size: 0.95em;
-            color: var(--text);
-            font-weight: 400;
-            margin: 0;
-            cursor: pointer;
-            line-height: 1.4;
+            text-transform:none;
+            letter-spacing:0;
+            font-size:1em;
+            color:var(--text);
+            font-weight:400;
+            margin:0;
+            cursor:pointer;
+            line-height:1.4;
         }
+        .req { color:var(--red-hover); }
 
-        /* ─── VISITOR LIST ─── */
+        /* SIGN OUT */
         .visitor-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--card2);
-            border: 1px solid var(--border);
-            border-left: 3px solid var(--red);
-            border-radius: 8px;
-            padding: 14px 16px;
-            margin-bottom: 8px;
-            gap: 12px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            background:var(--card2);
+            border:1px solid var(--border);
+            border-left:3px solid var(--red);
+            border-radius:8px;
+            padding:14px 16px;
+            margin-bottom:8px;
+            gap:12px;
         }
+        .visitor-name { font-size:1.2em; font-weight:700; color:#fff; }
+        .visitor-meta { font-size:0.85em; color:var(--muted); margin-top:2px; }
 
-        .visitor-name {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .visitor-meta {
-            font-size: 0.85em;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        /* ─── SUCCESS SCREEN ─── */
+        /* SUCCESS */
         .success-box {
-            background: #052005;
-            border: 1px solid #16a34a;
-            border-radius: 10px;
-            padding: 24px;
-            text-align: center;
+            background:#052005;
+            border:1px solid #16a34a;
+            border-radius:10px;
+            padding:30px 24px;
+            text-align:center;
+            width:100%;
+            max-width:500px;
         }
+        .success-icon { font-size:4em; margin-bottom:12px; }
+        .success-title { font-size:2.4em; font-weight:800; color:#4ade80; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+        .success-sub { font-size:1.1em; color:rgba(255,255,255,0.6); margin-bottom:16px; }
+        .success-host { background:rgba(255,255,255,0.05); border:1px solid rgba(74,222,128,0.3); border-radius:8px; padding:16px; font-size:1.1em; color:#fff; }
 
-        .success-icon {
-            font-size: 3.5em;
-            margin-bottom: 10px;
-        }
-
-        .success-title {
-            font-size: 2em;
-            font-weight: 800;
-            color: #4ade80;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-        }
-
-        .success-sub {
-            font-size: 1em;
-            color: rgba(255,255,255,0.6);
-        }
-
-        .success-host {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(74, 222, 128, 0.3);
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 16px;
-            font-size: 1.1em;
-            color: #fff;
-        }
-
-        /* ─── LOADING ─── */
+        /* LOADING */
         .loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
+            position:fixed; inset:0;
+            background:rgba(0,0,0,0.9);
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            z-index:9999;
+            opacity:0; pointer-events:none;
+            transition:opacity 0.2s;
         }
-
-        .loading-overlay.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-
+        .loading-overlay.show { opacity:1; pointer-events:all; }
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(220,38,38,0.2);
-            border-top-color: var(--red);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 14px;
+            width:50px; height:50px;
+            border:5px solid rgba(220,38,38,0.2);
+            border-top-color:var(--red);
+            border-radius:50%;
+            animation:spin 0.8s linear infinite;
+            margin-bottom:14px;
         }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .loading-text { font-size:1.2em; font-weight:600; color:var(--text); text-transform:uppercase; letter-spacing:1px; }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: var(--text);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* ─── TOAST ─── */
+        /* TOAST */
         .toast {
-            position: fixed;
-            top: 16px;
-            right: 16px;
-            background: var(--card2);
-            color: #fff;
-            padding: 12px 18px;
-            border-radius: 8px;
-            border-left: 4px solid var(--red);
-            font-size: 1em;
-            font-weight: 600;
-            opacity: 0;
-            transform: translateX(120%);
-            transition: all 0.25s ease;
-            z-index: 10000;
+            position:fixed; top:16px; right:16px;
+            background:var(--card2); color:#fff;
+            padding:12px 18px; border-radius:8px;
+            border-left:4px solid var(--red);
+            font-size:1em; font-weight:600;
+            opacity:0; transform:translateX(120%);
+            transition:all 0.25s ease; z-index:10000;
         }
+        .toast.show { opacity:1; transform:translateX(0); }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* ─── VERSION BADGE ─── */
         .version-badge {
-            position: fixed;
-            bottom: 12px;
-            left: 14px;
-            background: rgba(220,38,38,0.1);
-            color: rgba(220,38,38,0.6);
-            border: 1px solid rgba(220,38,38,0.2);
-            border-radius: 4px;
-            font-size: 0.75em;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            padding: 4px 8px;
-            z-index: 100;
+            position:fixed; bottom:12px; left:14px;
+            background:rgba(220,38,38,0.1); color:rgba(220,38,38,0.6);
+            border:1px solid rgba(220,38,38,0.2);
+            border-radius:4px; font-size:0.75em; font-weight:600;
+            letter-spacing:0.5px; padding:4px 8px; z-index:100;
         }
 
-        /* ─── EMERGENCY BUTTON ─── */
         .emergency-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #7f1d1d;
-            color: #fca5a5;
-            border: 1px solid #dc2626;
-            border-radius: 6px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 0.85em;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            padding: 8px 12px;
-            cursor: pointer;
+            position:absolute; top:0; right:0;
+            background:#7f1d1d; color:#fca5a5;
+            border:1px solid #dc2626; border-radius:6px;
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:0.85em; font-weight:700;
+            letter-spacing:0.5px; text-transform:uppercase;
+            padding:8px 12px; cursor:pointer;
         }
 
-        /* ─── DIVIDER ─── */
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 10px 0;
-        }
-
-        /* ─── SIGN-IN LAYOUT: two-column form wrapper ─── */
-        .signin-scroll {
-            flex: 1;
-            overflow-y: auto;
-            min-height: 0;
-        }
-
-        .signin-scroll::-webkit-scrollbar { width: 6px; }
-        .signin-scroll::-webkit-scrollbar-track { background: transparent; }
-        .signin-scroll::-webkit-scrollbar-thumb { background: var(--red); border-radius: 4px; }
-
-        /* ─── EMPTY STATE ─── */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--muted);
-            font-size: 1.1em;
-        }
+        .empty-state { text-align:center; padding:40px 20px; color:var(--muted); font-size:1.1em; }
+        .screen-title { font-size:2em; font-weight:800; color:var(--red-hover); text-transform:uppercase; letter-spacing:1px; margin-bottom:2px; }
+        .screen-sub { font-size:1em; color:var(--muted); margin-bottom:14px; }
     </style>
 </head>
 <body>
 
 <div class="version-badge">V · B777X</div>
 <div class="toast" id="toast"></div>
-
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text">Processing...</div>
@@ -645,15 +431,13 @@
 
 <div class="shell">
 
-    <!-- ─── HEADER ─── -->
+    <!-- HEADER -->
     <div class="header">
         <div class="header-logo">
-            <img src="https://narrowaisleservice.github.io/Flexi-Parts-System/flexi-logo-white.svg"
-                 alt="Flexi"
-                 onerror="this.style.display='none'">
+            <img src="https://narrowaisleservice.github.io/Flexi-Parts-System/flexi-logo-white.svg" alt="Flexi" onerror="this.style.display='none'">
         </div>
-        <div class="header-center">
-            <div class="site-sub">Visitor Management</div>
+        <div style="text-align:center;">
+            <div style="font-size:0.95em;color:var(--muted);">Visitor Management</div>
         </div>
         <div class="header-clock">
             <div class="time" id="clockTime">00:00:00</div>
@@ -661,16 +445,14 @@
         </div>
     </div>
 
-    <!-- ════════════════════════════════════════════
+    <!-- ══════════════════════════════════════
          WELCOME SCREEN
-    ════════════════════════════════════════════ -->
+    ══════════════════════════════════════ -->
     <div class="screen active" id="welcomeScreen">
-
-        <div class="welcome-hero card red-accent">
-            <div class="title">Welcome <span style="font-size:0.8em">👋</span></div>
+        <div class="welcome-hero">
+            <div class="title">Welcome 👋</div>
             <div class="tagline">Your Space, Our Expertise</div>
         </div>
-
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-label">Visitors Today</div>
@@ -681,171 +463,195 @@
                 <div class="stat-value" id="welcomeCurrentCount">—</div>
             </div>
         </div>
-
-        <div class="btn-row" style="margin-top: 10px;">
-            <button class="btn btn-primary" onclick="showScreen('signinScreen')">
-                📝 Sign In
-            </button>
-            <button class="btn btn-outline" onclick="showScreen('signoutScreen')">
-                👋 Sign Out
-            </button>
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="startSignIn()">📝 Sign In</button>
+            <button class="btn btn-outline" onclick="showScreen('signoutScreen')">👋 Sign Out</button>
         </div>
-
     </div>
 
-    <!-- ════════════════════════════════════════════
-         SIGN-IN SCREEN
-    ════════════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════
+         SIGN-IN WIZARD SCREEN
+    ══════════════════════════════════════ -->
     <div class="screen" id="signinScreen">
+        <div class="wizard-wrap">
 
-        <div style="flex-shrink:0; padding-bottom: 4px;">
-            <div class="screen-title">Visitor Sign-In</div>
-            <div class="screen-sub">Complete all required fields to register your visit</div>
-            <div class="progress-track">
-                <div class="progress-fill" id="progressFill"></div>
+            <!-- Step dots -->
+            <div class="step-dots" id="stepDots"></div>
+
+            <!-- STEP 1: Full Name -->
+            <div class="wizard-step active" id="step1">
+                <div class="step-inner">
+                    <div class="step-num">Step 1 of 6</div>
+                    <div class="step-question">What's your name?</div>
+                    <div class="step-hint">Enter your full name</div>
+                    <input class="step-input" type="text" id="visitorName" placeholder="e.g. John Smith" autocomplete="off" autocapitalize="words">
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-ghost" onclick="showScreen('welcomeScreen')">Cancel</button>
+                    <button class="btn btn-primary" onclick="nextStep(1)">Next →</button>
+                </div>
             </div>
-        </div>
 
-        <div class="signin-scroll">
-            <form id="signinForm">
+            <!-- STEP 2: Company -->
+            <div class="wizard-step" id="step2">
+                <div class="step-inner">
+                    <div class="step-num">Step 2 of 6</div>
+                    <div class="step-question">Which company are you from?</div>
+                    <div class="step-hint">Enter your company name</div>
+                    <input class="step-input" type="text" id="companyName" placeholder="e.g. Acme Ltd" autocomplete="off" autocapitalize="words">
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-ghost" onclick="prevStep(2)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(2)">Next →</button>
+                </div>
+            </div>
 
-                <div class="card">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Full Name <span class="req">*</span></label>
-                            <input type="text" id="visitorName" placeholder="e.g. John Smith" required>
+            <!-- STEP 3: Who are you here to see -->
+            <div class="wizard-step" id="step3">
+                <div class="step-inner">
+                    <div class="step-num">Step 3 of 6</div>
+                    <div class="step-question">Who are you here to see?</div>
+                    <div class="step-hint">Select from the list below</div>
+                    <select class="host-select" id="hostName">
+                        <option value="">— Select person —</option>
+                        <option value="Alex Coley|A.Coley@narrowaisle.co.uk">Alex Coley – Technical Support</option>
+                        <option value="Beth Henley|b.henley@narrowaisle.co.uk">Beth Henley – Rental Manager</option>
+                        <option value="Chloe Burrows|c.burrows@narrowaisle.co.uk">Chloe Burrows – Service Controller</option>
+                        <option value="Donald Houston|d.houston@narrowaisle.co.uk">Donald Houston – Group MD</option>
+                        <option value="Emma Partridge|e.partridge@narrowaisle.co.uk">Emma Partridge – Credit Controller</option>
+                        <option value="Eric Holt|e.holt@narrowaisle.co.uk">Eric Holt – Head of Operations</option>
+                        <option value="Gavin Martin|g.martin@narrowaisle.co.uk">Gavin Martin – Head of International</option>
+                        <option value="Guy Whitehurst|g.whitehurst@narrowaisle.co.uk">Guy Whitehurst – Business Ops Manager</option>
+                        <option value="James Williams|J.Williams@narrowaisle.co.uk">James Williams – Parts &amp; Service</option>
+                        <option value="Jane Robbins|j.robbins@narrowaisle.co.uk">Jane Robbins – Service Controller</option>
+                        <option value="Jim Barker|j.barker@narrowaisle.co.uk">Jim Barker – Production Manager</option>
+                        <option value="Joseph Wesley|jt.wesley@narrowaisle.co.uk">Joseph Wesley – Used Truck Sales</option>
+                        <option value="Karen Bell|k.bell@narrowaisle.co.uk">Karen Bell – Service Controller</option>
+                        <option value="Kellie Jones|ka.jones@narrowaisle.co.uk">Kellie Jones – Purchase Ledger</option>
+                        <option value="Kris Jones|parts@narrowaisle.co.uk">Kris Jones – Parts Controller</option>
+                        <option value="Lee Burt|l.burt@narrowaisle.co.uk">Lee Burt – Head of Service &amp; Parts</option>
+                        <option value="Martin Jones|martin.jones@narrowaisle.co.uk">Martin Jones – Strategic Development</option>
+                        <option value="Michael Coley|m.coley@narrowaisle.co.uk">Michael Coley – QMS Engineer</option>
+                        <option value="Michelle Ball|m.ball@narrowaisle.co.uk">Michelle Ball – Payroll</option>
+                        <option value="Nigel Langford|n.langford@narrowaisle.co.uk">Nigel Langford – Scheduling &amp; Quality</option>
+                        <option value="Paul Burns|p.burns@narrowaisle.co.uk">Paul Burns – Design Engineer</option>
+                        <option value="Phil Grant|p.grant@narrowaisle.co.uk">Phil Grant – Operations Service Manager</option>
+                        <option value="Rob Edwards|r.edwards@narrowaisle.co.uk">Rob Edwards – Strategic Account Manager</option>
+                        <option value="Sarah Lockley|s.lockley@narrowaisle.co.uk">Sarah Lockley – Finance &amp; Personnel</option>
+                        <option value="Steve Clark|s.clark@narrowaisle.co.uk">Steve Clark – Financial Controller</option>
+                        <option value="Steve Moore|steven.m@narrowaisle.co.uk">Steve Moore – Design Engineer</option>
+                        <option value="Steve Seymour|s.seymour@narrowaisle.co.uk">Steve Seymour – Training Manager</option>
+                        <option value="Stuart Hill|s.hill@narrowaisle.co.uk">Stuart Hill – Senior Designer</option>
+                    </select>
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-ghost" onclick="prevStep(3)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(3)">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Purpose of visit (tap tiles) -->
+            <div class="wizard-step" id="step4">
+                <div class="step-inner" style="max-width:560px;">
+                    <div class="step-num">Step 4 of 6</div>
+                    <div class="step-question">Purpose of visit?</div>
+                    <div class="step-hint">Tap to select</div>
+                    <div class="option-grid">
+                        <div class="option-tile" onclick="selectPurpose('Meeting',this)"><span class="tile-icon">🤝</span>Meeting</div>
+                        <div class="option-tile" onclick="selectPurpose('Delivery',this)"><span class="tile-icon">📦</span>Delivery</div>
+                        <div class="option-tile" onclick="selectPurpose('Service',this)"><span class="tile-icon">🔧</span>Service</div>
+                        <div class="option-tile" onclick="selectPurpose('Interview',this)"><span class="tile-icon">💼</span>Interview</div>
+                        <div class="option-tile" style="grid-column:1/-1;" onclick="selectPurpose('Other',this)"><span class="tile-icon">📋</span>Other</div>
+                    </div>
+                    <input type="hidden" id="visitPurpose">
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-ghost" onclick="prevStep(4)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(4)">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: Optional details -->
+            <div class="wizard-step" id="step5">
+                <div class="step-inner">
+                    <div class="step-num">Step 5 of 6</div>
+                    <div class="step-question">A couple of optional details</div>
+                    <div class="step-hint">Leave blank if not applicable</div>
+                    <input class="step-input" type="text" id="vehicleReg" placeholder="Vehicle reg (optional)" autocomplete="off" style="text-transform:uppercase; margin-bottom:12px;">
+                    <input class="step-input" type="email" id="visitorEmail" placeholder="Your email (optional)" autocomplete="off">
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-ghost" onclick="prevStep(5)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(5)">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 6: Safety & GDPR consent -->
+            <div class="wizard-step" id="step6" style="justify-content:flex-start;">
+                <div style="text-align:center; flex-shrink:0; padding-bottom:10px; width:100%;">
+                    <div class="step-num">Step 6 of 6</div>
+                    <div class="step-question" style="font-size:1.8em;">Almost done!</div>
+                    <div class="step-hint">Please read and confirm below</div>
+                </div>
+                <div class="consent-scroll">
+                    <div class="info-panel safety">
+                        <h3>⚠️ Health &amp; Safety</h3>
+                        <ul>
+                            <li><strong>🚨 Fire Assembly Point:</strong> Main Car Park</li>
+                            <li><strong>🏥 First Aiders:</strong> Wear green hi-vis vests</li>
+                            <li><strong>🚹 Men's Toilets:</strong> Through main entrance, on right</li>
+                            <li><strong>🚺 Women's Toilets:</strong> Through office, towards kitchen, left</li>
+                        </ul>
+                    </div>
+                    <div class="info-panel gdpr">
+                        <h3>🔒 Data Protection &amp; Privacy (GDPR)</h3>
+                        <p><strong>We respect your privacy.</strong> Your information is processed in accordance with UK GDPR and Data Protection Act 2018.</p>
+                        <p><strong>Why we collect your data:</strong> Health &amp; Safety compliance, security and premises management, and communication with your host.</p>
+                        <p>Data is stored securely and retained only as long as necessary. You have the right to access, correct, or request deletion of your data.</p>
+                    </div>
+                    <div style="background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px;">
+                        <div class="check-group">
+                            <input type="checkbox" id="safetyAgree">
+                            <label for="safetyAgree">I understand and accept the Health &amp; Safety information <span class="req">*</span></label>
                         </div>
-                        <div class="form-group">
-                            <label>Company Name <span class="req">*</span></label>
-                            <input type="text" id="companyName" placeholder="e.g. Acme Ltd" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Here to see <span class="req">*</span></label>
-                            <select id="hostName" required>
-                                <option value="">— Select person —</option>
-                                <option value="Alex Coley|A.Coley@narrowaisle.co.uk">Alex Coley – Technical Support</option>
-                                <option value="Beth Henley|b.henley@narrowaisle.co.uk">Beth Henley – Rental Manager</option>
-                                <option value="Chloe Burrows|c.burrows@narrowaisle.co.uk">Chloe Burrows – Service Controller</option>
-                                <option value="Donald Houston|d.houston@narrowaisle.co.uk">Donald Houston – Group MD</option>
-                                <option value="Emma Partridge|e.partridge@narrowaisle.co.uk">Emma Partridge – Credit Controller</option>
-                                <option value="Eric Holt|e.holt@narrowaisle.co.uk">Eric Holt – Head of Operations</option>
-                                <option value="Gavin Martin|g.martin@narrowaisle.co.uk">Gavin Martin – Head of International</option>
-                                <option value="Guy Whitehurst|g.whitehurst@narrowaisle.co.uk">Guy Whitehurst – Business Ops Manager</option>
-                                <option value="James Williams|J.Williams@narrowaisle.co.uk">James Williams – Parts &amp; Service</option>
-                                <option value="Jane Robbins|j.robbins@narrowaisle.co.uk">Jane Robbins – Service Controller</option>
-                                <option value="Jim Barker|j.barker@narrowaisle.co.uk">Jim Barker – Production Manager</option>
-                                <option value="Joseph Wesley|jt.wesley@narrowaisle.co.uk">Joseph Wesley – Used Truck Sales</option>
-                                <option value="Karen Bell|k.bell@narrowaisle.co.uk">Karen Bell – Service Controller</option>
-                                <option value="Kellie Jones|ka.jones@narrowaisle.co.uk">Kellie Jones – Purchase Ledger</option>
-                                <option value="Kris Jones|parts@narrowaisle.co.uk">Kris Jones – Parts Controller</option>
-                                <option value="Lee Burt|l.burt@narrowaisle.co.uk">Lee Burt – Head of Service &amp; Parts</option>
-                                <option value="Martin Jones|martin.jones@narrowaisle.co.uk">Martin Jones – Strategic Development</option>
-                                <option value="Michael Coley|m.coley@narrowaisle.co.uk">Michael Coley – QMS Engineer</option>
-                                <option value="Michelle Ball|m.ball@narrowaisle.co.uk">Michelle Ball – Payroll</option>
-                                <option value="Nigel Langford|n.langford@narrowaisle.co.uk">Nigel Langford – Scheduling &amp; Quality</option>
-                                <option value="Paul Burns|p.burns@narrowaisle.co.uk">Paul Burns – Design Engineer</option>
-                                <option value="Phil Grant|p.grant@narrowaisle.co.uk">Phil Grant – Operations Service Manager</option>
-                                <option value="Rob Edwards|r.edwards@narrowaisle.co.uk">Rob Edwards – Strategic Account Manager</option>
-                                <option value="Sarah Lockley|s.lockley@narrowaisle.co.uk">Sarah Lockley – Finance &amp; Personnel</option>
-                                <option value="Steve Clark|s.clark@narrowaisle.co.uk">Steve Clark – Financial Controller</option>
-                                <option value="Steve Moore|steven.m@narrowaisle.co.uk">Steve Moore – Design Engineer</option>
-                                <option value="Steve Seymour|s.seymour@narrowaisle.co.uk">Steve Seymour – Training Manager</option>
-                                <option value="Stuart Hill|s.hill@narrowaisle.co.uk">Stuart Hill – Senior Designer</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Purpose of Visit <span class="req">*</span></label>
-                            <select id="visitPurpose" required>
-                                <option value="">— Select purpose —</option>
-                                <option value="Meeting">🤝 Meeting</option>
-                                <option value="Delivery">📦 Delivery</option>
-                                <option value="Service">🔧 Service</option>
-                                <option value="Interview">💼 Interview</option>
-                                <option value="Other">📋 Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Vehicle Registration <span style="color:var(--muted); text-transform:none; letter-spacing:0;">(optional)</span></label>
-                            <input type="text" id="vehicleReg" placeholder="e.g. AB12 CDE" style="text-transform:uppercase;">
-                        </div>
-                        <div class="form-group">
-                            <label>Your Email <span style="color:var(--muted); text-transform:none; letter-spacing:0;">(optional)</span></label>
-                            <input type="email" id="visitorEmail" placeholder="your@email.com">
+                        <div class="check-group">
+                            <input type="checkbox" id="gdprAgree">
+                            <label for="gdprAgree">I consent to my data being processed in accordance with the GDPR statement above <span class="req">*</span></label>
                         </div>
                     </div>
                 </div>
-
-                <!-- Health & Safety -->
-                <div class="info-panel safety">
-                    <h3>⚠️ Health &amp; Safety</h3>
-                    <ul>
-                        <li><strong>🚨 Fire Assembly Point:</strong> Main Car Park</li>
-                        <li><strong>🏥 First Aiders:</strong> Wear green hi-vis vests</li>
-                        <li><strong>🚹 Men's Toilets:</strong> Through main entrance, on right</li>
-                        <li><strong>🚺 Women's Toilets:</strong> Through office, towards kitchen, left</li>
-                    </ul>
+                <div class="step-nav" style="flex-shrink:0; margin-top:10px;">
+                    <button class="btn btn-ghost" onclick="prevStep(6)">← Back</button>
+                    <button class="btn btn-primary" onclick="submitSignIn()">✅ Sign In</button>
                 </div>
+            </div>
 
-                <!-- GDPR -->
-                <div class="info-panel gdpr">
-                    <h3>🔒 Data Protection &amp; Privacy (GDPR)</h3>
-                    <p><strong>We respect your privacy.</strong> Your information is processed in accordance with UK GDPR and Data Protection Act 2018.</p>
-                    <p><strong>Why we collect your data:</strong> Health &amp; Safety compliance, security and premises management, and communication with your host.</p>
-                    <p>Data is stored securely and retained only as long as necessary. You have the right to access, correct, or request deletion of your data. We will not share your data with third parties without consent.</p>
-                </div>
-
-                <!-- Consent checkboxes -->
-                <div class="card" style="padding: 14px 16px;">
-                    <div class="check-group">
-                        <input type="checkbox" id="safetyAgree" required>
-                        <label for="safetyAgree">I understand and accept the Health &amp; Safety information <span class="req">*</span></label>
-                    </div>
-                    <div class="check-group">
-                        <input type="checkbox" id="gdprAgree" required>
-                        <label for="gdprAgree">I consent to my data being processed in accordance with the GDPR statement above <span class="req">*</span></label>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; padding-bottom: 16px;">
-                    <button type="submit" class="btn btn-primary">Submit Sign-In</button>
-                    <button type="button" class="btn btn-outline" onclick="showScreen('welcomeScreen')">Cancel</button>
-                </div>
-
-            </form>
         </div>
     </div>
 
-    <!-- ════════════════════════════════════════════
+    <!-- ══════════════════════════════════════
          SUCCESS SCREEN
-    ════════════════════════════════════════════ -->
-    <div class="screen" id="successScreen" style="justify-content: center; align-items: center; padding: 20px;">
-
-        <div class="success-box" style="max-width: 500px; width: 100%;">
+    ══════════════════════════════════════ -->
+    <div class="screen" id="successScreen" style="justify-content:center; align-items:center; padding:20px;">
+        <div class="success-box">
             <div class="success-icon">✅</div>
             <div class="success-title">Signed In!</div>
             <div class="success-sub">Thank you for registering your visit</div>
             <div class="success-host" id="successHostBox">—</div>
         </div>
-
-        <button class="btn btn-outline" style="margin-top: 20px; max-width: 500px;"
-                onclick="showScreen('welcomeScreen')">
-            ← Back to Welcome
-        </button>
-
+        <button class="btn btn-outline" style="margin-top:20px; max-width:500px;" onclick="showScreen('welcomeScreen')">← Back to Welcome</button>
     </div>
 
-    <!-- ════════════════════════════════════════════
+    <!-- ══════════════════════════════════════
          SIGN-OUT SCREEN
-    ════════════════════════════════════════════ -->
+    ══════════════════════════════════════ -->
     <div class="screen" id="signoutScreen">
-
-        <div style="flex-shrink:0; position: relative; padding-bottom: 4px;">
+        <div style="flex-shrink:0; position:relative; padding-bottom:4px;">
             <div class="screen-title">Sign Out</div>
             <div class="screen-sub">Select your name to sign out</div>
             <button class="emergency-btn" onclick="triggerEmergencyMode()">🚨 Emergency</button>
         </div>
-
-        <div class="stats-row" style="flex-shrink:0; margin-bottom: 10px;">
+        <div class="stats-row" style="flex-shrink:0; margin-bottom:10px;">
             <div class="stat-card">
                 <div class="stat-label">Visitors Today</div>
                 <div class="stat-value" id="statsTodayCount">—</div>
@@ -855,240 +661,253 @@
                 <div class="stat-value" id="statsCurrentCount">—</div>
             </div>
         </div>
-
         <div id="visitorList" style="flex:1; overflow-y:auto; min-height:0;"></div>
-
-        <button class="btn btn-outline btn-sm" onclick="showScreen('welcomeScreen')"
-                style="margin-top: 10px; flex-shrink:0;">
-            ← Back to Welcome
-        </button>
-
+        <button class="btn btn-outline btn-sm" onclick="showScreen('welcomeScreen')" style="margin-top:10px; flex-shrink:0;">← Back to Welcome</button>
     </div>
 
-</div><!-- /shell -->
+</div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
+const TOTAL_STEPS = 6;
+let currentStep = 1;
+let selectedPurpose = '';
 
-    /* ─── CLOCK ─── */
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('clockTime').textContent = now.toLocaleTimeString('en-GB');
-        document.getElementById('clockDate').textContent = now.toLocaleDateString('en-GB', {
-            weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+/* ── CLOCK ── */
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clockTime').textContent = now.toLocaleTimeString('en-GB');
+    document.getElementById('clockDate').textContent = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ── SCREEN SWITCHING ── */
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'signoutScreen') loadTodaysVisitors();
+    if (id === 'welcomeScreen') loadWelcomeStats();
+    if (id === 'successScreen') setTimeout(() => showScreen('welcomeScreen'), 30000);
+}
+
+/* ── WIZARD ── */
+function buildDots() {
+    const dots = document.getElementById('stepDots');
+    dots.innerHTML = '';
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+        const d = document.createElement('div');
+        d.className = 'step-dot' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
+        dots.appendChild(d);
+    }
+}
+
+function startSignIn() {
+    currentStep = 1;
+    selectedPurpose = '';
+    // clear all inputs
+    ['visitorName','companyName','vehicleReg','visitorEmail'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('hostName').value = '';
+    document.getElementById('visitPurpose').value = '';
+    document.querySelectorAll('.option-tile').forEach(t => t.classList.remove('selected'));
+    document.getElementById('safetyAgree').checked = false;
+    document.getElementById('gdprAgree').checked = false;
+    showStepUI(1, false);
+    showScreen('signinScreen');
+}
+
+function showStepUI(n, goingBack) {
+    document.querySelectorAll('.wizard-step').forEach(s => {
+        s.classList.remove('active','going-back');
+    });
+    const step = document.getElementById('step' + n);
+    if (goingBack) step.classList.add('going-back');
+    step.classList.add('active');
+    currentStep = n;
+    buildDots();
+    // Auto-focus first input on text steps
+    const inp = step.querySelector('.step-input, .host-select');
+    if (inp && inp.tagName !== 'SELECT') setTimeout(() => inp.focus(), 300);
+}
+
+function nextStep(from) {
+    // Validate current step
+    if (from === 1) {
+        if (!document.getElementById('visitorName').value.trim()) { showToast('⚠ Please enter your name'); return; }
+    }
+    if (from === 2) {
+        if (!document.getElementById('companyName').value.trim()) { showToast('⚠ Please enter your company name'); return; }
+    }
+    if (from === 3) {
+        if (!document.getElementById('hostName').value) { showToast('⚠ Please select who you are here to see'); return; }
+    }
+    if (from === 4) {
+        if (!selectedPurpose) { showToast('⚠ Please select a purpose'); return; }
+    }
+    if (from < TOTAL_STEPS) showStepUI(from + 1, false);
+}
+
+function prevStep(from) {
+    if (from > 1) showStepUI(from - 1, true);
+}
+
+function selectPurpose(purpose, el) {
+    selectedPurpose = purpose;
+    document.getElementById('visitPurpose').value = purpose;
+    document.querySelectorAll('.option-tile').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+    // Auto-advance after short delay
+    setTimeout(() => nextStep(4), 350);
+}
+
+/* ── SUBMIT ── */
+async function submitSignIn() {
+    if (!document.getElementById('safetyAgree').checked) { showToast('⚠ Please accept the Health & Safety information'); return; }
+    if (!document.getElementById('gdprAgree').checked) { showToast('⚠ Please accept the GDPR consent'); return; }
+
+    showLoading('Signing in...');
+
+    const hostParts = document.getElementById('hostName').value.split('|');
+    const data = {
+        action: 'signin',
+        timestamp: new Date().toISOString(),
+        date: new Date().toLocaleDateString('en-GB'),
+        timeIn: new Date().toLocaleTimeString('en-GB'),
+        visitorName: document.getElementById('visitorName').value.trim(),
+        companyName: document.getElementById('companyName').value.trim(),
+        hostName: hostParts[0],
+        hostEmail: hostParts[1] || '',
+        visitPurpose: selectedPurpose,
+        vehicleReg: document.getElementById('vehicleReg').value.trim(),
+        visitorEmail: document.getElementById('visitorEmail').value.trim(),
+        status: 'Signed In'
+    };
+
+    try {
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
+        await new Promise(r => setTimeout(r, 1000));
+        hideLoading();
+        document.getElementById('successHostBox').innerHTML =
+            `<strong>${data.hostName}</strong> has been notified 📧<br>
+             <span style="font-size:0.9em;color:var(--muted)">Please wait at reception</span>`;
+        showScreen('successScreen');
+        showToast('✅ Signed in successfully');
+    } catch {
+        hideLoading();
+        showToast('❌ Error – please try again');
     }
-    updateClock();
-    setInterval(updateClock, 1000);
+}
 
-    /* ─── SCREENS ─── */
-    function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        const s = document.getElementById(id);
-        s.classList.add('active');
-        if (s.querySelector('.signin-scroll')) s.querySelector('.signin-scroll').scrollTop = 0;
-
-        if (id === 'signoutScreen') loadTodaysVisitors();
-        if (id === 'welcomeScreen') loadWelcomeStats();
-        if (id === 'successScreen') setTimeout(() => showScreen('welcomeScreen'), 30000);
+/* ── WELCOME STATS ── */
+async function loadWelcomeStats() {
+    try {
+        const today = new Date().toLocaleDateString('en-GB');
+        const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}`);
+        const visitors = await r.json();
+        const current = visitors.filter(v => v.status === 'Signed In');
+        document.getElementById('welcomeTodayCount').textContent = visitors.length;
+        document.getElementById('welcomeCurrentCount').textContent = current.length;
+    } catch {
+        document.getElementById('welcomeTodayCount').textContent = '0';
+        document.getElementById('welcomeCurrentCount').textContent = '0';
     }
+}
+loadWelcomeStats();
+setInterval(loadWelcomeStats, 30000);
 
-    /* ─── LOADING ─── */
-    function showLoading(msg = 'Processing...') {
-        document.getElementById('loadingOverlay').querySelector('.loading-text').textContent = msg;
-        document.getElementById('loadingOverlay').classList.add('show');
-    }
-    function hideLoading() {
-        document.getElementById('loadingOverlay').classList.remove('show');
-    }
-
-    /* ─── TOAST ─── */
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    /* ─── PROGRESS ─── */
-    document.querySelectorAll('#signinForm [required]').forEach(f => {
-        f.addEventListener('input', updateProgress);
-        f.addEventListener('change', updateProgress);
-    });
-
-    function updateProgress() {
-        const fields = document.querySelectorAll('#signinForm [required]');
-        const filled = Array.from(fields).filter(f =>
-            f.type === 'checkbox' ? f.checked : f.value.trim() !== ''
-        ).length;
-        document.getElementById('progressFill').style.width = (filled / fields.length * 100) + '%';
-    }
-
-    /* ─── WELCOME STATS ─── */
-    async function loadWelcomeStats() {
-        try {
-            const today = new Date().toLocaleDateString('en-GB');
-            const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}`);
-            const visitors = await r.json();
-            const current = visitors.filter(v => v.status === 'Signed In');
-            document.getElementById('welcomeTodayCount').textContent = visitors.length;
-            document.getElementById('welcomeCurrentCount').textContent = current.length;
-        } catch {
-            document.getElementById('welcomeTodayCount').textContent = '0';
-            document.getElementById('welcomeCurrentCount').textContent = '0';
-        }
-    }
-    loadWelcomeStats();
-    setInterval(loadWelcomeStats, 30000);
-
-    /* ─── SIGN IN ─── */
-    document.getElementById('signinForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        showLoading('Signing in...');
-
-        const hostParts = document.getElementById('hostName').value.split('|');
-        const data = {
-            action: 'signin',
-            timestamp: new Date().toISOString(),
-            date: new Date().toLocaleDateString('en-GB'),
-            timeIn: new Date().toLocaleTimeString('en-GB'),
-            visitorName: document.getElementById('visitorName').value,
-            companyName: document.getElementById('companyName').value,
-            hostName: hostParts[0],
-            hostEmail: hostParts[1],
-            visitPurpose: document.getElementById('visitPurpose').value,
-            vehicleReg: document.getElementById('vehicleReg').value,
-            visitorEmail: document.getElementById('visitorEmail').value,
-            status: 'Signed In'
-        };
-
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            await new Promise(r => setTimeout(r, 1000));
-            hideLoading();
-
-            document.getElementById('successHostBox').innerHTML =
-                `<strong>${data.hostName}</strong> has been notified 📧<br>
-                 <span style="font-size:0.9em; color:var(--muted)">Please wait at reception</span>`;
-
-            showScreen('successScreen');
-            showToast('✅ Signed in successfully');
-            document.getElementById('signinForm').reset();
-            document.getElementById('progressFill').style.width = '0%';
-
-        } catch {
-            hideLoading();
-            showToast('❌ Error – please try again');
-        }
-    });
-
-    /* ─── SIGN OUT LIST ─── */
-    async function loadTodaysVisitors() {
-        const list = document.getElementById('visitorList');
-        showLoading('Loading visitors...');
-        list.innerHTML = '';
-
-        try {
-            const today = new Date().toLocaleDateString('en-GB');
-            const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}`);
-            const visitors = await r.json();
-            const current = visitors.filter(v => v.status === 'Signed In');
-
-            document.getElementById('statsTodayCount').textContent = visitors.length;
-            document.getElementById('statsCurrentCount').textContent = current.length;
-            hideLoading();
-
-            if (current.length === 0) {
-                list.innerHTML = '<div class="empty-state">📭 No visitors currently signed in</div>';
-            } else {
-                list.innerHTML = current.map(v => `
-                    <div class="visitor-row">
-                        <div>
-                            <div class="visitor-name">👤 ${v.visitorName}</div>
-                            <div class="visitor-meta">🏢 ${v.companyName} &nbsp;·&nbsp; 👨‍💼 ${v.hostName} &nbsp;·&nbsp; ⏰ ${v.timeIn}</div>
-                        </div>
-                        <button class="btn btn-primary btn-sm"
-                                onclick="signOut('${v.id}', '${v.visitorName}')">
-                            Sign Out →
-                        </button>
+/* ── SIGN OUT ── */
+async function loadTodaysVisitors() {
+    const list = document.getElementById('visitorList');
+    showLoading('Loading visitors...');
+    list.innerHTML = '';
+    try {
+        const today = new Date().toLocaleDateString('en-GB');
+        const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}`);
+        const visitors = await r.json();
+        const current = visitors.filter(v => v.status === 'Signed In');
+        document.getElementById('statsTodayCount').textContent = visitors.length;
+        document.getElementById('statsCurrentCount').textContent = current.length;
+        hideLoading();
+        if (current.length === 0) {
+            list.innerHTML = '<div class="empty-state">📭 No visitors currently signed in</div>';
+        } else {
+            list.innerHTML = current.map(v => `
+                <div class="visitor-row">
+                    <div>
+                        <div class="visitor-name">👤 ${v.visitorName}</div>
+                        <div class="visitor-meta">🏢 ${v.companyName} &nbsp;·&nbsp; 👨‍💼 ${v.hostName} &nbsp;·&nbsp; ⏰ ${v.timeIn}</div>
                     </div>
-                `).join('');
-            }
-        } catch {
-            hideLoading();
-            list.innerHTML = '<div class="empty-state" style="color:#f87171;">❌ Error loading visitors</div>';
+                    <button class="btn btn-primary btn-sm" onclick="signOut('${v.id}','${v.visitorName}')">Sign Out →</button>
+                </div>`).join('');
         }
+    } catch {
+        hideLoading();
+        list.innerHTML = '<div class="empty-state" style="color:#f87171;">❌ Error loading visitors</div>';
     }
+}
 
-    async function signOut(id, name) {
-        if (!confirm(`Sign out ${name}?`)) return;
-        showLoading('Signing out...');
-
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'signout',
-                    id: id,
-                    timeOut: new Date().toLocaleTimeString('en-GB'),
-                    status: 'Signed Out'
-                })
-            });
-
-            await new Promise(r => setTimeout(r, 1000));
-            hideLoading();
-            showToast(`✅ ${name} signed out`);
-            setTimeout(loadTodaysVisitors, 400);
-        } catch {
-            hideLoading();
-            showToast('❌ Error – please try again');
-        }
+async function signOut(id, name) {
+    if (!confirm(`Sign out ${name}?`)) return;
+    showLoading('Signing out...');
+    try {
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action:'signout', id, timeOut:new Date().toLocaleTimeString('en-GB'), status:'Signed Out' })
+        });
+        await new Promise(r => setTimeout(r, 1000));
+        hideLoading();
+        showToast(`✅ ${name} signed out`);
+        setTimeout(loadTodaysVisitors, 400);
+    } catch {
+        hideLoading();
+        showToast('❌ Error – please try again');
     }
+}
 
-    /* ─── EMERGENCY ─── */
-    async function triggerEmergencyMode() {
-        const pwd = prompt('⚠️ EMERGENCY MODE\n\nEnter password:');
-        if (pwd !== 'FLEXI2026') {
-            if (pwd !== null) alert('❌ Incorrect password');
-            return;
+/* ── EMERGENCY ── */
+async function triggerEmergencyMode() {
+    const pwd = prompt('⚠️ EMERGENCY MODE\n\nEnter password:');
+    if (pwd !== 'FLEXI2026') { if (pwd !== null) alert('❌ Incorrect password'); return; }
+    if (!confirm('🚨 Sign out ALL visitors on-site?')) return;
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(180,0,0,0.97);display:flex;align-items:center;justify-content:center;z-index:20000;color:#fff;font-family:Barlow Condensed,sans-serif;font-size:2.5em;font-weight:800;text-align:center;text-transform:uppercase;letter-spacing:2px;';
+    overlay.innerHTML = '<div><div style="font-size:1.5em">🚨</div><div>Emergency Sign-Out</div><div style="font-size:0.5em;margin-top:12px;opacity:0.7">Processing...</div></div>';
+    document.body.appendChild(overlay);
+    try {
+        const today = new Date().toLocaleDateString('en-GB');
+        const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}`);
+        const visitors = await r.json();
+        const timeOut = new Date().toLocaleTimeString('en-GB');
+        for (const v of visitors.filter(v => v.status === 'Signed In')) {
+            await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ action:'signout', id:v.id, timeOut, status:'Emergency Sign Out' }) });
         }
-        if (!confirm('🚨 Sign out ALL visitors on-site?')) return;
-
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(180,0,0,0.97);display:flex;align-items:center;justify-content:center;z-index:20000;color:#fff;font-family:Barlow Condensed,sans-serif;font-size:2.5em;font-weight:800;text-align:center;text-transform:uppercase;letter-spacing:2px;';
-        overlay.innerHTML = '<div><div style="font-size:1.5em">🚨</div><div>Emergency Sign-Out</div><div style="font-size:0.5em;margin-top:12px;opacity:0.7">Processing...</div></div>';
-        document.body.appendChild(overlay);
-
-        try {
-            const today = new Date().toLocaleDateString('en-GB');
-            const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}`);
-            const visitors = await r.json();
-            const timeOut = new Date().toLocaleTimeString('en-GB');
-
-            for (const v of visitors.filter(v => v.status === 'Signed In')) {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'signout', id: v.id, timeOut, status: 'Emergency Sign Out' })
-                });
-            }
-
-            overlay.innerHTML = '<div><div style="font-size:1.5em">✅</div><div>Complete</div></div>';
-            setTimeout(() => { overlay.remove(); loadTodaysVisitors(); }, 3000);
-        } catch {
-            overlay.innerHTML = '<div><div style="font-size:1.5em">❌</div><div>Error</div></div>';
-            setTimeout(() => overlay.remove(), 3000);
-        }
+        overlay.innerHTML = '<div><div style="font-size:1.5em">✅</div><div>Complete</div></div>';
+        setTimeout(() => { overlay.remove(); loadTodaysVisitors(); }, 3000);
+    } catch {
+        overlay.innerHTML = '<div><div style="font-size:1.5em">❌</div><div>Error</div></div>';
+        setTimeout(() => overlay.remove(), 3000);
     }
+}
+
+/* ── LOADING / TOAST ── */
+function showLoading(msg='Processing...') {
+    document.getElementById('loadingOverlay').querySelector('.loading-text').textContent = msg;
+    document.getElementById('loadingOverlay').classList.add('show');
+}
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
 </script>
 </body>
 </html>
