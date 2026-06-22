@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
-    <title>Flexi Visitor Sign-In</title>
+    <title>Visitor Sign-In</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -42,7 +42,6 @@
             padding:16px 18px;
         }
 
-        /* HEADER */
         .header {
             display:flex;
             align-items:center;
@@ -55,17 +54,43 @@
             flex-shrink:0;
             box-shadow:0 8px 32px rgba(220,38,38,0.08);
             backdrop-filter:blur(10px);
+            position:relative;
         }
         .header-logo img { height:42px; display:block; }
         .header-clock { text-align:right; }
         .header-clock .time { font-size:1.7em; font-weight:800; color:var(--red); letter-spacing:-0.5px; }
         .header-clock .date { font-size:0.75em; color:var(--text-muted); font-weight:600; margin-top:2px; }
 
-        /* SCREENS */
+        .lang-selector {
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            display:flex;
+            gap:8px;
+        }
+        .lang-btn {
+            width:40px;
+            height:40px;
+            border-radius:50%;
+            border:2px solid var(--border);
+            background:var(--card2);
+            color:var(--text-muted);
+            font-weight:700;
+            cursor:pointer;
+            font-size:1.4em;
+            transition:all 0.2s;
+        }
+        .lang-btn.active {
+            border-color:var(--red);
+            background:var(--red);
+            color:#fff;
+            box-shadow:0 0 12px rgba(220,38,38,0.4);
+        }
+
         .screen { display:none; flex:1; flex-direction:column; min-height:0; }
         .screen.active { display:flex; }
 
-        /* WELCOME */
         .welcome-hero {
             background:linear-gradient(135deg, var(--card2) 0%, rgba(220,38,38,0.06) 100%);
             border:1px solid var(--red-border);
@@ -76,27 +101,9 @@
             box-shadow:0 8px 32px rgba(220,38,38,0.08);
             backdrop-filter:blur(10px);
         }
-        .welcome-hero .title { font-size:2.9em; font-weight:900; color:#fff; text-transform:uppercase; letter-spacing:-0.5px; }
         .welcome-hero .tagline { font-size:1.05em; color:var(--text-muted); font-weight:500; margin-top:8px; letter-spacing:0.5px; }
 
-        .stats-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
-        .cta-banner {
-            background:linear-gradient(135deg, rgba(220,38,38,0.2) 0%, rgba(220,38,38,0.1) 100%);
-            border:1.5px solid var(--red);
-            border-radius:12px;
-            padding:18px 20px;
-            text-align:center;
-            margin-bottom:14px;
-            box-shadow:0 0 24px rgba(220,38,38,0.25);
-            animation:ctaPulse 2s ease-in-out infinite;
-        }
-        @keyframes ctaPulse {
-            0%, 100% { box-shadow:0 0 24px rgba(220,38,38,0.25); }
-            50% { box-shadow:0 0 32px rgba(220,38,38,0.35); }
-        }
-        .cta-banner .cta-icon { font-size:1.8em; margin-bottom:8px; }
-        .cta-banner .cta-text { font-size:1.4em; font-weight:800; color:var(--red); text-transform:uppercase; letter-spacing:1px; }
-        .cta-banner .cta-sub { font-size:0.85em; color:var(--text-muted); margin-top:4px; font-weight:600; }
+        .stats-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
         .stat-card { 
             background:var(--card);
             border:1px solid var(--border);
@@ -118,7 +125,6 @@
 
         .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:auto; }
 
-        /* BUTTONS */
         .btn {
             font-family:'Barlow Condensed',sans-serif;
             font-size:1.35em;
@@ -175,7 +181,24 @@
             padding:12px 14px;
         }
 
-        /* WIZARD */
+        .cta-banner {
+            background:linear-gradient(135deg, rgba(220,38,38,0.2) 0%, rgba(220,38,38,0.1) 100%);
+            border:1.5px solid var(--red);
+            border-radius:12px;
+            padding:18px 20px;
+            text-align:center;
+            margin-bottom:14px;
+            box-shadow:0 0 24px rgba(220,38,38,0.25);
+            animation:ctaPulse 2s ease-in-out infinite;
+        }
+        @keyframes ctaPulse {
+            0%, 100% { box-shadow:0 0 24px rgba(220,38,38,0.25); }
+            50% { box-shadow:0 0 32px rgba(220,38,38,0.35); }
+        }
+        .cta-banner .cta-icon { font-size:1.8em; margin-bottom:8px; }
+        .cta-banner .cta-text { font-size:1.4em; font-weight:800; color:var(--red); text-transform:uppercase; letter-spacing:1px; }
+        .cta-banner .cta-sub { font-size:0.85em; color:var(--text-muted); margin-top:4px; font-weight:600; }
+
         .wizard-wrap {
             flex:1;
             display:flex;
@@ -189,6 +212,7 @@
             gap:10px;
             margin-bottom:18px;
             flex-shrink:0;
+            flex-wrap:wrap;
         }
         .step-dot {
             width:10px; height:10px;
@@ -280,7 +304,6 @@
             box-shadow:0 0 24px rgba(220,38,38,0.2);
         }
         .step-input::placeholder { color:rgba(255,255,255,0.18); font-weight:500; }
-        .step-input option { background:#0a0a0a; color:#fff; }
 
         .option-grid {
             display:grid;
@@ -427,25 +450,6 @@
         }
         .req { color:var(--red); font-weight:700; }
 
-        .visitor-row {
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            background:var(--card2);
-            border:1px solid var(--border);
-            border-left:3px solid var(--red);
-            border-radius:10px;
-            padding:16px 18px;
-            margin-bottom:10px;
-            gap:14px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.2);
-            transition:all 0.2s ease;
-        }
-        .visitor-row:hover { border-color:var(--red-border); background:rgba(220,38,38,0.04); }
-        .visitor-name { font-size:1.2em; font-weight:800; color:#fff; }
-        .visitor-meta { font-size:0.8em; color:var(--text-muted); margin-top:3px; font-weight:600; }
-
-        /* SUCCESS */
         .success-box {
             background:linear-gradient(135deg, rgba(20,60,20,0.3) 0%, rgba(74,222,128,0.08) 100%);
             border:1.5px solid rgba(74,222,128,0.4);
@@ -470,8 +474,14 @@
             font-weight:600;
             line-height:1.6;
         }
+        .success-return { 
+            color:#60a5fa;
+            font-size:0.95em;
+            margin-top:12px;
+            padding-top:12px;
+            border-top:1px solid rgba(74,222,128,0.2);
+        }
 
-        /* LOADING */
         .loading-overlay {
             position:fixed; inset:0;
             background:linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.92) 100%);
@@ -495,7 +505,6 @@
         @keyframes spin { to { transform:rotate(360deg); } }
         .loading-text { font-size:1.15em; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:1.2px; }
 
-        /* TOAST */
         .toast {
             position:fixed; top:18px; right:18px;
             background:linear-gradient(135deg, var(--card2) 0%, var(--card) 100%);
@@ -521,28 +530,12 @@
             box-shadow:0 2px 8px rgba(0,0,0,0.2);
         }
 
-        .emergency-btn {
-            position:absolute; top:0; right:0;
-            background:linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
-            color:#fca5a5;
-            border:1px solid #dc2626; border-radius:8px;
-            font-family:'Barlow Condensed',sans-serif;
-            font-size:0.8em; font-weight:800;
-            letter-spacing:0.8px; text-transform:uppercase;
-            padding:10px 14px; cursor:pointer;
-            transition:all 0.2s ease;
-            box-shadow:0 4px 12px rgba(220,38,38,0.2);
-        }
-        .emergency-btn:active { transform:scale(0.96); }
-
         .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:1.05em; font-weight:600; }
-        .screen-title { font-size:2.1em; font-weight:900; color:var(--red); text-transform:uppercase; letter-spacing:-0.5px; margin-bottom:4px; }
-        .screen-sub { font-size:0.95em; color:var(--text-muted); margin-bottom:16px; font-weight:600; }
     </style>
 </head>
 <body>
 
-<div class="version-badge">0427</div>
+<div class="version-badge">5700</div>
 <div class="toast" id="toast"></div>
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
@@ -555,8 +548,12 @@
         <div class="header-logo">
             <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/flexi-logo-white.svg" alt="Flexi" onerror="this.style.display='none'">
         </div>
-        <div style="text-align:center;">
-            <div style="font-size:0.95em;color:var(--muted);">Visitor Management</div>
+        <div class="lang-selector">
+            <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">🇬🇧</button>
+            <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">🇪🇸</button>
+            <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">🇫🇷</button>
+            <button class="lang-btn" data-lang="pl" onclick="setLanguage('pl')">🇵🇱</button>
+            <button class="lang-btn" data-lang="tw" onclick="setLanguage('tw')">🇹🇼</button>
         </div>
         <div class="header-clock">
             <div class="time" id="clockTime">00:00:00</div>
@@ -569,48 +566,46 @@
         <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/lines.svg" alt="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.4; pointer-events:none; z-index:0;">
         <div style="position:relative; z-index:1; height:100%; display:flex; flex-direction:column; padding:16px 18px;">
         <div class="welcome-hero">
-            <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/flexi-logo-white.svg" alt="NA" style="height:32px; width:auto; margin-bottom:12px; opacity:0.8;" onerror="this.style.display='none'">
             <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/Narrow-Aisle-white.svg" alt="Narrow Aisle" style="height:72px; width:auto; margin-bottom:20px; filter:drop-shadow(0 4px 12px rgba(220,38,38,0.2));" onerror="this.style.display='none'">
-            <div class="tagline">Your Space, Our Expertise</div>
+            <div class="tagline" id="welcomeTagline">Your Space, Our Expertise</div>
         </div>
         <div class="stats-row">
             <div class="stat-card">
-                <div class="stat-label">Visitors Today</div>
+                <div class="stat-label" id="visitorsLabel">Visitors Today</div>
                 <div class="stat-value" id="welcomeTodayCount">—</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Currently On-Site</div>
+                <div class="stat-label" id="onsiteLabel">Currently On-Site</div>
                 <div class="stat-value" id="welcomeCurrentCount">—</div>
             </div>
         </div>
         <div class="cta-banner">
             <div class="cta-icon">📝</div>
-            <div class="cta-text">Sign In Here</div>
-            <div class="cta-sub">Tap below to get started</div>
+            <div class="cta-text" id="ctaText">Sign In Here</div>
+            <div class="cta-sub" id="ctaSub">Tap below to get started</div>
         </div>
         <div class="btn-row">
-            <button class="btn btn-primary" onclick="startSignIn()">📝 Sign In</button>
-            <button class="btn btn-outline" onclick="showScreen('signoutScreen')">👋 Sign Out</button>
+            <button class="btn btn-primary" onclick="startSignIn()" id="signInBtn">📝 Sign In</button>
+            <button class="btn btn-outline" onclick="showScreen('signoutScreen')" id="signOutBtn">👋 Sign Out</button>
         </div>
         </div>
     </div>
 
-    <!-- SIGN-IN WIZARD SCREEN -->
+    <!-- SIGN-IN WIZARD -->
     <div class="screen" id="signinScreen">
         <div class="wizard-wrap">
-
             <div class="step-dots" id="stepDots"></div>
 
-            <!-- STEP 1: Full Name -->
+            <!-- STEP 1: Name -->
             <div class="wizard-step active" id="step1">
                 <div class="step-inner">
-                    <div class="step-num">Step 1 of 6</div>
-                    <div class="step-question">What's your name?</div>
-                    <div class="step-hint">Enter your full name</div>
+                    <div class="step-num" id="s1num">Step 1 of 7</div>
+                    <div class="step-question" id="s1q">What's your name?</div>
+                    <div class="step-hint" id="s1h">Enter your full name</div>
                     <input class="step-input" type="text" id="visitorName" placeholder="e.g. John Smith" autocomplete="off" autocapitalize="words">
                 </div>
                 <div class="step-nav">
-                    <button class="btn btn-ghost" onclick="showScreen('welcomeScreen')">Cancel</button>
+                    <button class="btn btn-ghost" onclick="showScreen('welcomeScreen')" id="btn1Cancel">Cancel</button>
                     <button class="btn btn-primary" onclick="nextStep(1)">Next →</button>
                 </div>
             </div>
@@ -618,9 +613,9 @@
             <!-- STEP 2: Company -->
             <div class="wizard-step" id="step2">
                 <div class="step-inner">
-                    <div class="step-num">Step 2 of 6</div>
-                    <div class="step-question">Which company are you from?</div>
-                    <div class="step-hint">Enter your company name</div>
+                    <div class="step-num" id="s2num">Step 2 of 7</div>
+                    <div class="step-question" id="s2q">Which company are you from?</div>
+                    <div class="step-hint" id="s2h">Enter your company name</div>
                     <input class="step-input" type="text" id="companyName" placeholder="e.g. Acme Ltd" autocomplete="off" autocapitalize="words">
                 </div>
                 <div class="step-nav">
@@ -629,12 +624,12 @@
                 </div>
             </div>
 
-            <!-- STEP 3: Who are you here to see -->
+            <!-- STEP 3: Host -->
             <div class="wizard-step" id="step3">
                 <div class="step-inner">
-                    <div class="step-num">Step 3 of 6</div>
-                    <div class="step-question">Who are you here to see?</div>
-                    <div class="step-hint">Select from the list below</div>
+                    <div class="step-num" id="s3num">Step 3 of 7</div>
+                    <div class="step-question" id="s3q">Who are you here to see?</div>
+                    <div class="step-hint" id="s3h">Select from the list below</div>
                     <select class="host-select" id="hostName">
                         <option value="">— Select person —</option>
                         <option value="Alex Coley|A.Coley@narrowaisle.co.uk">Alex Coley – Technical Support</option>
@@ -674,12 +669,12 @@
                 </div>
             </div>
 
-            <!-- STEP 4: Purpose of visit -->
+            <!-- STEP 4: Purpose -->
             <div class="wizard-step" id="step4">
                 <div class="step-inner" style="max-width:560px;">
-                    <div class="step-num">Step 4 of 6</div>
-                    <div class="step-question">Purpose of visit?</div>
-                    <div class="step-hint">Tap to select</div>
+                    <div class="step-num" id="s4num">Step 4 of 7</div>
+                    <div class="step-question" id="s4q">Purpose of visit?</div>
+                    <div class="step-hint" id="s4h">Tap to select</div>
                     <div class="option-grid">
                         <div class="option-tile" onclick="selectPurpose('Meeting',this)"><span class="tile-icon">🤝</span>Meeting</div>
                         <div class="option-tile" onclick="selectPurpose('Delivery',this)"><span class="tile-icon">📦</span>Delivery</div>
@@ -695,14 +690,20 @@
                 </div>
             </div>
 
-            <!-- STEP 5: Optional details -->
+            <!-- STEP 5: Duration -->
             <div class="wizard-step" id="step5">
                 <div class="step-inner">
-                    <div class="step-num">Step 5 of 6</div>
-                    <div class="step-question">A couple of optional details</div>
-                    <div class="step-hint">Leave blank if not applicable</div>
-                    <input class="step-input" type="text" id="vehicleReg" placeholder="Vehicle reg (optional)" autocomplete="off" style="text-transform:uppercase; margin-bottom:12px;">
-                    <input class="step-input" type="email" id="visitorEmail" placeholder="Your email (optional)" autocomplete="off">
+                    <div class="step-num" id="s5num">Step 5 of 7</div>
+                    <div class="step-question" id="s5q">How long will you stay?</div>
+                    <div class="step-hint" id="s5h">Select duration</div>
+                    <div class="option-grid">
+                        <div class="option-tile" onclick="selectDuration('30m',this)"><span class="tile-icon">⏱️</span><span id="dur30m">30 mins</span></div>
+                        <div class="option-tile" onclick="selectDuration('1h',this)"><span class="tile-icon">⏱️</span><span id="dur1h">1 hour</span></div>
+                        <div class="option-tile" onclick="selectDuration('2h',this)"><span class="tile-icon">⏱️</span><span id="dur2h">2 hours</span></div>
+                        <div class="option-tile" onclick="selectDuration('half',this)"><span class="tile-icon">⏱️</span><span id="durhalf">Half day</span></div>
+                        <div class="option-tile" onclick="selectDuration('full',this)"><span class="tile-icon">⏱️</span><span id="durfull">Full day</span></div>
+                    </div>
+                    <input type="hidden" id="visitDuration">
                 </div>
                 <div class="step-nav">
                     <button class="btn btn-ghost" onclick="prevStep(5)">← Back</button>
@@ -710,12 +711,27 @@
                 </div>
             </div>
 
-            <!-- STEP 6: Safety & GDPR consent -->
-            <div class="wizard-step" id="step6" style="justify-content:flex-start;">
+            <!-- STEP 6: Optional details -->
+            <div class="wizard-step" id="step6">
+                <div class="step-inner">
+                    <div class="step-num" id="s6num">Step 6 of 7</div>
+                    <div class="step-question" id="s6q">A couple of optional details</div>
+                    <div class="step-hint" id="s6h">Leave blank if not applicable</div>
+                    <input class="step-input" type="text" id="vehicleReg" placeholder="Vehicle reg (optional)" autocomplete="off" style="text-transform:uppercase; margin-bottom:12px;">
+                    <input class="step-input" type="email" id="visitorEmail" placeholder="Your email (optional)" autocomplete="off">
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-ghost" onclick="prevStep(6)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(6)">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 7: Consent -->
+            <div class="wizard-step" id="step7" style="justify-content:flex-start;">
                 <div style="text-align:center; flex-shrink:0; padding-bottom:10px; width:100%;">
-                    <div class="step-num">Step 6 of 6</div>
-                    <div class="step-question" style="font-size:1.8em;">Almost done!</div>
-                    <div class="step-hint">Please read and confirm below</div>
+                    <div class="step-num" id="s7num">Step 7 of 7</div>
+                    <div class="step-question" id="s7q">Almost done!</div>
+                    <div class="step-hint" id="s7h">Please read and confirm below</div>
                 </div>
                 <div class="consent-scroll">
                     <div class="info-panel safety">
@@ -736,16 +752,16 @@
                     <div style="background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px;">
                         <div class="check-group">
                             <input type="checkbox" id="safetyAgree">
-                            <label for="safetyAgree">I understand and accept the Health &amp; Safety information <span class="req">*</span></label>
+                            <label for="safetyAgree" id="safetyLabel">I understand and accept the Health &amp; Safety information <span class="req">*</span></label>
                         </div>
                         <div class="check-group">
                             <input type="checkbox" id="gdprAgree">
-                            <label for="gdprAgree">I consent to my data being processed in accordance with the GDPR statement above <span class="req">*</span></label>
+                            <label for="gdprAgree" id="gdprLabel">I consent to my data being processed in accordance with the GDPR statement above <span class="req">*</span></label>
                         </div>
                     </div>
                 </div>
                 <div class="step-nav" style="flex-shrink:0; margin-top:10px;">
-                    <button class="btn btn-ghost" onclick="prevStep(6)">← Back</button>
+                    <button class="btn btn-ghost" onclick="prevStep(7)">← Back</button>
                     <button class="btn btn-primary" id="submitBtn" onclick="submitSignIn()">✅ Sign In</button>
                 </div>
             </div>
@@ -757,44 +773,382 @@
     <div class="screen" id="successScreen" style="justify-content:center; align-items:center; padding:20px;">
         <div class="success-box">
             <div class="success-icon">✅</div>
-            <div class="success-title">Signed In!</div>
-            <div class="success-sub">Thank you for registering your visit</div>
+            <div class="success-title" id="successTitle">Signed In!</div>
+            <div class="success-sub" id="successSub">Thank you for registering your visit</div>
             <div class="success-host" id="successHostBox">—</div>
+            <div class="success-return" id="successReturn"></div>
         </div>
-        <button class="btn btn-outline" style="margin-top:20px; max-width:500px;" onclick="showScreen('welcomeScreen')">← Back to Welcome</button>
+        <button class="btn btn-outline" style="margin-top:20px; max-width:500px;" onclick="showScreen('welcomeScreen')" id="backBtn">← Back to Welcome</button>
     </div>
 
     <!-- SIGN-OUT SCREEN -->
     <div class="screen" id="signoutScreen">
         <div style="flex-shrink:0; position:relative; padding-bottom:4px;">
-            <div class="screen-title">Sign Out</div>
-            <div class="screen-sub">Select your name to sign out</div>
-            <button class="emergency-btn" onclick="triggerEmergencyMode()">🚨 Emergency</button>
+            <div style="font-size:2.1em; font-weight:900; color:var(--red); text-transform:uppercase; letter-spacing:-0.5px;">Sign Out</div>
+            <div style="font-size:0.95em; color:var(--text-muted); margin-bottom:16px; font-weight:600;">Select your name to sign out</div>
         </div>
         <div class="stats-row" style="flex-shrink:0; margin-bottom:10px;">
             <div class="stat-card">
-                <div class="stat-label">Visitors Today</div>
+                <div class="stat-label" id="signoutTodayLabel">Visitors Today</div>
                 <div class="stat-value" id="statsTodayCount">—</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Currently On-Site</div>
+                <div class="stat-label" id="signoutCurrentLabel">Currently On-Site</div>
                 <div class="stat-value" id="statsCurrentCount">—</div>
             </div>
         </div>
         <div id="visitorList" style="flex:1; overflow-y:auto; min-height:0;"></div>
-        <button class="btn btn-outline btn-sm" onclick="showScreen('welcomeScreen')" style="margin-top:10px; flex-shrink:0;">← Back to Welcome</button>
+        <button class="btn btn-outline btn-sm" onclick="showScreen('welcomeScreen')" style="margin-top:10px; flex-shrink:0;" id="backToWelcomeBtn">← Back to Welcome</button>
     </div>
 
 </div>
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 let currentStep = 1;
 let selectedPurpose = '';
+let selectedDuration = '';
 let isSubmitting = false;
+let currentLanguage = 'en';
 
-/* ── CLOCK ── */
+const translations = {
+  en: {
+    tagline: "Your Space, Our Expertise",
+    visitors_today: "Visitors Today",
+    on_site: "Currently On-Site",
+    cta_text: "Sign In Here",
+    cta_sub: "Tap below to get started",
+    signin_btn: "📝 Sign In",
+    signout_btn: "👋 Sign Out",
+    s1num: "Step 1 of 7",
+    s1q: "What's your name?",
+    s1h: "Enter your full name",
+    s2num: "Step 2 of 7",
+    s2q: "Which company are you from?",
+    s2h: "Enter your company name",
+    s3num: "Step 3 of 7",
+    s3q: "Who are you here to see?",
+    s3h: "Select from the list below",
+    s4num: "Step 4 of 7",
+    s4q: "Purpose of visit?",
+    s4h: "Tap to select",
+    s5num: "Step 5 of 7",
+    s5q: "How long will you stay?",
+    s5h: "Select duration",
+    s6num: "Step 6 of 7",
+    s6q: "A couple of optional details",
+    s6h: "Leave blank if not applicable",
+    s7num: "Step 7 of 7",
+    s7q: "Almost done!",
+    s7h: "Please read and confirm below",
+    dur30m: "30 mins",
+    dur1h: "1 hour",
+    dur2h: "2 hours",
+    durhalf: "Half day",
+    durfull: "Full day",
+    safety_label: "I understand and accept the Health & Safety information",
+    gdpr_label: "I consent to my data being processed in accordance with the GDPR statement above",
+    success_title: "Signed In!",
+    success_sub: "Thank you for registering your visit",
+    success_notified: "has been notified 📧",
+    success_reception: "Please wait at reception",
+    success_return: "Welcome back! Last visited on",
+    back_btn: "← Back to Welcome",
+    signout_today: "Visitors Today",
+    signout_current: "Currently On-Site",
+    error_name: "⚠ Please enter your name",
+    error_company: "⚠ Please enter your company name",
+    error_host: "⚠ Please select who you are here to see",
+    error_purpose: "⚠ Please select a purpose",
+    error_duration: "⚠ Please select a duration",
+    error_safety: "⚠ Please accept the Health & Safety information",
+    error_gdpr: "⚠ Please accept the GDPR consent",
+    signin_success: "✅ Signed in successfully",
+    error_try: "❌ Error – please try again",
+  },
+  es: {
+    tagline: "Tu Espacio, Nuestra Experiencia",
+    visitors_today: "Visitantes Hoy",
+    on_site: "Actualmente en el Sitio",
+    cta_text: "Regístrate Aquí",
+    cta_sub: "Toca a continuación para comenzar",
+    signin_btn: "📝 Registrarse",
+    signout_btn: "👋 Cerrar sesión",
+    s1num: "Paso 1 de 7",
+    s1q: "¿Cuál es tu nombre?",
+    s1h: "Ingrese su nombre completo",
+    s2num: "Paso 2 de 7",
+    s2q: "¿De qué empresa eres?",
+    s2h: "Ingrese el nombre de la empresa",
+    s3num: "Paso 3 de 7",
+    s3q: "¿A quién vienes a ver?",
+    s3h: "Selecciona de la lista",
+    s4num: "Paso 4 de 7",
+    s4q: "¿Propósito de la visita?",
+    s4h: "Toca para seleccionar",
+    s5num: "Paso 5 de 7",
+    s5q: "¿Cuánto tiempo te quedarás?",
+    s5h: "Selecciona duración",
+    s6num: "Paso 6 de 7",
+    s6q: "Algunos detalles opcionales",
+    s6h: "Dejar en blanco si no aplica",
+    s7num: "Paso 7 de 7",
+    s7q: "¡Casi listo!",
+    s7h: "Por favor lea y confirme a continuación",
+    dur30m: "30 mins",
+    dur1h: "1 hora",
+    dur2h: "2 horas",
+    durhalf: "Medio día",
+    durfull: "Día completo",
+    safety_label: "Entiendo y acepto la información de Salud y Seguridad",
+    gdpr_label: "Doy mi consentimiento para que mis datos se procesen de conformidad con la declaración de RGPD anterior",
+    success_title: "¡Registrado!",
+    success_sub: "Gracias por registrar su visita",
+    success_notified: "ha sido notificado 📧",
+    success_reception: "Por favor espere en recepción",
+    success_return: "¡Bienvenido de vuelta! Última visita el",
+    back_btn: "← Volver a Bienvenido",
+    signout_today: "Visitantes Hoy",
+    signout_current: "Actualmente en el Sitio",
+    error_name: "⚠ Por favor ingrese su nombre",
+    error_company: "⚠ Por favor ingrese el nombre de la empresa",
+    error_host: "⚠ Por favor seleccione a quién viene a ver",
+    error_purpose: "⚠ Por favor seleccione un propósito",
+    error_duration: "⚠ Por favor seleccione una duración",
+    error_safety: "⚠ Por favor acepte la información de Salud y Seguridad",
+    error_gdpr: "⚠ Por favor acepte el consentimiento del RGPD",
+    signin_success: "✅ Registrado exitosamente",
+    error_try: "❌ Error – por favor intenta de nuevo",
+  },
+  fr: {
+    tagline: "Votre Espace, Notre Expertise",
+    visitors_today: "Visiteurs Aujourd'hui",
+    on_site: "Actuellement sur Site",
+    cta_text: "Enregistrez-vous Ici",
+    cta_sub: "Cliquez ci-dessous pour commencer",
+    signin_btn: "📝 S'enregistrer",
+    signout_btn: "👋 Se Déconnecter",
+    s1num: "Étape 1 sur 7",
+    s1q: "Quel est votre nom ?",
+    s1h: "Entrez votre nom complet",
+    s2num: "Étape 2 sur 7",
+    s2q: "De quelle entreprise venez-vous ?",
+    s2h: "Entrez le nom de l'entreprise",
+    s3num: "Étape 3 sur 7",
+    s3q: "Qui venez-vous voir ?",
+    s3h: "Sélectionnez dans la liste",
+    s4num: "Étape 4 sur 7",
+    s4q: "Objet de la visite ?",
+    s4h: "Cliquez pour sélectionner",
+    s5num: "Étape 5 sur 7",
+    s5q: "Combien de temps resterez-vous ?",
+    s5h: "Sélectionnez la durée",
+    s6num: "Étape 6 sur 7",
+    s6q: "Quelques détails optionnels",
+    s6h: "Laissez vide si non applicable",
+    s7num: "Étape 7 sur 7",
+    s7q: "Presque terminé !",
+    s7h: "Veuillez lire et confirmer ci-dessous",
+    dur30m: "30 minutes",
+    dur1h: "1 heure",
+    dur2h: "2 heures",
+    durhalf: "Demi-journée",
+    durfull: "Journée complète",
+    safety_label: "Je comprends et j'accepte les informations de santé et sécurité",
+    gdpr_label: "Je consens au traitement de mes données conformément à la déclaration RGPD ci-dessus",
+    success_title: "Enregistré !",
+    success_sub: "Merci d'avoir enregistré votre visite",
+    success_notified: "a été notifié 📧",
+    success_reception: "Veuillez attendre à la réception",
+    success_return: "Bienvenue ! Dernière visite le",
+    back_btn: "← Retour à l'Accueil",
+    signout_today: "Visiteurs Aujourd'hui",
+    signout_current: "Actuellement sur Site",
+    error_name: "⚠ Veuillez entrer votre nom",
+    error_company: "⚠ Veuillez entrer le nom de l'entreprise",
+    error_host: "⚠ Veuillez sélectionner la personne à visiter",
+    error_purpose: "⚠ Veuillez sélectionner l'objet de la visite",
+    error_duration: "⚠ Veuillez sélectionner la durée",
+    error_safety: "⚠ Veuillez accepter les informations de santé et sécurité",
+    error_gdpr: "⚠ Veuillez accepter le consentement RGPD",
+    signin_success: "✅ Enregistrement réussi",
+    error_try: "❌ Erreur – veuillez réessayer",
+  },
+  pl: {
+    tagline: "Twoja Przestrzeń, Nasza Wiedza",
+    visitors_today: "Odwiedzających Dzisiaj",
+    on_site: "Aktualnie na Terenie",
+    cta_text: "Zaloguj się Tutaj",
+    cta_sub: "Dotknij poniżej, aby zacząć",
+    signin_btn: "📝 Zaloguj się",
+    signout_btn: "👋 Wyloguj się",
+    s1num: "Krok 1 z 7",
+    s1q: "Jak się nazywasz?",
+    s1h: "Wpisz swoje pełne imię i nazwisko",
+    s2num: "Krok 2 z 7",
+    s2q: "Z jakiej firmy przychodzisz?",
+    s2h: "Wpisz nazwę firmy",
+    s3num: "Krok 3 z 7",
+    s3q: "Kogo przychodzisz odwiedzić?",
+    s3h: "Wybierz z listy",
+    s4num: "Krok 4 z 7",
+    s4q: "Cel wizyty?",
+    s4h: "Dotknij, aby wybrać",
+    s5num: "Krok 5 z 7",
+    s5q: "Jak długo się zostaniesz?",
+    s5h: "Wybierz czas trwania",
+    s6num: "Krok 6 z 7",
+    s6q: "Kilka opcjonalnych szczegółów",
+    s6h: "Zostaw puste, jeśli nie dotyczy",
+    s7num: "Krok 7 z 7",
+    s7q: "Prawie gotowe!",
+    s7h: "Proszę przeczytaj i potwierdź poniżej",
+    dur30m: "30 min",
+    dur1h: "1 godzina",
+    dur2h: "2 godziny",
+    durhalf: "Pół dnia",
+    durfull: "Cały dzień",
+    safety_label: "Rozumiem i akceptuję informacje dotyczące bezpieczeństwa",
+    gdpr_label: "Wyrażam zgodę na przetwarzanie moich danych w zgodzie z powyższym oświadczeniem RODO",
+    success_title: "Zalogowano!",
+    success_sub: "Dziękujemy za zalogowanie się",
+    success_notified: "został powiadomiony 📧",
+    success_reception: "Proszę czekać w recepcji",
+    success_return: "Witaj ponownie! Ostatnia wizyta",
+    back_btn: "← Wróć do Powitalnej",
+    signout_today: "Odwiedzających Dzisiaj",
+    signout_current: "Aktualnie na Terenie",
+    error_name: "⚠ Wpisz swoje imię i nazwisko",
+    error_company: "⚠ Wpisz nazwę firmy",
+    error_host: "⚠ Wybierz osobę do odwiedzenia",
+    error_purpose: "⚠ Wybierz cel wizyty",
+    error_duration: "⚠ Wybierz czas trwania",
+    error_safety: "⚠ Zaakceptuj informacje o bezpieczeństwie",
+    error_gdpr: "⚠ Zaakceptuj zgodę RODO",
+    signin_success: "✅ Pomyślnie zalogowano",
+    error_try: "❌ Błąd – spróbuj ponownie",
+  },
+  tw: {
+    tagline: "您的空間，我們的專業知識",
+    visitors_today: "今日訪客",
+    on_site: "目前在場",
+    cta_text: "在此簽到",
+    cta_sub: "點擊下方開始",
+    signin_btn: "📝 簽到",
+    signout_btn: "👋 簽出",
+    s1num: "第 1 步，共 7 步",
+    s1q: "請問您的名字？",
+    s1h: "請輸入您的全名",
+    s2num: "第 2 步，共 7 步",
+    s2q: "您來自哪家公司？",
+    s2h: "請輸入公司名稱",
+    s3num: "第 3 步，共 7 步",
+    s3q: "您要見誰？",
+    s3h: "從列表中選擇",
+    s4num: "第 4 步，共 7 步",
+    s4q: "來訪目的？",
+    s4h: "點擊以選擇",
+    s5num: "第 5 步，共 7 步",
+    s5q: "您要停留多長時間？",
+    s5h: "選擇持續時間",
+    s6num: "第 6 步，共 7 步",
+    s6q: "一些可選詳情",
+    s6h: "不適用時留空",
+    s7num: "第 7 步，共 7 步",
+    s7q: "快完成了！",
+    s7h: "請在下方閱讀並確認",
+    dur30m: "30 分鐘",
+    dur1h: "1 小時",
+    dur2h: "2 小時",
+    durhalf: "半天",
+    durfull: "整天",
+    safety_label: "我理解並接受健康和安全信息",
+    gdpr_label: "我同意根據上述 GDPR 聲明處理我的數據",
+    success_title: "已簽到！",
+    success_sub: "感謝您登記訪問",
+    success_notified: "已被通知 📧",
+    success_reception: "請在前台等候",
+    success_return: "歡迎回來！最後一次訪問於",
+    back_btn: "← 返回歡迎頁面",
+    signout_today: "今日訪客",
+    signout_current: "目前在場",
+    error_name: "⚠ 請輸入您的名字",
+    error_company: "⚠ 請輸入公司名稱",
+    error_host: "⚠ 請選擇要拜訪的人員",
+    error_purpose: "⚠ 請選擇訪問目的",
+    error_duration: "⚠ 請選擇停留時間",
+    error_safety: "⚠ 請接受健康和安全信息",
+    error_gdpr: "⚠ 請接受 GDPR 同意",
+    signin_success: "✅ 簽到成功",
+    error_try: "❌ 錯誤 – 請重試",
+  }
+};
+
+function t(key) {
+  return translations[currentLanguage][key] || translations.en[key] || key;
+}
+
+function setLanguage(lang) {
+  currentLanguage = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+  updateTranslations();
+}
+
+function updateTranslations() {
+  document.getElementById('welcomeTagline').textContent = t('tagline');
+  document.getElementById('visitorsLabel').textContent = t('visitors_today');
+  document.getElementById('onsiteLabel').textContent = t('on_site');
+  document.getElementById('ctaText').textContent = t('cta_text');
+  document.getElementById('ctaSub').textContent = t('cta_sub');
+  document.getElementById('signInBtn').textContent = t('signin_btn');
+  document.getElementById('signOutBtn').textContent = t('signout_btn');
+  
+  document.getElementById('s1num').textContent = t('s1num');
+  document.getElementById('s1q').textContent = t('s1q');
+  document.getElementById('s1h').textContent = t('s1h');
+  document.getElementById('s2num').textContent = t('s2num');
+  document.getElementById('s2q').textContent = t('s2q');
+  document.getElementById('s2h').textContent = t('s2h');
+  document.getElementById('s3num').textContent = t('s3num');
+  document.getElementById('s3q').textContent = t('s3q');
+  document.getElementById('s3h').textContent = t('s3h');
+  document.getElementById('s4num').textContent = t('s4num');
+  document.getElementById('s4q').textContent = t('s4q');
+  document.getElementById('s4h').textContent = t('s4h');
+  document.getElementById('s5num').textContent = t('s5num');
+  document.getElementById('s5q').textContent = t('s5q');
+  document.getElementById('s5h').textContent = t('s5h');
+  document.getElementById('s6num').textContent = t('s6num');
+  document.getElementById('s6q').textContent = t('s6q');
+  document.getElementById('s6h').textContent = t('s6h');
+  document.getElementById('s7num').textContent = t('s7num');
+  document.getElementById('s7q').textContent = t('s7q');
+  document.getElementById('s7h').textContent = t('s7h');
+  
+  document.getElementById('dur30m').textContent = t('dur30m');
+  document.getElementById('dur1h').textContent = t('dur1h');
+  document.getElementById('dur2h').textContent = t('dur2h');
+  document.getElementById('durhalf').textContent = t('durhalf');
+  document.getElementById('durfull').textContent = t('durfull');
+  
+  document.getElementById('safetyLabel').innerHTML = t('safety_label') + ' <span class="req">*</span>';
+  document.getElementById('gdprLabel').innerHTML = t('gdpr_label') + ' <span class="req">*</span>';
+  
+  document.getElementById('successTitle').textContent = t('success_title');
+  document.getElementById('successSub').textContent = t('success_sub');
+  document.getElementById('backBtn').textContent = t('back_btn');
+  document.getElementById('backToWelcomeBtn').textContent = t('back_btn');
+  
+  document.getElementById('signoutTodayLabel').textContent = t('signout_today');
+  document.getElementById('signoutCurrentLabel').textContent = t('signout_current');
+}
+
+function normalizeName(name) {
+  return name.toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
 function updateClock() {
     const now = new Date();
     document.getElementById('clockTime').textContent = now.toLocaleTimeString('en-GB');
@@ -803,7 +1157,6 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-/* ── SCREEN SWITCHING ── */
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -812,7 +1165,6 @@ function showScreen(id) {
     if (id === 'successScreen') setTimeout(() => showScreen('welcomeScreen'), 25000);
 }
 
-/* ── WIZARD ── */
 function buildDots() {
     const dots = document.getElementById('stepDots');
     dots.innerHTML = '';
@@ -826,10 +1178,12 @@ function buildDots() {
 function startSignIn() {
     currentStep = 1;
     selectedPurpose = '';
+    selectedDuration = '';
     isSubmitting = false;
     ['visitorName','companyName','vehicleReg','visitorEmail'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('hostName').value = '';
     document.getElementById('visitPurpose').value = '';
+    document.getElementById('visitDuration').value = '';
     document.getElementById('submitBtn').disabled = false;
     document.querySelectorAll('.option-tile').forEach(t => t.classList.remove('selected'));
     document.getElementById('safetyAgree').checked = false;
@@ -853,16 +1207,19 @@ function showStepUI(n, goingBack) {
 
 function nextStep(from) {
     if (from === 1) {
-        if (!document.getElementById('visitorName').value.trim()) { showToast('⚠ Please enter your name'); return; }
+        if (!document.getElementById('visitorName').value.trim()) { showToast(t('error_name')); return; }
     }
     if (from === 2) {
-        if (!document.getElementById('companyName').value.trim()) { showToast('⚠ Please enter your company name'); return; }
+        if (!document.getElementById('companyName').value.trim()) { showToast(t('error_company')); return; }
     }
     if (from === 3) {
-        if (!document.getElementById('hostName').value) { showToast('⚠ Please select who you are here to see'); return; }
+        if (!document.getElementById('hostName').value) { showToast(t('error_host')); return; }
     }
     if (from === 4) {
-        if (!selectedPurpose) { showToast('⚠ Please select a purpose'); return; }
+        if (!selectedPurpose) { showToast(t('error_purpose')); return; }
+    }
+    if (from === 5) {
+        if (!selectedDuration) { showToast(t('error_duration')); return; }
     }
     if (from < TOTAL_STEPS) showStepUI(from + 1, false);
 }
@@ -874,39 +1231,48 @@ function prevStep(from) {
 function selectPurpose(purpose, el) {
     selectedPurpose = purpose;
     document.getElementById('visitPurpose').value = purpose;
-    document.querySelectorAll('.option-tile').forEach(t => t.classList.remove('selected'));
+    document.querySelectorAll('#step4 .option-tile').forEach(t => t.classList.remove('selected'));
     el.classList.add('selected');
     setTimeout(() => nextStep(4), 300);
 }
 
-/* ── SUBMIT (DEBOUNCED) ── */
+function selectDuration(duration, el) {
+    selectedDuration = duration;
+    document.getElementById('visitDuration').value = duration;
+    document.querySelectorAll('#step5 .option-tile').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+    setTimeout(() => nextStep(5), 300);
+}
+
 async function submitSignIn() {
     if (isSubmitting) return;
-    if (!document.getElementById('safetyAgree').checked) { showToast('⚠ Please accept the Health & Safety information'); return; }
-    if (!document.getElementById('gdprAgree').checked) { showToast('⚠ Please accept the GDPR consent'); return; }
+    if (!document.getElementById('safetyAgree').checked) { showToast(t('error_safety')); return; }
+    if (!document.getElementById('gdprAgree').checked) { showToast(t('error_gdpr')); return; }
 
     isSubmitting = true;
     document.getElementById('submitBtn').disabled = true;
-    showLoading('Signing in...');
+    showLoading('Processing...');
 
     const hostParts = document.getElementById('hostName').value.split('|');
+    const visitorNameValue = document.getElementById('visitorName').value.trim();
     const data = {
         action: 'signin',
         timestamp: new Date().toISOString(),
         date: new Date().toLocaleDateString('en-GB'),
         timeIn: new Date().toLocaleTimeString('en-GB'),
-        visitorName: document.getElementById('visitorName').value.trim(),
+        visitorName: visitorNameValue,
         companyName: document.getElementById('companyName').value.trim(),
         hostName: hostParts[0],
         hostEmail: hostParts[1] || '',
         visitPurpose: selectedPurpose,
+        visitDuration: selectedDuration,
         vehicleReg: document.getElementById('vehicleReg').value.trim(),
         visitorEmail: document.getElementById('visitorEmail').value.trim(),
         status: 'Signed In'
     };
 
     try {
-        const response = await fetch(SCRIPT_URL, {
+        await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
@@ -914,20 +1280,48 @@ async function submitSignIn() {
         });
         
         hideLoading();
+        
+        const lastVisitInfo = await checkLastVisit(visitorNameValue);
+        
         document.getElementById('successHostBox').innerHTML =
-            `<strong>${data.hostName}</strong> has been notified 📧<br>
-             <span style="font-size:0.9em;color:var(--muted)">Please wait at reception</span>`;
+            `<strong>${data.hostName}</strong> ${t('success_notified')}<br>
+             <span style="font-size:0.9em;color:var(--text-muted)">${t('success_reception')}</span>`;
+        
+        if (lastVisitInfo) {
+            document.getElementById('successReturn').innerHTML = `${t('success_return')} <strong>${lastVisitInfo}</strong>`;
+        }
+        
         showScreen('successScreen');
-        showToast('✅ Signed in successfully');
+        showToast(t('signin_success'));
     } catch (err) {
         hideLoading();
         isSubmitting = false;
         document.getElementById('submitBtn').disabled = false;
-        showToast('❌ Error – please try again');
+        showToast(t('error_try'));
     }
 }
 
-/* ── WELCOME STATS ── */
+async function checkLastVisit(currentName) {
+    try {
+        const today = new Date().toLocaleDateString('en-GB');
+        const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}&cache=${Date.now()}`);
+        const visitors = await r.json();
+        const normalizedCurrent = normalizeName(currentName);
+        
+        let lastVisitDate = null;
+        for (const v of visitors) {
+            if (normalizeName(v.visitorName) === normalizedCurrent && v.status === 'Signed Out') {
+                lastVisitDate = v.date;
+                break;
+            }
+        }
+        
+        return lastVisitDate;
+    } catch {
+        return null;
+    }
+}
+
 async function loadWelcomeStats() {
     try {
         const today = new Date().toLocaleDateString('en-GB');
@@ -944,7 +1338,6 @@ async function loadWelcomeStats() {
 loadWelcomeStats();
 setInterval(loadWelcomeStats, 30000);
 
-/* ── SIGN OUT ── */
 async function loadTodaysVisitors() {
     const list = document.getElementById('visitorList');
     showLoading('Loading visitors...');
@@ -961,10 +1354,10 @@ async function loadTodaysVisitors() {
             list.innerHTML = '<div class="empty-state">📭 No visitors currently signed in</div>';
         } else {
             list.innerHTML = current.map(v => `
-                <div class="visitor-row">
+                <div style="background:var(--card2); border:1px solid var(--border); border-left:3px solid var(--red); border-radius:10px; padding:16px 18px; margin-bottom:10px; gap:14px; box-shadow:0 4px 12px rgba(0,0,0,0.2); display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <div class="visitor-name">👤 ${v.visitorName}</div>
-                        <div class="visitor-meta">🏢 ${v.companyName} &nbsp;·&nbsp; 👨‍💼 ${v.hostName} &nbsp;·&nbsp; ⏰ ${v.timeIn}</div>
+                        <div style="font-size:1.2em; font-weight:800; color:#fff;">👤 ${v.visitorName}</div>
+                        <div style="font-size:0.8em; color:var(--text-muted); margin-top:3px; font-weight:600;">🏢 ${v.companyName} &nbsp;·&nbsp; 👨‍💼 ${v.hostName} &nbsp;·&nbsp; ⏰ ${v.timeIn}</div>
                     </div>
                     <button class="btn btn-primary btn-sm" onclick="signOut('${v.id}','${v.visitorName}')">Sign Out →</button>
                 </div>`).join('');
@@ -990,46 +1383,20 @@ async function signOut(id, name) {
         setTimeout(loadTodaysVisitors, 400);
     } catch {
         hideLoading();
-        showToast('❌ Error – please try again');
+        showToast(t('error_try'));
     }
 }
 
-/* ── EMERGENCY ── */
-async function triggerEmergencyMode() {
-    const pwd = prompt('⚠️ EMERGENCY MODE\n\nEnter password:');
-    if (pwd !== 'FLEXI2026') { if (pwd !== null) alert('❌ Incorrect password'); return; }
-    if (!confirm('🚨 Sign out ALL visitors on-site?')) return;
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(180,0,0,0.97);display:flex;align-items:center;justify-content:center;z-index:20000;color:#fff;font-family:Barlow Condensed,sans-serif;font-size:2.5em;font-weight:800;text-align:center;text-transform:uppercase;letter-spacing:2px;';
-    overlay.innerHTML = '<div><div style="font-size:1.5em">🚨</div><div>Emergency Sign-Out</div><div style="font-size:0.5em;margin-top:12px;opacity:0.7">Processing...</div></div>';
-    document.body.appendChild(overlay);
-    try {
-        const today = new Date().toLocaleDateString('en-GB');
-        const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}&cache=${Date.now()}`);
-        const visitors = await r.json();
-        const timeOut = new Date().toLocaleTimeString('en-GB');
-        for (const v of visitors.filter(v => v.status === 'Signed In')) {
-            await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ action:'signout', id:v.id, timeOut, status:'Emergency Sign Out' }) });
-        }
-        overlay.innerHTML = '<div><div style="font-size:1.5em">✅</div><div>Complete</div></div>';
-        setTimeout(() => { overlay.remove(); loadTodaysVisitors(); }, 3000);
-    } catch {
-        overlay.innerHTML = '<div><div style="font-size:1.5em">❌</div><div>Error</div></div>';
-        setTimeout(() => overlay.remove(), 3000);
-    }
-}
-
-/* ── LOADING / TOAST ── */
 function showLoading(msg='Processing...') {
     document.getElementById('loadingOverlay').querySelector('.loading-text').textContent = msg;
     document.getElementById('loadingOverlay').classList.add('show');
 }
 function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
 function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
 </script>
 </body>
