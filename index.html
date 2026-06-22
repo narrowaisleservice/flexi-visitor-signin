@@ -1369,6 +1369,26 @@ async function loadWelcomeStats() {
 loadWelcomeStats();
 setInterval(loadWelcomeStats, 30000);
 
+async function checkNewVersion() {
+    try {
+        const currentVersion = parseInt(document.querySelector('.version-badge').textContent.trim());
+        const response = await fetch('https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/flexi-signin-v5700.html?cache=' + Date.now());
+        const text = await response.text();
+        const match = text.match(/<div class="version-badge">(\d+)<\/div>/);
+        if (match) {
+            const newVersion = parseInt(match[1]);
+            if (newVersion > currentVersion) {
+                showToast('✨ New version available - refreshing...');
+                setTimeout(() => location.reload(true), 2000);
+            }
+        }
+    } catch (err) {
+        console.log('Version check failed:', err);
+    }
+}
+checkNewVersion();
+setInterval(checkNewVersion, 1800000); // Check every 30 minutes
+
 async function loadTodaysVisitors() {
     const list = document.getElementById('visitorList');
     showLoading('Loading visitors...');
