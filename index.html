@@ -566,9 +566,11 @@
 
     <!-- WELCOME SCREEN -->
     <div class="screen active" id="welcomeScreen">
+        <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/lines.svg" alt="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.4; pointer-events:none; z-index:0;">
+        <div style="position:relative; z-index:1; height:100%; display:flex; flex-direction:column; padding:16px 18px;">
         <div class="welcome-hero">
-            <div style="font-size:0.95em; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:16px;">Welcome to</div>
-            <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/flexi-logo-white.svg" alt="Flexi" style="height:64px; width:auto; margin-bottom:20px; filter:drop-shadow(0 4px 12px rgba(220,38,38,0.2));" onerror="this.style.display='none'">
+            <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/flexi-logo-white.svg" alt="NA" style="height:32px; width:auto; margin-bottom:12px; opacity:0.8;" onerror="this.style.display='none'">
+            <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/Narrow-Aisle-white.svg" alt="Narrow Aisle" style="height:72px; width:auto; margin-bottom:20px; filter:drop-shadow(0 4px 12px rgba(220,38,38,0.2));" onerror="this.style.display='none'">
             <div class="tagline">Your Space, Our Expertise</div>
         </div>
         <div class="stats-row">
@@ -589,6 +591,7 @@
         <div class="btn-row">
             <button class="btn btn-primary" onclick="startSignIn()">📝 Sign In</button>
             <button class="btn btn-outline" onclick="showScreen('signoutScreen')">👋 Sign Out</button>
+        </div>
         </div>
     </div>
 
