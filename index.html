@@ -67,6 +67,19 @@
             left:50%;
             transform:translate(-50%, -50%);
             display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:6px;
+        }
+        .lang-label {
+            font-size:0.75em;
+            color:var(--text-muted);
+            font-weight:600;
+            letter-spacing:0.5px;
+            text-transform:uppercase;
+        }
+        .lang-buttons {
+            display:flex;
             gap:8px;
         }
         .lang-btn {
@@ -549,11 +562,14 @@
             <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/flexi-logo-white.svg" alt="Flexi" onerror="this.style.display='none'">
         </div>
         <div class="lang-selector">
-            <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">🇬🇧</button>
-            <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">🇪🇸</button>
-            <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">🇫🇷</button>
-            <button class="lang-btn" data-lang="pl" onclick="setLanguage('pl')">🇵🇱</button>
-            <button class="lang-btn" data-lang="tw" onclick="setLanguage('tw')">🇹🇼</button>
+            <div class="lang-label" id="langLabel">Select Language</div>
+            <div class="lang-buttons">
+                <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">🇬🇧</button>
+                <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">🇪🇸</button>
+                <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">🇫🇷</button>
+                <button class="lang-btn" data-lang="pl" onclick="setLanguage('pl')">🇵🇱</button>
+                <button class="lang-btn" data-lang="tw" onclick="setLanguage('tw')">🇹🇼</button>
+            </div>
         </div>
         <div class="header-clock">
             <div class="time" id="clockTime">00:00:00</div>
@@ -563,7 +579,7 @@
 
     <!-- WELCOME SCREEN -->
     <div class="screen active" id="welcomeScreen">
-        <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/lines.svg" alt="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.4; pointer-events:none; z-index:0;">
+        <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/lines.svg" alt="" style="position:absolute; top:50%; left:50%; width:120%; height:120%; object-fit:cover; opacity:0.08; pointer-events:none; z-index:0; transform:translate(-50%, -50%) rotate(90deg); filter:drop-shadow(0 0 40px rgba(220,38,38,0.4));">
         <div style="position:relative; z-index:1; height:100%; display:flex; flex-direction:column; padding:16px 18px;">
         <div class="welcome-hero">
             <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/Narrow-Aisle-white.svg" alt="Narrow Aisle" style="height:72px; width:auto; margin-bottom:20px; filter:drop-shadow(0 4px 12px rgba(220,38,38,0.2));" onerror="this.style.display='none'">
@@ -814,6 +830,7 @@ let currentLanguage = 'en';
 
 const translations = {
   en: {
+    select_lang: "Select Language",
     tagline: "Your Space, Our Expertise",
     visitors_today: "Visitors Today",
     on_site: "Currently On-Site",
@@ -868,6 +885,7 @@ const translations = {
     error_try: "❌ Error – please try again",
   },
   es: {
+    select_lang: "Seleccionar Idioma",
     tagline: "Tu Espacio, Nuestra Experiencia",
     visitors_today: "Visitantes Hoy",
     on_site: "Actualmente en el Sitio",
@@ -922,6 +940,7 @@ const translations = {
     error_try: "❌ Error – por favor intenta de nuevo",
   },
   fr: {
+    select_lang: "Sélectionner la Langue",
     tagline: "Votre Espace, Notre Expertise",
     visitors_today: "Visiteurs Aujourd'hui",
     on_site: "Actuellement sur Site",
@@ -976,6 +995,7 @@ const translations = {
     error_try: "❌ Erreur – veuillez réessayer",
   },
   pl: {
+    select_lang: "Wybierz Język",
     tagline: "Twoja Przestrzeń, Nasza Wiedza",
     visitors_today: "Odwiedzających Dzisiaj",
     on_site: "Aktualnie na Terenie",
@@ -1030,6 +1050,7 @@ const translations = {
     error_try: "❌ Błąd – spróbuj ponownie",
   },
   tw: {
+    select_lang: "選擇語言",
     tagline: "您的空間，我們的專業知識",
     visitors_today: "今日訪客",
     on_site: "目前在場",
@@ -1097,6 +1118,7 @@ function setLanguage(lang) {
 }
 
 function updateTranslations() {
+  document.getElementById('langLabel').textContent = t('select_lang');
   document.getElementById('welcomeTagline').textContent = t('tagline');
   document.getElementById('visitorsLabel').textContent = t('visitors_today');
   document.getElementById('onsiteLabel').textContent = t('on_site');
