@@ -561,7 +561,7 @@
 <div class="toast" id="toast"></div>
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <div class="loading-text">Processing...</div>
+    <div class="loading-text">Signing In...</div>
 </div>
 
 <div class="shell">
@@ -588,7 +588,7 @@
 
     <!-- WELCOME SCREEN -->
     <div class="screen active" id="welcomeScreen">
-        <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/lines.svg" alt="" style="position:absolute; top:50%; left:50%; width:120%; height:120%; object-fit:cover; opacity:0.08; pointer-events:none; z-index:0; transform:translate(-50%, -50%) rotate(90deg); filter:drop-shadow(0 0 40px rgba(220,38,38,0.4));">
+        <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/lines.svg" alt="" style="position:absolute; top:50%; left:50%; width:120%; height:120%; object-fit:cover; opacity:0.15; pointer-events:none; z-index:0; transform:translate(-50%, -50%) rotate(90deg); filter:drop-shadow(0 0 40px rgba(220,38,38,0.4));" loading="lazy">
         <div style="position:relative; z-index:1; height:100%; display:flex; flex-direction:column; padding:16px 18px;">
         <div class="welcome-hero">
             <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/Narrow-Aisle-white.svg" alt="Narrow Aisle" style="height:72px; width:auto; margin-bottom:20px; filter:drop-shadow(0 4px 12px rgba(220,38,38,0.2));" onerror="this.style.display='none'">
@@ -1281,7 +1281,7 @@ async function submitSignIn() {
 
     isSubmitting = true;
     document.getElementById('submitBtn').disabled = true;
-    showLoading('Processing...');
+    showLoading('Signing In...');
 
     const hostParts = document.getElementById('hostName').value.split('|');
     const visitorNameValue = document.getElementById('visitorName').value.trim();
@@ -1311,18 +1311,19 @@ async function submitSignIn() {
         
         hideLoading();
         
-        const lastVisitInfo = await checkLastVisit(visitorNameValue);
-        
         document.getElementById('successHostBox').innerHTML =
             `<strong>${data.hostName}</strong> ${t('success_notified')}<br>
              <span style="font-size:0.9em;color:var(--text-muted)">${t('success_reception')}</span>`;
         
-        if (lastVisitInfo) {
-            document.getElementById('successReturn').innerHTML = `${t('success_return')} <strong>${lastVisitInfo}</strong>`;
-        }
-        
         showScreen('successScreen');
         showToast(t('signin_success'));
+        
+        // Check last visit in background (don't wait for it)
+        checkLastVisit(visitorNameValue).then(lastVisitInfo => {
+            if (lastVisitInfo) {
+                document.getElementById('successReturn').innerHTML = `${t('success_return')} <strong>${lastVisitInfo}</strong>`;
+            }
+        });
     } catch (err) {
         hideLoading();
         isSubmitting = false;
