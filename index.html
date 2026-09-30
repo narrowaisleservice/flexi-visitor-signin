@@ -1,563 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
-    <title>Visitor Sign-In</title>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --red: #DC2626;
-            --red-hover: #EF4444;
-            --red-dim: rgba(220,38,38,0.12);
-            --red-border: rgba(220,38,38,0.3);
-            --red-glow: rgba(220,38,38,0.4);
-            --bg: #000000;
-            --card: #0F0F0F;
-            --card2: #161616;
-            --text: #ECECEC;
-            --text-muted: #888888;
-            --muted: rgba(255,255,255,0.45);
-            --border: rgba(255,255,255,0.06);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        html,body { height:100%; overflow:hidden; }
-        body {
-            font-family:'Barlow Condensed',sans-serif;
-            background:linear-gradient(180deg, #000 0%, #0a0a0a 100%);
-            color:var(--text);
-            position:fixed;
-            width:100vw; height:100vh;
-            top:0; left:0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+<title>Visitor Sign-In</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+    :root {
+        --red: #DC2626;
+        --red-light: #FF5A5A;
+        --red-dim: rgba(220,38,38,0.12);
+        --red-border: rgba(220,38,38,0.32);
+        --bg: #000000;
+        --card: #0D0D0F;
+        --card2: #17171A;
+        --card3: #1F1F23;
+        --text: #F1F1F1;
+        --text-muted: #8A8A90;
+        --border: rgba(255,255,255,0.07);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { height:100%; overflow:hidden; }
+    body {
+        font-family:'Barlow Condensed',sans-serif;
+        background:
+            radial-gradient(ellipse 900px 500px at 20% -10%, rgba(220,38,38,0.16) 0%, transparent 60%),
+            radial-gradient(ellipse 700px 500px at 100% 110%, rgba(220,38,38,0.10) 0%, transparent 60%),
+            linear-gradient(180deg, #000 0%, #070707 100%);
+        color:var(--text);
+        position:fixed;
+        width:100vw; height:100vh;
+        top:0; left:0;
+    }
 
-        .shell {
-            max-width:860px;
-            margin:0 auto;
-            height:100%;
-            display:flex;
-            flex-direction:column;
-            padding:16px 18px;
-        }
+    .shell { max-width:900px; margin:0 auto; height:100%; display:flex; flex-direction:column; padding:18px 20px; }
 
-        .header {
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            background:var(--card);
-            border:1px solid var(--red-border);
-            border-radius:12px;
-            padding:14px 24px;
-            margin-bottom:14px;
-            flex-shrink:0;
-            box-shadow:0 8px 32px rgba(220,38,38,0.08);
-            backdrop-filter:blur(10px);
-            position:relative;
-        }
-        .header-logo img { height:42px; display:block; }
-        .header-clock { text-align:right; }
-        .header-clock .time { font-size:1.7em; font-weight:800; color:var(--red); letter-spacing:-0.5px; }
-        .header-clock .date { font-size:0.75em; color:var(--text-muted); font-weight:600; margin-top:2px; }
+    .header {
+        display:flex; align-items:center; justify-content:space-between;
+        background:rgba(15,15,17,0.75);
+        border:1px solid var(--red-border);
+        border-radius:16px;
+        padding:14px 22px;
+        margin-bottom:16px;
+        flex-shrink:0;
+        box-shadow:0 10px 30px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.02) inset;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        position:relative;
+    }
+    .header-logo img { height:38px; display:block; }
+    .header-clock { text-align:right; }
+    .header-clock .time { font-size:1.7em; font-weight:800; color:var(--red-light); letter-spacing:-0.5px; font-variant-numeric:tabular-nums; }
+    .header-clock .date { font-size:0.72em; color:var(--text-muted); font-weight:600; margin-top:2px; letter-spacing:0.3px; }
 
-        .lang-selector {
-            position:absolute;
-            top:50%;
-            left:50%;
-            transform:translate(-50%, -50%);
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:6px;
-        }
-        .lang-label {
-            font-size:0.75em;
-            color:var(--text-muted);
-            font-weight:600;
-            letter-spacing:0.5px;
-            text-transform:uppercase;
-        }
-        .lang-buttons {
-            display:flex;
-            gap:8px;
-        }
-        .lang-btn {
-            width:40px;
-            height:40px;
-            border-radius:50%;
-            border:2px solid var(--border);
-            background:var(--card2);
-            color:var(--text-muted);
-            font-weight:700;
-            cursor:pointer;
-            font-size:1.4em;
-            transition:all 0.2s;
-        }
-        .lang-btn.active {
-            border-color:var(--red);
-            background:var(--red);
-            color:#fff;
-            box-shadow:0 0 12px rgba(220,38,38,0.4);
-        }
+    .lang-selector { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .lang-label { font-size:0.68em; color:var(--text-muted); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+    .lang-buttons { display:flex; gap:7px; }
+    .lang-btn {
+        width:36px; height:36px; border-radius:50%;
+        border:2px solid var(--border);
+        background:var(--card2);
+        font-weight:700; cursor:pointer; font-size:1.25em;
+        transition:all 0.2s ease;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .lang-btn.active { border-color:var(--red); background:var(--red); box-shadow:0 0 14px rgba(220,38,38,0.45); transform:scale(1.08); }
 
-        .screen { display:none; flex:1; flex-direction:column; min-height:0; }
-        .screen.active { display:flex; }
+    .screen { display:none; flex:1; flex-direction:column; min-height:0; position:relative; }
+    .screen.active { display:flex; }
 
-        .welcome-hero {
-            background:linear-gradient(135deg, var(--card2) 0%, rgba(220,38,38,0.06) 100%);
-            border:1px solid var(--red-border);
-            border-radius:12px;
-            padding:32px 24px;
-            text-align:center;
-            margin-bottom:14px;
-            box-shadow:0 8px 32px rgba(220,38,38,0.08);
-            backdrop-filter:blur(10px);
-        }
-        .welcome-hero .tagline { font-size:1.05em; color:var(--text-muted); font-weight:500; margin-top:8px; letter-spacing:0.5px; }
+    .welcome-hero {
+        background:linear-gradient(160deg, var(--card2) 0%, rgba(220,38,38,0.07) 100%);
+        border:1px solid var(--red-border);
+        border-radius:18px;
+        padding:34px 24px 30px;
+        text-align:center;
+        margin-bottom:16px;
+        box-shadow:0 14px 40px rgba(220,38,38,0.10);
+    }
+    .welcome-hero .tagline { font-size:1.05em; color:var(--text-muted); font-weight:500; margin-top:10px; letter-spacing:0.4px; }
 
-        .stats-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
-        .stat-card { 
-            background:var(--card);
-            border:1px solid var(--border);
-            border-radius:10px;
-            padding:20px 16px;
-            text-align:center;
-            box-shadow:0 4px 16px rgba(0,0,0,0.3);
-            transition:all 0.3s ease;
-        }
-        .stat-card:hover { border-color:var(--red-border); background:var(--card2); }
-        .stat-label { font-size:0.8em; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px; }
-        .stat-value { 
-            font-size:3.2em; font-weight:900; color:var(--red); line-height:1; letter-spacing:-1px;
-            background:linear-gradient(135deg, var(--red) 0%, #EF4444 100%);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-            background-clip:text;
-        }
+    .stats-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+    .stat-card {
+        background:var(--card); border:1px solid var(--border); border-radius:14px;
+        padding:20px 16px; text-align:center;
+        box-shadow:0 6px 20px rgba(0,0,0,0.35);
+        transition:all 0.25s ease;
+    }
+    .stat-label { font-size:0.78em; color:var(--text-muted); text-transform:uppercase; letter-spacing:1.2px; font-weight:700; margin-bottom:8px; }
+    .stat-value {
+        font-size:3.1em; font-weight:900; line-height:1; letter-spacing:-1px;
+        background:linear-gradient(135deg, var(--red-light) 0%, var(--red) 100%);
+        -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
 
-        .btn-row { display:grid; grid-template-columns:1fr; gap:12px; margin-top:auto; }
+    .btn-row { display:grid; grid-template-columns:1fr; gap:12px; margin-top:auto; }
+    .btn {
+        font-family:'Barlow Condensed',sans-serif; font-size:1.3em; font-weight:800;
+        text-transform:uppercase; letter-spacing:0.8px; border:none; border-radius:12px;
+        padding:18px 16px; cursor:pointer; transition:all 0.18s ease; width:100%;
+        position:relative; overflow:hidden;
+    }
+    .btn:active { transform:scale(0.97); }
+    .btn-primary { background:linear-gradient(135deg, var(--red-light) 0%, var(--red) 100%); color:#fff; box-shadow:0 10px 26px rgba(220,38,38,0.32); }
+    .btn-primary:disabled { background:rgba(220,38,38,0.35); box-shadow:none; cursor:not-allowed; transform:none; }
+    .btn-outline { background:rgba(255,255,255,0.02); color:var(--text); border:1.5px solid rgba(255,255,255,0.25); }
+    .btn-outline:active { background:var(--red-dim); border-color:var(--red); }
+    .btn-sm { font-size:0.92em; padding:12px 14px; }
+    .btn-ghost { background:transparent; color:var(--text-muted); border:1px solid var(--border); font-size:0.92em; padding:12px 14px; }
 
-        .btn {
-            font-family:'Barlow Condensed',sans-serif;
-            font-size:1.35em;
-            font-weight:800;
-            text-transform:uppercase;
-            letter-spacing:0.8px;
-            border:none;
-            border-radius:10px;
-            padding:18px 16px;
-            cursor:pointer;
-            transition:all 0.2s ease;
-            width:100%;
-            position:relative;
-            overflow:hidden;
-        }
-        .btn::before {
-            content:'';
-            position:absolute;
-            top:0; left:0; right:0; bottom:0;
-            background:rgba(255,255,255,0.1);
-            opacity:0;
-            transition:opacity 0.2s;
-        }
-        .btn:active::before { opacity:1; }
-        .btn-primary { 
-            background:linear-gradient(135deg, var(--red) 0%, #EF4444 100%);
-            color:#fff;
-            box-shadow:0 8px 24px rgba(220,38,38,0.3);
-        }
-        .btn-primary:active { transform:scale(0.97); }
-        .btn-primary:disabled { 
-            background:rgba(220,38,38,0.4);
-            box-shadow:none;
-            cursor:not-allowed;
-            transform:none;
-        }
-        .btn-outline { 
-            background:transparent; 
-            color:var(--text);
-            border:2px solid var(--text);
-            transition:all 0.2s;
-            box-shadow:0 0 24px rgba(236,236,236,0.3), inset 0 0 12px rgba(236,236,236,0.1);
-        }
-        .btn-outline:active { 
-            background:var(--red-dim);
-            border-color:var(--red);
-            transform:scale(0.98);
-            box-shadow:0 0 24px rgba(236,236,236,0.5), inset 0 0 12px rgba(236,236,236,0.2);
-        }
-        .btn-sm { font-size:0.95em; padding:12px 14px; }
-        .btn-ghost { 
-            background:transparent;
-            color:var(--text-muted);
-            border:1px solid var(--border);
-            font-size:0.95em;
-            padding:12px 14px;
-        }
+    .cta-banner {
+        background:linear-gradient(135deg, rgba(220,38,38,0.32) 0%, rgba(220,38,38,0.14) 100%);
+        border:2px solid var(--red); border-radius:18px; padding:30px 24px; text-align:center;
+        margin-bottom:18px; box-shadow:0 0 36px rgba(220,38,38,0.3);
+        animation:ctaPulse 2.4s ease-in-out infinite; cursor:pointer;
+        transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .cta-banner:active { transform:scale(0.98); }
+    @keyframes ctaPulse { 0%,100% { box-shadow:0 0 30px rgba(220,38,38,0.28); } 50% { box-shadow:0 0 48px rgba(220,38,38,0.48); } }
+    .cta-banner .cta-icon { font-size:2.3em; margin-bottom:10px; }
+    .cta-banner .cta-text { font-size:2em; font-weight:900; color:#fff; text-transform:uppercase; letter-spacing:2px; }
+    .cta-banner .cta-sub { font-size:0.92em; color:rgba(255,255,255,0.6); margin-top:6px; font-weight:700; }
 
-        .cta-banner {
-            background:linear-gradient(135deg, rgba(220,38,38,0.3) 0%, rgba(220,38,38,0.15) 100%);
-            border:2px solid var(--red);
-            border-radius:14px;
-            padding:28px 24px;
-            text-align:center;
-            margin-bottom:16px;
-            box-shadow:0 0 32px rgba(220,38,38,0.35);
-            animation:ctaPulse 2s ease-in-out infinite;
-            cursor:pointer;
-            transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .cta-banner:hover {
-            background:linear-gradient(135deg, rgba(220,38,38,0.4) 0%, rgba(220,38,38,0.2) 100%);
-            box-shadow:0 0 48px rgba(220,38,38,0.5);
-            transform:scale(1.02);
-        }
-        @keyframes ctaPulse {
-            0%, 100% { box-shadow:0 0 32px rgba(220,38,38,0.35); }
-            50% { box-shadow:0 0 48px rgba(220,38,38,0.5); }
-        }
-        .cta-banner .cta-icon { font-size:2.4em; margin-bottom:12px; }
-        .cta-banner .cta-text { font-size:2em; font-weight:900; color:#fff; text-transform:uppercase; letter-spacing:2px; }
-        .cta-banner .cta-sub { font-size:0.95em; color:var(--text-muted); margin-top:8px; font-weight:700; }
+    .wizard-wrap { flex:1; display:flex; flex-direction:column; min-height:0; }
+    .step-dots { display:flex; justify-content:center; gap:9px; margin-bottom:18px; flex-shrink:0; flex-wrap:wrap; }
+    .step-dot { width:9px; height:9px; border-radius:50%; background:var(--border); transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+    .step-dot.done { background:rgba(220,38,38,0.55); }
+    .step-dot.active { background:var(--red-light); transform:scale(1.5); box-shadow:0 0 12px rgba(220,38,38,0.55); }
 
-        .wizard-wrap {
-            flex:1;
-            display:flex;
-            flex-direction:column;
-            min-height:0;
-        }
+    .wizard-step { display:none; flex:1; flex-direction:column; justify-content:center; align-items:center; padding:10px 0; animation:fadeSlide 0.32s cubic-bezier(0.34,1.56,0.64,1); }
+    .wizard-step.active { display:flex; }
+    @keyframes fadeSlide { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes fadeSlideBack { from { opacity:0; transform:translateX(-18px); } to { opacity:1; transform:translateX(0); } }
+    .wizard-step.going-back { animation:fadeSlideBack 0.32s cubic-bezier(0.34,1.56,0.64,1); }
 
-        .step-dots {
-            display:flex;
-            justify-content:center;
-            gap:10px;
-            margin-bottom:18px;
-            flex-shrink:0;
-            flex-wrap:wrap;
-        }
-        .step-dot {
-            width:10px; height:10px;
-            border-radius:50%;
-            background:var(--border);
-            transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow:0 0 0 2px rgba(220,38,38,0);
-        }
-        .step-dot.done { background:rgba(220,38,38,0.6); }
-        .step-dot.active { 
-            background:var(--red);
-            transform:scale(1.4);
-            box-shadow:0 0 12px rgba(220,38,38,0.5);
-        }
+    .step-inner { width:100%; max-width:520px; text-align:center; }
+    .step-num { font-size:0.72em; font-weight:800; color:var(--red-light); text-transform:uppercase; letter-spacing:2.2px; margin-bottom:10px; }
+    .step-question { font-size:2.25em; font-weight:900; color:#fff; text-transform:uppercase; letter-spacing:-0.5px; margin-bottom:6px; line-height:1.05; }
+    .step-hint { font-size:0.92em; color:var(--text-muted); margin-bottom:26px; font-weight:500; }
 
-        .wizard-step {
-            display:none;
-            flex:1;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
-            padding:10px 0;
-            animation:fadeSlide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .wizard-step.active { display:flex; }
+    .step-input {
+        width:100%; background:var(--card2); border:1.5px solid var(--border); border-radius:12px;
+        color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:1.45em; font-weight:600;
+        padding:17px 20px; text-align:center; transition:all 0.2s ease; -webkit-appearance:none;
+        margin-bottom:14px; box-shadow:0 6px 16px rgba(0,0,0,0.25);
+    }
+    .step-input:focus { outline:none; border-color:var(--red); background:#1c1c20; box-shadow:0 0 0 4px rgba(220,38,38,0.15); }
+    .step-input::placeholder { color:rgba(255,255,255,0.2); font-weight:500; }
 
-        @keyframes fadeSlide {
-            from { opacity:0; transform:translateX(20px); }
-            to   { opacity:1; transform:translateX(0); }
-        }
-        @keyframes fadeSlideBack {
-            from { opacity:0; transform:translateX(-20px); }
-            to   { opacity:1; transform:translateX(0); }
-        }
-        .wizard-step.going-back { animation:fadeSlideBack 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .option-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-bottom:14px; width:100%; }
+    .option-tile {
+        background:var(--card2); border:1.5px solid var(--border); border-radius:12px;
+        padding:18px 12px; text-align:center; cursor:pointer; transition:all 0.18s ease;
+        font-family:'Barlow Condensed',sans-serif; font-size:1.12em; font-weight:800;
+        text-transform:uppercase; letter-spacing:0.4px; color:var(--text);
+        box-shadow:0 6px 16px rgba(0,0,0,0.25);
+    }
+    .option-tile:active { transform:scale(0.96); }
+    .option-tile.selected {
+        border-color:var(--red); background:linear-gradient(135deg, rgba(220,38,38,0.18) 0%, rgba(220,38,38,0.08) 100%);
+        color:#fff; box-shadow:0 0 20px rgba(220,38,38,0.28);
+    }
+    .option-tile .tile-icon { font-size:1.7em; display:block; margin-bottom:5px; }
 
-        .step-inner {
-            width:100%;
-            max-width:520px;
-            text-align:center;
-        }
+    .host-select {
+        width:100%; background:var(--card2); border:1.5px solid var(--border); border-radius:12px;
+        color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:1.2em; font-weight:600;
+        padding:16px 20px; -webkit-appearance:none; text-align:center; margin-bottom:14px;
+        transition:all 0.2s ease; box-shadow:0 6px 16px rgba(0,0,0,0.25);
+    }
+    .host-select:focus { outline:none; border-color:var(--red); background:#1c1c20; box-shadow:0 0 0 4px rgba(220,38,38,0.15); }
+    .host-select option { background:#0a0a0a; color:#fff; font-size:0.9em; }
 
-        .step-num {
-            font-size:0.75em;
-            font-weight:800;
-            color:var(--red);
-            text-transform:uppercase;
-            letter-spacing:2px;
-            margin-bottom:12px;
-        }
+    .step-nav { display:grid; grid-template-columns:1fr 2fr; gap:12px; width:100%; max-width:520px; flex-shrink:0; }
 
-        .step-question {
-            font-size:2.3em;
-            font-weight:900;
-            color:#fff;
-            text-transform:uppercase;
-            letter-spacing:-0.5px;
-            margin-bottom:8px;
-            line-height:1.05;
-        }
+    .consent-scroll { flex:1; overflow-y:auto; min-height:0; width:100%; max-width:620px; }
+    .consent-scroll::-webkit-scrollbar { width:5px; }
+    .consent-scroll::-webkit-scrollbar-thumb { background:var(--red); border-radius:6px; }
 
-        .step-hint {
-            font-size:0.95em;
-            color:var(--text-muted);
-            margin-bottom:28px;
-            font-weight:500;
-        }
+    .info-panel { border-radius:12px; padding:16px 18px; margin-bottom:12px; box-shadow:0 6px 16px rgba(0,0,0,0.25); }
+    .info-panel.safety { background:linear-gradient(135deg, rgba(139,0,0,0.16) 0%, rgba(220,38,38,0.07) 100%); border:1px solid rgba(220,38,38,0.4); }
+    .info-panel.gdpr { background:linear-gradient(135deg, rgba(30,58,138,0.13) 0%, rgba(59,130,246,0.06) 100%); border:1px solid rgba(59,130,246,0.25); }
+    .info-panel h3 { font-size:0.92em; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:12px; }
+    .info-panel.safety h3 { color:var(--red-light); }
+    .info-panel.gdpr h3 { color:#60a5fa; }
+    .info-panel ul { list-style:none; padding:0; }
+    .info-panel li { font-size:0.88em; color:var(--text); padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-weight:500; }
+    .info-panel li:last-child { border-bottom:none; }
+    .info-panel p { font-size:0.84em; color:var(--text); margin-bottom:6px; line-height:1.5; font-weight:500; }
 
-        .step-input {
-            width:100%;
-            background:var(--card2);
-            border:1.5px solid var(--border);
-            border-radius:10px;
-            color:#fff;
-            font-family:'Barlow Condensed',sans-serif;
-            font-size:1.5em;
-            font-weight:600;
-            padding:18px 20px;
-            text-align:center;
-            transition:all 0.25s ease;
-            -webkit-appearance:none;
-            margin-bottom:16px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.2);
-        }
-        .step-input:focus {
-            outline:none;
-            border-color:var(--red);
-            background:#1a1a1a;
-            box-shadow:0 0 24px rgba(220,38,38,0.2);
-        }
-        .step-input::placeholder { color:rgba(255,255,255,0.18); font-weight:500; }
+    .check-group { display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-bottom:1px solid var(--border); }
+    .check-group:last-of-type { border-bottom:none; }
+    .check-group input[type="checkbox"] {
+        appearance:none; -webkit-appearance:none; width:26px; height:26px; min-width:26px; min-height:26px;
+        cursor:pointer; background:var(--card2); border:2px solid var(--border); border-radius:7px;
+        position:relative; transition:all 0.2s ease; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.2);
+    }
+    .check-group input[type="checkbox"]:checked { background:linear-gradient(135deg, var(--red-light) 0%, var(--red) 100%); border-color:var(--red); box-shadow:0 0 16px rgba(220,38,38,0.35); }
+    .check-group input[type="checkbox"]:checked::after { content:''; position:absolute; left:6px; top:2px; width:10px; height:16px; border:2.5px solid #fff; border-top:none; border-left:none; transform:rotate(45deg); }
+    .check-group label { text-transform:none; letter-spacing:0; font-size:1em; color:var(--text); font-weight:500; margin:0; cursor:pointer; line-height:1.5; }
+    .req { color:var(--red-light); font-weight:700; }
 
-        .option-grid {
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:12px;
-            margin-bottom:16px;
-            width:100%;
-        }
-        .option-tile {
-            background:var(--card2);
-            border:1.5px solid var(--border);
-            border-radius:10px;
-            padding:18px 12px;
-            text-align:center;
-            cursor:pointer;
-            transition:all 0.2s ease;
-            font-family:'Barlow Condensed',sans-serif;
-            font-size:1.15em;
-            font-weight:800;
-            text-transform:uppercase;
-            letter-spacing:0.5px;
-            color:var(--text);
-            box-shadow:0 4px 12px rgba(0,0,0,0.2);
-        }
-        .option-tile:active { transform:scale(0.96); }
-        .option-tile.selected {
-            border-color:var(--red);
-            background:linear-gradient(135deg, rgba(220,38,38,0.15) 0%, rgba(220,38,38,0.08) 100%);
-            color:#fff;
-            box-shadow:0 0 20px rgba(220,38,38,0.25);
-        }
-        .option-tile .tile-icon { font-size:1.8em; display:block; margin-bottom:6px; }
+    .success-box {
+        background:linear-gradient(160deg, rgba(20,60,20,0.32) 0%, rgba(74,222,128,0.08) 100%);
+        border:1.5px solid rgba(74,222,128,0.4); border-radius:18px; padding:34px 28px; text-align:center;
+        width:100%; max-width:500px; box-shadow:0 16px 44px rgba(74,222,128,0.14);
+    }
+    .success-icon { font-size:4em; margin-bottom:14px; animation:scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes scaleIn { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
+    .success-title { font-size:2.3em; font-weight:900; color:#4ade80; text-transform:uppercase; letter-spacing:-0.5px; margin-bottom:8px; }
+    .success-sub { font-size:1em; color:rgba(255,255,255,0.65); margin-bottom:18px; font-weight:500; }
+    .success-host { background:rgba(255,255,255,0.05); border:1px solid rgba(74,222,128,0.3); border-radius:10px; padding:16px; font-size:1.05em; color:#fff; font-weight:600; line-height:1.6; }
+    .success-return { color:#60a5fa; font-size:0.92em; margin-top:12px; padding-top:12px; border-top:1px solid rgba(74,222,128,0.2); }
 
-        .host-select {
-            width:100%;
-            background:var(--card2);
-            border:1.5px solid var(--border);
-            border-radius:10px;
-            color:#fff;
-            font-family:'Barlow Condensed',sans-serif;
-            font-size:1.25em;
-            font-weight:600;
-            padding:16px 20px;
-            -webkit-appearance:none;
-            text-align:center;
-            margin-bottom:16px;
-            transition:all 0.25s ease;
-            box-shadow:0 4px 12px rgba(0,0,0,0.2);
-        }
-        .host-select:focus { 
-            outline:none;
-            border-color:var(--red);
-            background:#1a1a1a;
-            box-shadow:0 0 24px rgba(220,38,38,0.2);
-        }
-        .host-select option { background:#0a0a0a; color:#fff; font-size:0.9em; }
+    .loading-overlay {
+        position:fixed; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.86) 0%, rgba(0,0,0,0.93) 100%);
+        display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999;
+        opacity:0; pointer-events:none; transition:opacity 0.25s ease; backdrop-filter:blur(8px);
+    }
+    .loading-overlay.show { opacity:1; pointer-events:all; }
+    .spinner { width:52px; height:52px; border:4px solid rgba(220,38,38,0.2); border-top-color:var(--red-light); border-radius:50%; animation:spin 0.8s linear infinite; margin-bottom:16px; box-shadow:0 0 24px rgba(220,38,38,0.3); }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .loading-text { font-size:1.12em; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:1.2px; }
 
-        .step-nav {
-            display:grid;
-            grid-template-columns:1fr 2fr;
-            gap:12px;
-            width:100%;
-            max-width:520px;
-            flex-shrink:0;
-        }
+    .toast {
+        position:fixed; top:18px; right:18px; background:linear-gradient(135deg, var(--card3) 0%, var(--card) 100%);
+        color:#fff; padding:14px 20px; border-radius:12px; border-left:3px solid var(--red-light);
+        font-size:0.94em; font-weight:700; opacity:0; transform:translateX(120%);
+        transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index:10000; box-shadow:0 10px 34px rgba(0,0,0,0.45);
+        letter-spacing:0.3px; max-width:80vw;
+    }
+    .toast.show { opacity:1; transform:translateX(0); }
 
-        .consent-scroll {
-            flex:1;
-            overflow-y:auto;
-            min-height:0;
-            width:100%;
-            max-width:600px;
-        }
-        .consent-scroll::-webkit-scrollbar { width:5px; }
-        .consent-scroll::-webkit-scrollbar-thumb { background:var(--red); border-radius:6px; }
-
-        .info-panel {
-            border-radius:10px;
-            padding:16px 18px;
-            margin-bottom:12px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.2);
-        }
-        .info-panel.safety { 
-            background:linear-gradient(135deg, rgba(139,0,0,0.15) 0%, rgba(220,38,38,0.08) 100%);
-            border:1px solid rgba(220,38,38,0.4);
-        }
-        .info-panel.gdpr { 
-            background:linear-gradient(135deg, rgba(30,58,138,0.12) 0%, rgba(59,130,246,0.06) 100%);
-            border:1px solid rgba(59,130,246,0.25);
-        }
-        .info-panel h3 { font-size:0.95em; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:12px; }
-        .info-panel.safety h3 { color:var(--red); }
-        .info-panel.gdpr h3 { color:#60a5fa; }
-        .info-panel ul { list-style:none; padding:0; }
-        .info-panel li { font-size:0.9em; color:var(--text); padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-weight:500; }
-        .info-panel li:last-child { border-bottom:none; }
-        .info-panel p { font-size:0.85em; color:var(--text); margin-bottom:6px; line-height:1.5; font-weight:500; }
-
-        .check-group {
-            display:flex;
-            align-items:flex-start;
-            gap:14px;
-            padding:14px 0;
-            border-bottom:1px solid var(--border);
-        }
-        .check-group:last-of-type { border-bottom:none; }
-        .check-group input[type="checkbox"] {
-            appearance:none;
-            -webkit-appearance:none;
-            width:26px; height:26px;
-            min-width:26px; min-height:26px;
-            cursor:pointer;
-            background:var(--card2);
-            border:2px solid var(--border);
-            border-radius:6px;
-            position:relative;
-            transition:all 0.25s ease;
-            flex-shrink:0;
-            box-shadow:0 2px 8px rgba(0,0,0,0.2);
-        }
-        .check-group input[type="checkbox"]:checked { 
-            background:linear-gradient(135deg, var(--red) 0%, #EF4444 100%);
-            border-color:var(--red);
-            box-shadow:0 0 16px rgba(220,38,38,0.3);
-        }
-        .check-group input[type="checkbox"]:checked::after {
-            content:'';
-            position:absolute;
-            left:6px; top:2px;
-            width:10px; height:16px;
-            border:2.5px solid #fff;
-            border-top:none; border-left:none;
-            transform:rotate(45deg);
-        }
-        .check-group label {
-            text-transform:none;
-            letter-spacing:0;
-            font-size:1em;
-            color:var(--text);
-            font-weight:500;
-            margin:0;
-            cursor:pointer;
-            line-height:1.5;
-        }
-        .req { color:var(--red); font-weight:700; }
-
-        .success-box {
-            background:linear-gradient(135deg, rgba(20,60,20,0.3) 0%, rgba(74,222,128,0.08) 100%);
-            border:1.5px solid rgba(74,222,128,0.4);
-            border-radius:12px;
-            padding:32px 28px;
-            text-align:center;
-            width:100%;
-            max-width:500px;
-            box-shadow:0 12px 40px rgba(74,222,128,0.15);
-        }
-        .success-icon { font-size:4.2em; margin-bottom:16px; animation:scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        @keyframes scaleIn { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
-        .success-title { font-size:2.4em; font-weight:900; color:#4ade80; text-transform:uppercase; letter-spacing:-0.5px; margin-bottom:8px; }
-        .success-sub { font-size:1em; color:rgba(255,255,255,0.65); margin-bottom:18px; font-weight:500; }
-        .success-host { 
-            background:rgba(255,255,255,0.05);
-            border:1px solid rgba(74,222,128,0.3);
-            border-radius:8px;
-            padding:16px;
-            font-size:1.05em;
-            color:#fff;
-            font-weight:600;
-            line-height:1.6;
-        }
-        .success-return { 
-            color:#60a5fa;
-            font-size:0.95em;
-            margin-top:12px;
-            padding-top:12px;
-            border-top:1px solid rgba(74,222,128,0.2);
-        }
-
-        .loading-overlay {
-            position:fixed; inset:0;
-            background:linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.92) 100%);
-            display:flex; flex-direction:column;
-            align-items:center; justify-content:center;
-            z-index:9999;
-            opacity:0; pointer-events:none;
-            transition:opacity 0.25s ease;
-            backdrop-filter:blur(8px);
-        }
-        .loading-overlay.show { opacity:1; pointer-events:all; }
-        .spinner {
-            width:54px; height:54px;
-            border:4px solid rgba(220,38,38,0.2);
-            border-top-color:var(--red);
-            border-radius:50%;
-            animation:spin 0.8s linear infinite;
-            margin-bottom:16px;
-            box-shadow:0 0 24px rgba(220,38,38,0.3);
-        }
-        @keyframes spin { to { transform:rotate(360deg); } }
-        .loading-text { font-size:1.15em; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:1.2px; }
-
-        .toast {
-            position:fixed; top:18px; right:18px;
-            background:linear-gradient(135deg, var(--card2) 0%, var(--card) 100%);
-            color:#fff;
-            padding:14px 20px; border-radius:10px;
-            border-left:3px solid var(--red);
-            font-size:0.95em; font-weight:700;
-            opacity:0; transform:translateX(120%);
-            transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index:10000;
-            box-shadow:0 8px 32px rgba(0,0,0,0.4);
-            letter-spacing:0.3px;
-        }
-        .toast.show { opacity:1; transform:translateX(0); }
-
-        .version-badge {
-            position:fixed; bottom:14px; left:16px;
-            background:rgba(34,197,94,0.12);
-            color:rgba(34,197,94,0.8);
-            border:1px solid rgba(34,197,94,0.3);
-            border-radius:6px; font-size:0.7em; font-weight:700;
-            letter-spacing:0.8px; padding:6px 10px; z-index:100;
-            box-shadow:0 2px 8px rgba(0,0,0,0.2);
-        }
-
-        .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:1.05em; font-weight:600; }
-    </style>
+    .version-badge {
+        position:fixed; bottom:14px; left:16px; background:rgba(220,38,38,0.1); color:rgba(255,255,255,0.5);
+        border:1px solid rgba(220,38,38,0.25); border-radius:7px; font-size:0.68em; font-weight:700;
+        letter-spacing:0.8px; padding:6px 10px; z-index:100;
+    }
+    .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:1.05em; font-weight:600; }
+</style>
 </head>
 <body>
 
-<div class="version-badge">5700</div>
+<div class="version-badge">FLEXI SIGN-IN · SUPABASE</div>
 <div class="toast" id="toast"></div>
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
@@ -588,10 +276,8 @@
 
     <!-- WELCOME SCREEN -->
     <div class="screen active" id="welcomeScreen">
-        <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/lines.svg" alt="" style="position:absolute; top:50%; left:50%; width:120%; height:120%; object-fit:cover; opacity:0.15; pointer-events:none; z-index:0; transform:translate(-50%, -50%) rotate(90deg); filter:drop-shadow(0 0 40px rgba(220,38,38,0.4));" loading="lazy">
-        <div style="position:relative; z-index:1; height:100%; display:flex; flex-direction:column; padding:16px 18px;">
         <div class="welcome-hero">
-            <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/Narrow-Aisle-white.svg" alt="Narrow Aisle" style="height:72px; width:auto; margin-bottom:20px; filter:drop-shadow(0 4px 12px rgba(220,38,38,0.2));" onerror="this.style.display='none'">
+            <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/Narrow-Aisle-white.svg" alt="Narrow Aisle" style="height:68px; width:auto; margin-bottom:18px; filter:drop-shadow(0 4px 12px rgba(220,38,38,0.25));" onerror="this.style.display='none'">
             <div class="tagline" id="welcomeTagline">Your Space, Our Expertise</div>
         </div>
         <div class="stats-row">
@@ -604,14 +290,13 @@
                 <div class="stat-value" id="welcomeCurrentCount">—</div>
             </div>
         </div>
-        <div class="cta-banner" onclick="startSignIn()" style="cursor:pointer;">
+        <div class="cta-banner" onclick="startSignIn()">
             <div class="cta-icon">📝</div>
             <div class="cta-text" id="ctaText">Sign In Here</div>
             <div class="cta-sub" id="ctaSub">Tap to start</div>
         </div>
         <div class="btn-row">
             <button class="btn btn-outline" onclick="showScreen('signoutScreen')" id="signOutBtn">👋 Sign Out</button>
-        </div>
         </div>
     </div>
 
@@ -773,7 +458,7 @@
                         <p><strong>Why we collect your data:</strong> Health &amp; Safety compliance, security and premises management, and communication with your host.</p>
                         <p>Data is stored securely and retained only as long as necessary. You have the right to access, correct, or request deletion of your data.</p>
                     </div>
-                    <div style="background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px;">
+                    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px;">
                         <div class="check-group">
                             <input type="checkbox" id="safetyAgree">
                             <label for="safetyAgree" id="safetyLabel">I understand and accept the Health &amp; Safety information <span class="req">*</span></label>
@@ -808,8 +493,8 @@
     <!-- SIGN-OUT SCREEN -->
     <div class="screen" id="signoutScreen">
         <div style="flex-shrink:0; position:relative; padding-bottom:4px;">
-            <div style="font-size:2.1em; font-weight:900; color:var(--red); text-transform:uppercase; letter-spacing:-0.5px;">Sign Out</div>
-            <div style="font-size:0.95em; color:var(--text-muted); margin-bottom:16px; font-weight:600;">Select your name to sign out</div>
+            <div style="font-size:2em; font-weight:900; color:var(--red-light); text-transform:uppercase; letter-spacing:-0.5px;">Sign Out</div>
+            <div style="font-size:0.92em; color:var(--text-muted); margin-bottom:16px; font-weight:600;">Select your name to sign out</div>
         </div>
         <div class="stats-row" style="flex-shrink:0; margin-bottom:10px;">
             <div class="stat-card">
@@ -828,7 +513,18 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
+// ============================================
+// SUPABASE CONFIG
+// ============================================
+const SUPABASE_URL = 'https://hkwcdpqpduptjwroawrw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrd2NkcHFwZHVwdGp3cm9hd3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDMyNzcsImV4cCI6MjEwNTExOTI3N30.9W7X2SBUQunSYASrpmAgVICAZuX9F_LJCfPT7oBPh3I';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Slim Apps Script mailer -- sends the host arrival email (and optional
+// visitor follow-up email) via Gmail. It no longer touches the spreadsheet;
+// Supabase is the single source of truth for visitor data now.
+const MAILER_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
+
 const TOTAL_STEPS = 7;
 let currentStep = 1;
 let selectedPurpose = '';
@@ -838,285 +534,133 @@ let currentLanguage = 'en';
 
 const translations = {
   en: {
-    select_lang: "Select Language",
-    tagline: "Your Space, Our Expertise",
-    visitors_today: "Visitors Today",
-    on_site: "Currently On-Site",
-    cta_text: "Sign In Here",
-    cta_sub: "Tap to start",
-    signin_btn: "📝 Sign In",
-    signout_btn: "👋 Sign Out",
-    s1num: "Step 1 of 7",
-    s1q: "What's your name?",
-    s1h: "Enter your full name",
-    s2num: "Step 2 of 7",
-    s2q: "Which company are you from?",
-    s2h: "Enter your company name",
-    s3num: "Step 3 of 7",
-    s3q: "Who are you here to see?",
-    s3h: "Select from the list below",
-    s4num: "Step 4 of 7",
-    s4q: "Purpose of visit?",
-    s4h: "Tap to select",
-    s5num: "Step 5 of 7",
-    s5q: "How long will you stay?",
-    s5h: "Select duration",
-    s6num: "Step 6 of 7",
-    s6q: "A couple of optional details",
-    s6h: "Leave blank if not applicable",
-    s7num: "Step 7 of 7",
-    s7q: "Almost done!",
-    s7h: "Please read and confirm below",
-    dur30m: "30 mins",
-    dur1h: "1 hour",
-    dur2h: "2 hours",
-    durhalf: "Half day",
-    durfull: "Full day",
+    select_lang: "Select Language", tagline: "Your Space, Our Expertise",
+    visitors_today: "Visitors Today", on_site: "Currently On-Site",
+    cta_text: "Sign In Here", cta_sub: "Tap to start",
+    signin_btn: "📝 Sign In", signout_btn: "👋 Sign Out",
+    s1num: "Step 1 of 7", s1q: "What's your name?", s1h: "Enter your full name",
+    s2num: "Step 2 of 7", s2q: "Which company are you from?", s2h: "Enter your company name",
+    s3num: "Step 3 of 7", s3q: "Who are you here to see?", s3h: "Select from the list below",
+    s4num: "Step 4 of 7", s4q: "Purpose of visit?", s4h: "Tap to select",
+    s5num: "Step 5 of 7", s5q: "How long will you stay?", s5h: "Select duration",
+    s6num: "Step 6 of 7", s6q: "A couple of optional details", s6h: "Leave blank if not applicable",
+    s7num: "Step 7 of 7", s7q: "Almost done!", s7h: "Please read and confirm below",
+    dur30m: "30 mins", dur1h: "1 hour", dur2h: "2 hours", durhalf: "Half day", durfull: "Full day",
     safety_label: "I understand and accept the Health & Safety information",
     gdpr_label: "I consent to my data being processed in accordance with the GDPR statement above",
-    success_title: "Signed In!",
-    success_sub: "Thank you for registering your visit",
-    success_notified: "has been notified 📧",
-    success_reception: "Please wait at reception",
-    success_return: "Welcome back! Last visited on",
-    back_btn: "← Back to Welcome",
-    signout_today: "Visitors Today",
-    signout_current: "Currently On-Site",
-    error_name: "⚠ Please enter your name",
-    error_company: "⚠ Please enter your company name",
-    error_host: "⚠ Please select who you are here to see",
-    error_purpose: "⚠ Please select a purpose",
-    error_duration: "⚠ Please select a duration",
-    error_safety: "⚠ Please accept the Health & Safety information",
-    error_gdpr: "⚠ Please accept the GDPR consent",
-    signin_success: "✅ Signed in successfully",
+    success_title: "Signed In!", success_sub: "Thank you for registering your visit",
+    success_notified: "has been notified 📧", success_reception: "Please wait at reception",
+    success_return: "Welcome back! Last visited on", back_btn: "← Back to Welcome",
+    signout_today: "Visitors Today", signout_current: "Currently On-Site",
+    error_name: "⚠ Please enter your name", error_company: "⚠ Please enter your company name",
+    error_host: "⚠ Please select who you are here to see", error_purpose: "⚠ Please select a purpose",
+    error_duration: "⚠ Please select a duration", error_safety: "⚠ Please accept the Health & Safety information",
+    error_gdpr: "⚠ Please accept the GDPR consent", signin_success: "✅ Signed in successfully",
     error_try: "❌ Error – please try again",
   },
   es: {
-    select_lang: "Seleccionar Idioma",
-    tagline: "Tu Espacio, Nuestra Experiencia",
-    visitors_today: "Visitantes Hoy",
-    on_site: "Actualmente en el Sitio",
-    cta_text: "Regístrate Aquí",
-    cta_sub: "Toca para comenzar",
-    signin_btn: "📝 Registrarse",
-    signout_btn: "👋 Cerrar sesión",
-    s1num: "Paso 1 de 7",
-    s1q: "¿Cuál es tu nombre?",
-    s1h: "Ingrese su nombre completo",
-    s2num: "Paso 2 de 7",
-    s2q: "¿De qué empresa eres?",
-    s2h: "Ingrese el nombre de la empresa",
-    s3num: "Paso 3 de 7",
-    s3q: "¿A quién vienes a ver?",
-    s3h: "Selecciona de la lista",
-    s4num: "Paso 4 de 7",
-    s4q: "¿Propósito de la visita?",
-    s4h: "Toca para seleccionar",
-    s5num: "Paso 5 de 7",
-    s5q: "¿Cuánto tiempo te quedarás?",
-    s5h: "Selecciona duración",
-    s6num: "Paso 6 de 7",
-    s6q: "Algunos detalles opcionales",
-    s6h: "Dejar en blanco si no aplica",
-    s7num: "Paso 7 de 7",
-    s7q: "¡Casi listo!",
-    s7h: "Por favor lea y confirme a continuación",
-    dur30m: "30 mins",
-    dur1h: "1 hora",
-    dur2h: "2 horas",
-    durhalf: "Medio día",
-    durfull: "Día completo",
+    select_lang: "Seleccionar Idioma", tagline: "Tu Espacio, Nuestra Experiencia",
+    visitors_today: "Visitantes Hoy", on_site: "Actualmente en el Sitio",
+    cta_text: "Regístrate Aquí", cta_sub: "Toca para comenzar",
+    signin_btn: "📝 Registrarse", signout_btn: "👋 Cerrar sesión",
+    s1num: "Paso 1 de 7", s1q: "¿Cuál es tu nombre?", s1h: "Ingrese su nombre completo",
+    s2num: "Paso 2 de 7", s2q: "¿De qué empresa eres?", s2h: "Ingrese el nombre de la empresa",
+    s3num: "Paso 3 de 7", s3q: "¿A quién vienes a ver?", s3h: "Selecciona de la lista",
+    s4num: "Paso 4 de 7", s4q: "¿Propósito de la visita?", s4h: "Toca para seleccionar",
+    s5num: "Paso 5 de 7", s5q: "¿Cuánto tiempo te quedarás?", s5h: "Selecciona duración",
+    s6num: "Paso 6 de 7", s6q: "Algunos detalles opcionales", s6h: "Dejar en blanco si no aplica",
+    s7num: "Paso 7 de 7", s7q: "¡Casi listo!", s7h: "Por favor lea y confirme a continuación",
+    dur30m: "30 mins", dur1h: "1 hora", dur2h: "2 horas", durhalf: "Medio día", durfull: "Día completo",
     safety_label: "Entiendo y acepto la información de Salud y Seguridad",
     gdpr_label: "Doy mi consentimiento para que mis datos se procesen de conformidad con la declaración de RGPD anterior",
-    success_title: "¡Registrado!",
-    success_sub: "Gracias por registrar su visita",
-    success_notified: "ha sido notificado 📧",
-    success_reception: "Por favor espere en recepción",
-    success_return: "¡Bienvenido de vuelta! Última visita el",
-    back_btn: "← Volver a Bienvenido",
-    signout_today: "Visitantes Hoy",
-    signout_current: "Actualmente en el Sitio",
-    error_name: "⚠ Por favor ingrese su nombre",
-    error_company: "⚠ Por favor ingrese el nombre de la empresa",
-    error_host: "⚠ Por favor seleccione a quién viene a ver",
-    error_purpose: "⚠ Por favor seleccione un propósito",
-    error_duration: "⚠ Por favor seleccione una duración",
-    error_safety: "⚠ Por favor acepte la información de Salud y Seguridad",
-    error_gdpr: "⚠ Por favor acepte el consentimiento del RGPD",
-    signin_success: "✅ Registrado exitosamente",
+    success_title: "¡Registrado!", success_sub: "Gracias por registrar su visita",
+    success_notified: "ha sido notificado 📧", success_reception: "Por favor espere en recepción",
+    success_return: "¡Bienvenido de vuelta! Última visita el", back_btn: "← Volver a Bienvenido",
+    signout_today: "Visitantes Hoy", signout_current: "Actualmente en el Sitio",
+    error_name: "⚠ Por favor ingrese su nombre", error_company: "⚠ Por favor ingrese el nombre de la empresa",
+    error_host: "⚠ Por favor seleccione a quién viene a ver", error_purpose: "⚠ Por favor seleccione un propósito",
+    error_duration: "⚠ Por favor seleccione una duración", error_safety: "⚠ Por favor acepte la información de Salud y Seguridad",
+    error_gdpr: "⚠ Por favor acepte el consentimiento del RGPD", signin_success: "✅ Registrado exitosamente",
     error_try: "❌ Error – por favor intenta de nuevo",
   },
   fr: {
-    select_lang: "Sélectionner la Langue",
-    tagline: "Votre Espace, Notre Expertise",
-    visitors_today: "Visiteurs Aujourd'hui",
-    on_site: "Actuellement sur Site",
-    cta_text: "Enregistrez-vous Ici",
-    cta_sub: "Cliquez pour commencer",
-    signin_btn: "📝 S'enregistrer",
-    signout_btn: "👋 Se Déconnecter",
-    s1num: "Étape 1 sur 7",
-    s1q: "Quel est votre nom ?",
-    s1h: "Entrez votre nom complet",
-    s2num: "Étape 2 sur 7",
-    s2q: "De quelle entreprise venez-vous ?",
-    s2h: "Entrez le nom de l'entreprise",
-    s3num: "Étape 3 sur 7",
-    s3q: "Qui venez-vous voir ?",
-    s3h: "Sélectionnez dans la liste",
-    s4num: "Étape 4 sur 7",
-    s4q: "Objet de la visite ?",
-    s4h: "Cliquez pour sélectionner",
-    s5num: "Étape 5 sur 7",
-    s5q: "Combien de temps resterez-vous ?",
-    s5h: "Sélectionnez la durée",
-    s6num: "Étape 6 sur 7",
-    s6q: "Quelques détails optionnels",
-    s6h: "Laissez vide si non applicable",
-    s7num: "Étape 7 sur 7",
-    s7q: "Presque terminé !",
-    s7h: "Veuillez lire et confirmer ci-dessous",
-    dur30m: "30 minutes",
-    dur1h: "1 heure",
-    dur2h: "2 heures",
-    durhalf: "Demi-journée",
-    durfull: "Journée complète",
+    select_lang: "Sélectionner la Langue", tagline: "Votre Espace, Notre Expertise",
+    visitors_today: "Visiteurs Aujourd'hui", on_site: "Actuellement sur Site",
+    cta_text: "Enregistrez-vous Ici", cta_sub: "Cliquez pour commencer",
+    signin_btn: "📝 S'enregistrer", signout_btn: "👋 Se Déconnecter",
+    s1num: "Étape 1 sur 7", s1q: "Quel est votre nom ?", s1h: "Entrez votre nom complet",
+    s2num: "Étape 2 sur 7", s2q: "De quelle entreprise venez-vous ?", s2h: "Entrez le nom de l'entreprise",
+    s3num: "Étape 3 sur 7", s3q: "Qui venez-vous voir ?", s3h: "Sélectionnez dans la liste",
+    s4num: "Étape 4 sur 7", s4q: "Objet de la visite ?", s4h: "Cliquez pour sélectionner",
+    s5num: "Étape 5 sur 7", s5q: "Combien de temps resterez-vous ?", s5h: "Sélectionnez la durée",
+    s6num: "Étape 6 sur 7", s6q: "Quelques détails optionnels", s6h: "Laissez vide si non applicable",
+    s7num: "Étape 7 sur 7", s7q: "Presque terminé !", s7h: "Veuillez lire et confirmer ci-dessous",
+    dur30m: "30 minutes", dur1h: "1 heure", dur2h: "2 heures", durhalf: "Demi-journée", durfull: "Journée complète",
     safety_label: "Je comprends et j'accepte les informations de santé et sécurité",
     gdpr_label: "Je consens au traitement de mes données conformément à la déclaration RGPD ci-dessus",
-    success_title: "Enregistré !",
-    success_sub: "Merci d'avoir enregistré votre visite",
-    success_notified: "a été notifié 📧",
-    success_reception: "Veuillez attendre à la réception",
-    success_return: "Bienvenue ! Dernière visite le",
-    back_btn: "← Retour à l'Accueil",
-    signout_today: "Visiteurs Aujourd'hui",
-    signout_current: "Actuellement sur Site",
-    error_name: "⚠ Veuillez entrer votre nom",
-    error_company: "⚠ Veuillez entrer le nom de l'entreprise",
-    error_host: "⚠ Veuillez sélectionner la personne à visiter",
-    error_purpose: "⚠ Veuillez sélectionner l'objet de la visite",
-    error_duration: "⚠ Veuillez sélectionner la durée",
-    error_safety: "⚠ Veuillez accepter les informations de santé et sécurité",
-    error_gdpr: "⚠ Veuillez accepter le consentement RGPD",
-    signin_success: "✅ Enregistrement réussi",
+    success_title: "Enregistré !", success_sub: "Merci d'avoir enregistré votre visite",
+    success_notified: "a été notifié 📧", success_reception: "Veuillez attendre à la réception",
+    success_return: "Bienvenue ! Dernière visite le", back_btn: "← Retour à l'Accueil",
+    signout_today: "Visiteurs Aujourd'hui", signout_current: "Actuellement sur Site",
+    error_name: "⚠ Veuillez entrer votre nom", error_company: "⚠ Veuillez entrer le nom de l'entreprise",
+    error_host: "⚠ Veuillez sélectionner la personne à visiter", error_purpose: "⚠ Veuillez sélectionner l'objet de la visite",
+    error_duration: "⚠ Veuillez sélectionner la durée", error_safety: "⚠ Veuillez accepter les informations de santé et sécurité",
+    error_gdpr: "⚠ Veuillez accepter le consentement RGPD", signin_success: "✅ Enregistrement réussi",
     error_try: "❌ Erreur – veuillez réessayer",
   },
   pl: {
-    select_lang: "Wybierz Język",
-    tagline: "Twoja Przestrzeń, Nasza Wiedza",
-    visitors_today: "Odwiedzających Dzisiaj",
-    on_site: "Aktualnie na Terenie",
-    cta_text: "Zaloguj się Tutaj",
-    cta_sub: "Dotknij, aby zacząć",
-    signin_btn: "📝 Zaloguj się",
-    signout_btn: "👋 Wyloguj się",
-    s1num: "Krok 1 z 7",
-    s1q: "Jak się nazywasz?",
-    s1h: "Wpisz swoje pełne imię i nazwisko",
-    s2num: "Krok 2 z 7",
-    s2q: "Z jakiej firmy przychodzisz?",
-    s2h: "Wpisz nazwę firmy",
-    s3num: "Krok 3 z 7",
-    s3q: "Kogo przychodzisz odwiedzić?",
-    s3h: "Wybierz z listy",
-    s4num: "Krok 4 z 7",
-    s4q: "Cel wizyty?",
-    s4h: "Dotknij, aby wybrać",
-    s5num: "Krok 5 z 7",
-    s5q: "Jak długo się zostaniesz?",
-    s5h: "Wybierz czas trwania",
-    s6num: "Krok 6 z 7",
-    s6q: "Kilka opcjonalnych szczegółów",
-    s6h: "Zostaw puste, jeśli nie dotyczy",
-    s7num: "Krok 7 z 7",
-    s7q: "Prawie gotowe!",
-    s7h: "Proszę przeczytaj i potwierdź poniżej",
-    dur30m: "30 min",
-    dur1h: "1 godzina",
-    dur2h: "2 godziny",
-    durhalf: "Pół dnia",
-    durfull: "Cały dzień",
+    select_lang: "Wybierz Język", tagline: "Twoja Przestrzeń, Nasza Wiedza",
+    visitors_today: "Odwiedzających Dzisiaj", on_site: "Aktualnie na Terenie",
+    cta_text: "Zaloguj się Tutaj", cta_sub: "Dotknij, aby zacząć",
+    signin_btn: "📝 Zaloguj się", signout_btn: "👋 Wyloguj się",
+    s1num: "Krok 1 z 7", s1q: "Jak się nazywasz?", s1h: "Wpisz swoje pełne imię i nazwisko",
+    s2num: "Krok 2 z 7", s2q: "Z jakiej firmy przychodzisz?", s2h: "Wpisz nazwę firmy",
+    s3num: "Krok 3 z 7", s3q: "Kogo przychodzisz odwiedzić?", s3h: "Wybierz z listy",
+    s4num: "Krok 4 z 7", s4q: "Cel wizyty?", s4h: "Dotknij, aby wybrać",
+    s5num: "Krok 5 z 7", s5q: "Jak długo się zostaniesz?", s5h: "Wybierz czas trwania",
+    s6num: "Krok 6 z 7", s6q: "Kilka opcjonalnych szczegółów", s6h: "Zostaw puste, jeśli nie dotyczy",
+    s7num: "Krok 7 z 7", s7q: "Prawie gotowe!", s7h: "Proszę przeczytaj i potwierdź poniżej",
+    dur30m: "30 min", dur1h: "1 godzina", dur2h: "2 godziny", durhalf: "Pół dnia", durfull: "Cały dzień",
     safety_label: "Rozumiem i akceptuję informacje dotyczące bezpieczeństwa",
     gdpr_label: "Wyrażam zgodę na przetwarzanie moich danych w zgodzie z powyższym oświadczeniem RODO",
-    success_title: "Zalogowano!",
-    success_sub: "Dziękujemy za zalogowanie się",
-    success_notified: "został powiadomiony 📧",
-    success_reception: "Proszę czekać w recepcji",
-    success_return: "Witaj ponownie! Ostatnia wizyta",
-    back_btn: "← Wróć do Powitalnej",
-    signout_today: "Odwiedzających Dzisiaj",
-    signout_current: "Aktualnie na Terenie",
-    error_name: "⚠ Wpisz swoje imię i nazwisko",
-    error_company: "⚠ Wpisz nazwę firmy",
-    error_host: "⚠ Wybierz osobę do odwiedzenia",
-    error_purpose: "⚠ Wybierz cel wizyty",
-    error_duration: "⚠ Wybierz czas trwania",
-    error_safety: "⚠ Zaakceptuj informacje o bezpieczeństwie",
-    error_gdpr: "⚠ Zaakceptuj zgodę RODO",
-    signin_success: "✅ Pomyślnie zalogowano",
+    success_title: "Zalogowano!", success_sub: "Dziękujemy za zalogowanie się",
+    success_notified: "został powiadomiony 📧", success_reception: "Proszę czekać w recepcji",
+    success_return: "Witaj ponownie! Ostatnia wizyta", back_btn: "← Wróć do Powitalnej",
+    signout_today: "Odwiedzających Dzisiaj", signout_current: "Aktualnie na Terenie",
+    error_name: "⚠ Wpisz swoje imię i nazwisko", error_company: "⚠ Wpisz nazwę firmy",
+    error_host: "⚠ Wybierz osobę do odwiedzenia", error_purpose: "⚠ Wybierz cel wizyty",
+    error_duration: "⚠ Wybierz czas trwania", error_safety: "⚠ Zaakceptuj informacje o bezpieczeństwie",
+    error_gdpr: "⚠ Zaakceptuj zgodę RODO", signin_success: "✅ Pomyślnie zalogowano",
     error_try: "❌ Błąd – spróbuj ponownie",
   },
   tw: {
-    select_lang: "選擇語言",
-    tagline: "您的空間，我們的專業知識",
-    visitors_today: "今日訪客",
-    on_site: "目前在場",
-    cta_text: "在此簽到",
-    cta_sub: "點擊開始",
-    signin_btn: "📝 簽到",
-    signout_btn: "👋 簽出",
-    s1num: "第 1 步，共 7 步",
-    s1q: "請問您的名字？",
-    s1h: "請輸入您的全名",
-    s2num: "第 2 步，共 7 步",
-    s2q: "您來自哪家公司？",
-    s2h: "請輸入公司名稱",
-    s3num: "第 3 步，共 7 步",
-    s3q: "您要見誰？",
-    s3h: "從列表中選擇",
-    s4num: "第 4 步，共 7 步",
-    s4q: "來訪目的？",
-    s4h: "點擊以選擇",
-    s5num: "第 5 步，共 7 步",
-    s5q: "您要停留多長時間？",
-    s5h: "選擇持續時間",
-    s6num: "第 6 步，共 7 步",
-    s6q: "一些可選詳情",
-    s6h: "不適用時留空",
-    s7num: "第 7 步，共 7 步",
-    s7q: "快完成了！",
-    s7h: "請在下方閱讀並確認",
-    dur30m: "30 分鐘",
-    dur1h: "1 小時",
-    dur2h: "2 小時",
-    durhalf: "半天",
-    durfull: "整天",
+    select_lang: "選擇語言", tagline: "您的空間，我們的專業知識",
+    visitors_today: "今日訪客", on_site: "目前在場",
+    cta_text: "在此簽到", cta_sub: "點擊開始",
+    signin_btn: "📝 簽到", signout_btn: "👋 簽出",
+    s1num: "第 1 步，共 7 步", s1q: "請問您的名字？", s1h: "請輸入您的全名",
+    s2num: "第 2 步，共 7 步", s2q: "您來自哪家公司？", s2h: "請輸入公司名稱",
+    s3num: "第 3 步，共 7 步", s3q: "您要見誰？", s3h: "從列表中選擇",
+    s4num: "第 4 步，共 7 步", s4q: "來訪目的？", s4h: "點擊以選擇",
+    s5num: "第 5 步，共 7 步", s5q: "您要停留多長時間？", s5h: "選擇持續時間",
+    s6num: "第 6 步，共 7 步", s6q: "一些可選詳情", s6h: "不適用時留空",
+    s7num: "第 7 步，共 7 步", s7q: "快完成了！", s7h: "請在下方閱讀並確認",
+    dur30m: "30 分鐘", dur1h: "1 小時", dur2h: "2 小時", durhalf: "半天", durfull: "整天",
     safety_label: "我理解並接受健康和安全信息",
     gdpr_label: "我同意根據上述 GDPR 聲明處理我的數據",
-    success_title: "已簽到！",
-    success_sub: "感謝您登記訪問",
-    success_notified: "已被通知 📧",
-    success_reception: "請在前台等候",
-    success_return: "歡迎回來！最後一次訪問於",
-    back_btn: "← 返回歡迎頁面",
-    signout_today: "今日訪客",
-    signout_current: "目前在場",
-    error_name: "⚠ 請輸入您的名字",
-    error_company: "⚠ 請輸入公司名稱",
-    error_host: "⚠ 請選擇要拜訪的人員",
-    error_purpose: "⚠ 請選擇訪問目的",
-    error_duration: "⚠ 請選擇停留時間",
-    error_safety: "⚠ 請接受健康和安全信息",
-    error_gdpr: "⚠ 請接受 GDPR 同意",
-    signin_success: "✅ 簽到成功",
+    success_title: "已簽到！", success_sub: "感謝您登記訪問",
+    success_notified: "已被通知 📧", success_reception: "請在前台等候",
+    success_return: "歡迎回來！最後一次訪問於", back_btn: "← 返回歡迎頁面",
+    signout_today: "今日訪客", signout_current: "目前在場",
+    error_name: "⚠ 請輸入您的名字", error_company: "⚠ 請輸入公司名稱",
+    error_host: "⚠ 請選擇要拜訪的人員", error_purpose: "⚠ 請選擇訪問目的",
+    error_duration: "⚠ 請選擇停留時間", error_safety: "⚠ 請接受健康和安全信息",
+    error_gdpr: "⚠ 請接受 GDPR 同意", signin_success: "✅ 簽到成功",
     error_try: "❌ 錯誤 – 請重試",
   }
 };
 
-function t(key) {
-  return translations[currentLanguage][key] || translations.en[key] || key;
-}
+function t(key) { return translations[currentLanguage][key] || translations.en[key] || key; }
 
 function setLanguage(lang) {
   currentLanguage = lang;
@@ -1133,7 +677,6 @@ function updateTranslations() {
   document.getElementById('ctaText').textContent = t('cta_text');
   document.getElementById('ctaSub').textContent = t('cta_sub');
   document.getElementById('signOutBtn').textContent = t('signout_btn');
-  
   document.getElementById('s1num').textContent = t('s1num');
   document.getElementById('s1q').textContent = t('s1q');
   document.getElementById('s1h').textContent = t('s1h');
@@ -1155,28 +698,22 @@ function updateTranslations() {
   document.getElementById('s7num').textContent = t('s7num');
   document.getElementById('s7q').textContent = t('s7q');
   document.getElementById('s7h').textContent = t('s7h');
-  
   document.getElementById('dur30m').textContent = t('dur30m');
   document.getElementById('dur1h').textContent = t('dur1h');
   document.getElementById('dur2h').textContent = t('dur2h');
   document.getElementById('durhalf').textContent = t('durhalf');
   document.getElementById('durfull').textContent = t('durfull');
-  
   document.getElementById('safetyLabel').innerHTML = t('safety_label') + ' <span class="req">*</span>';
   document.getElementById('gdprLabel').innerHTML = t('gdpr_label') + ' <span class="req">*</span>';
-  
   document.getElementById('successTitle').textContent = t('success_title');
   document.getElementById('successSub').textContent = t('success_sub');
   document.getElementById('backBtn').textContent = t('back_btn');
   document.getElementById('backToWelcomeBtn').textContent = t('back_btn');
-  
   document.getElementById('signoutTodayLabel').textContent = t('signout_today');
   document.getElementById('signoutCurrentLabel').textContent = t('signout_current');
 }
 
-function normalizeName(name) {
-  return name.toLowerCase().trim().replace(/\s+/g, ' ');
-}
+function normalizeName(name) { return name.toLowerCase().trim().replace(/\s+/g, ' '); }
 
 function updateClock() {
     const now = new Date();
@@ -1214,7 +751,7 @@ function startSignIn() {
     document.getElementById('visitPurpose').value = '';
     document.getElementById('visitDuration').value = '';
     document.getElementById('submitBtn').disabled = false;
-    document.querySelectorAll('.option-tile').forEach(t => t.classList.remove('selected'));
+    document.querySelectorAll('.option-tile').forEach(tl => tl.classList.remove('selected'));
     document.getElementById('safetyAgree').checked = false;
     document.getElementById('gdprAgree').checked = false;
     showStepUI(1, false);
@@ -1222,9 +759,7 @@ function startSignIn() {
 }
 
 function showStepUI(n, goingBack) {
-    document.querySelectorAll('.wizard-step').forEach(s => {
-        s.classList.remove('active','going-back');
-    });
+    document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active','going-back'));
     const step = document.getElementById('step' + n);
     if (goingBack) step.classList.add('going-back');
     step.classList.add('active');
@@ -1235,32 +770,20 @@ function showStepUI(n, goingBack) {
 }
 
 function nextStep(from) {
-    if (from === 1) {
-        if (!document.getElementById('visitorName').value.trim()) { showToast(t('error_name')); return; }
-    }
-    if (from === 2) {
-        if (!document.getElementById('companyName').value.trim()) { showToast(t('error_company')); return; }
-    }
-    if (from === 3) {
-        if (!document.getElementById('hostName').value) { showToast(t('error_host')); return; }
-    }
-    if (from === 4) {
-        if (!selectedPurpose) { showToast(t('error_purpose')); return; }
-    }
-    if (from === 5) {
-        if (!selectedDuration) { showToast(t('error_duration')); return; }
-    }
+    if (from === 1 && !document.getElementById('visitorName').value.trim()) { showToast(t('error_name')); return; }
+    if (from === 2 && !document.getElementById('companyName').value.trim()) { showToast(t('error_company')); return; }
+    if (from === 3 && !document.getElementById('hostName').value) { showToast(t('error_host')); return; }
+    if (from === 4 && !selectedPurpose) { showToast(t('error_purpose')); return; }
+    if (from === 5 && !selectedDuration) { showToast(t('error_duration')); return; }
     if (from < TOTAL_STEPS) showStepUI(from + 1, false);
 }
 
-function prevStep(from) {
-    if (from > 1) showStepUI(from - 1, true);
-}
+function prevStep(from) { if (from > 1) showStepUI(from - 1, true); }
 
 function selectPurpose(purpose, el) {
     selectedPurpose = purpose;
     document.getElementById('visitPurpose').value = purpose;
-    document.querySelectorAll('#step4 .option-tile').forEach(t => t.classList.remove('selected'));
+    document.querySelectorAll('#step4 .option-tile').forEach(tl => tl.classList.remove('selected'));
     el.classList.add('selected');
     setTimeout(() => nextStep(4), 300);
 }
@@ -1268,7 +791,7 @@ function selectPurpose(purpose, el) {
 function selectDuration(duration, el) {
     selectedDuration = duration;
     document.getElementById('visitDuration').value = duration;
-    document.querySelectorAll('#step5 .option-tile').forEach(t => t.classList.remove('selected'));
+    document.querySelectorAll('#step5 .option-tile').forEach(tl => tl.classList.remove('selected'));
     el.classList.add('selected');
     setTimeout(() => nextStep(5), 300);
 }
@@ -1284,39 +807,51 @@ async function submitSignIn() {
 
     const hostParts = document.getElementById('hostName').value.split('|');
     const visitorNameValue = document.getElementById('visitorName').value.trim();
-    const data = {
-        action: 'signin',
-        timestamp: new Date().toISOString(),
-        date: new Date().toLocaleDateString('en-GB'),
-        timeIn: new Date().toLocaleTimeString('en-GB'),
-        visitorName: visitorNameValue,
-        companyName: document.getElementById('companyName').value.trim(),
-        hostName: hostParts[0],
-        hostEmail: hostParts[1] || '',
-        visitPurpose: selectedPurpose,
-        visitDuration: selectedDuration,
-        vehicleReg: document.getElementById('vehicleReg').value.trim(),
-        visitorEmail: document.getElementById('visitorEmail').value.trim(),
-        status: 'Signed In'
+    const dateStr = new Date().toLocaleDateString('en-GB');
+    const timeInStr = new Date().toLocaleTimeString('en-GB');
+
+    const record = {
+        visitor_name: visitorNameValue,
+        company_name: document.getElementById('companyName').value.trim(),
+        host_name: hostParts[0],
+        host_email: hostParts[1] || '',
+        visit_purpose: selectedPurpose,
+        visit_duration: selectedDuration,
+        vehicle_reg: document.getElementById('vehicleReg').value.trim(),
+        visitor_email: document.getElementById('visitorEmail').value.trim() || null,
+        status: 'Signed In',
+        language: currentLanguage,
+        safety_ack: true,
+        gdpr_ack: true
     };
 
     try {
-        await fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
+        const { error } = await supabase.from('visitor_log').insert(record);
+        if (error) throw error;
+
         hideLoading();
-        
+
         document.getElementById('successHostBox').innerHTML =
-            `<strong>${data.hostName}</strong> ${t('success_notified')}<br>
+            `<strong>${record.host_name}</strong> ${t('success_notified')}<br>
              <span style="font-size:0.9em;color:var(--text-muted)">${t('success_reception')}</span>`;
-        
+
         showScreen('successScreen');
         showToast(t('signin_success'));
-        
+
+        // Fire the Gmail notification via the slim Apps Script mailer --
+        // don't block the success screen on it.
+        notifyHost({
+            hostName: record.host_name,
+            hostEmail: record.host_email,
+            visitorName: record.visitor_name,
+            companyName: record.company_name,
+            visitPurpose: record.visit_purpose,
+            vehicleReg: record.vehicle_reg,
+            visitorEmail: record.visitor_email || '',
+            date: dateStr,
+            timeIn: timeInStr
+        });
+
         // Check last visit in background (don't wait for it)
         checkLastVisit(visitorNameValue).then(lastVisitInfo => {
             if (lastVisitInfo) {
@@ -1328,25 +863,35 @@ async function submitSignIn() {
         isSubmitting = false;
         document.getElementById('submitBtn').disabled = false;
         showToast(t('error_try'));
+        console.error(err);
     }
+}
+
+function notifyHost(payload) {
+    // Best-effort -- mode:no-cors means we can't read the response, matching
+    // the original system's fire-and-forget email behaviour.
+    fetch(MAILER_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    }).catch(err => console.log('Mailer notify failed:', err));
 }
 
 async function checkLastVisit(currentName) {
     try {
-        const today = new Date().toLocaleDateString('en-GB');
-        const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}&cache=${Date.now()}`);
-        const visitors = await r.json();
+        const startOfToday = new Date();
+        startOfToday.setHours(0,0,0,0);
+        const { data, error } = await supabase
+            .from('visitor_log')
+            .select('visitor_name, status, signed_in_at')
+            .gte('signed_in_at', startOfToday.toISOString())
+            .eq('status', 'Signed Out')
+            .order('signed_in_at', { ascending: true });
+        if (error) throw error;
         const normalizedCurrent = normalizeName(currentName);
-        
-        let lastVisitDate = null;
-        for (const v of visitors) {
-            if (normalizeName(v.visitorName) === normalizedCurrent && v.status === 'Signed Out') {
-                lastVisitDate = v.date;
-                break;
-            }
-        }
-        
-        return lastVisitDate;
+        const match = (data || []).find(v => normalizeName(v.visitor_name) === normalizedCurrent);
+        return match ? new Date(match.signed_in_at).toLocaleDateString('en-GB') : null;
     } catch {
         return null;
     }
@@ -1354,9 +899,14 @@ async function checkLastVisit(currentName) {
 
 async function loadWelcomeStats() {
     try {
-        const today = new Date().toLocaleDateString('en-GB');
-        const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}&cache=${Date.now()}`);
-        const visitors = await r.json();
+        const startOfToday = new Date();
+        startOfToday.setHours(0,0,0,0);
+        const { data, error } = await supabase
+            .from('visitor_log')
+            .select('status', { count: 'exact' })
+            .gte('signed_in_at', startOfToday.toISOString());
+        if (error) throw error;
+        const visitors = data || [];
         const current = visitors.filter(v => v.status === 'Signed In');
         document.getElementById('welcomeTodayCount').textContent = visitors.length;
         document.getElementById('welcomeCurrentCount').textContent = current.length;
@@ -1368,34 +918,20 @@ async function loadWelcomeStats() {
 loadWelcomeStats();
 setInterval(loadWelcomeStats, 30000);
 
-async function checkNewVersion() {
-    try {
-        const currentVersion = parseInt(document.querySelector('.version-badge').textContent.trim());
-        const response = await fetch('https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/flexi-signin-v5700.html?cache=' + Date.now());
-        const text = await response.text();
-        const match = text.match(/<div class="version-badge">(\d+)<\/div>/);
-        if (match) {
-            const newVersion = parseInt(match[1]);
-            if (newVersion > currentVersion) {
-                showToast('✨ New version available - refreshing...');
-                setTimeout(() => location.reload(true), 2000);
-            }
-        }
-    } catch (err) {
-        console.log('Version check failed:', err);
-    }
-}
-checkNewVersion();
-setInterval(checkNewVersion, 1800000); // Check every 30 minutes
-
 async function loadTodaysVisitors() {
     const list = document.getElementById('visitorList');
     showLoading('Loading visitors...');
     list.innerHTML = '';
     try {
-        const today = new Date().toLocaleDateString('en-GB');
-        const r = await fetch(`${SCRIPT_URL}?action=getTodaysVisitors&date=${today}&cache=${Date.now()}`);
-        const visitors = await r.json();
+        const startOfToday = new Date();
+        startOfToday.setHours(0,0,0,0);
+        const { data, error } = await supabase
+            .from('visitor_log')
+            .select('id, visitor_name, company_name, host_name, status, signed_in_at')
+            .gte('signed_in_at', startOfToday.toISOString())
+            .order('signed_in_at', { ascending: false });
+        if (error) throw error;
+        const visitors = data || [];
         const current = visitors.filter(v => v.status === 'Signed In');
         document.getElementById('statsTodayCount').textContent = visitors.length;
         document.getElementById('statsCurrentCount').textContent = current.length;
@@ -1404,12 +940,12 @@ async function loadTodaysVisitors() {
             list.innerHTML = '<div class="empty-state">📭 No visitors currently signed in</div>';
         } else {
             list.innerHTML = current.map(v => `
-                <div style="background:var(--card2); border:1px solid var(--border); border-left:3px solid var(--red); border-radius:10px; padding:16px 18px; margin-bottom:10px; gap:14px; box-shadow:0 4px 12px rgba(0,0,0,0.2); display:flex; justify-content:space-between; align-items:center;">
+                <div style="background:var(--card2); border:1px solid var(--border); border-left:3px solid var(--red); border-radius:12px; padding:16px 18px; margin-bottom:10px; gap:14px; box-shadow:0 6px 16px rgba(0,0,0,0.25); display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <div style="font-size:1.2em; font-weight:800; color:#fff;">👤 ${v.visitorName}</div>
-                        <div style="font-size:0.8em; color:var(--text-muted); margin-top:3px; font-weight:600;">🏢 ${v.companyName} &nbsp;·&nbsp; 👨‍💼 ${v.hostName} &nbsp;·&nbsp; ⏰ ${v.timeIn}</div>
+                        <div style="font-size:1.2em; font-weight:800; color:#fff;">👤 ${v.visitor_name}</div>
+                        <div style="font-size:0.8em; color:var(--text-muted); margin-top:3px; font-weight:600;">🏢 ${v.company_name} &nbsp;·&nbsp; 👨‍💼 ${v.host_name} &nbsp;·&nbsp; ⏰ ${new Date(v.signed_in_at).toLocaleTimeString('en-GB')}</div>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="signOut('${v.id}','${v.visitorName}')">Sign Out →</button>
+                    <button class="btn btn-primary btn-sm" onclick="signOut('${v.id}','${v.visitor_name.replace(/'/g,"\\'")}')">Sign Out →</button>
                 </div>`).join('');
         }
     } catch {
@@ -1422,12 +958,11 @@ async function signOut(id, name) {
     if (!confirm(`Sign out ${name}?`)) return;
     showLoading('Signing out...');
     try {
-        await fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action:'signout', id, timeOut:new Date().toLocaleTimeString('en-GB'), status:'Signed Out' })
-        });
+        const { error } = await supabase
+            .from('visitor_log')
+            .update({ signed_out_at: new Date().toISOString(), status: 'Signed Out' })
+            .eq('id', id);
+        if (error) throw error;
         hideLoading();
         showToast(`✅ ${name} signed out`);
         setTimeout(loadTodaysVisitors, 400);
