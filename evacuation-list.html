@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evacuation List — Flexi Reception</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+    :root {
+        --red: #DC2626; --red-light: #FF5A5A;
+        --bg: #000; --card: #0D0D0F; --card2: #17171A;
+        --text: #F1F1F1; --text-muted: #8A8A90; --border: rgba(255,255,255,0.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        font-family:'Barlow Condensed',sans-serif;
+        background:linear-gradient(180deg,#000 0%,#070707 100%);
+        color:var(--text);
+        min-height:100vh;
+        padding:24px;
+    }
+    .wrap { max-width:1100px; margin:0 auto; }
+    .top {
+        display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+        background:var(--card); border:1px solid rgba(220,38,38,0.35); border-radius:16px;
+        padding:20px 26px; margin-bottom:20px; box-shadow:0 10px 30px rgba(0,0,0,0.35);
+    }
+    .title { font-size:2.1em; font-weight:900; text-transform:uppercase; letter-spacing:-0.5px; color:#fff; }
+    .title span { color:var(--red-light); }
+    .sub { font-size:0.95em; color:var(--text-muted); font-weight:600; margin-top:2px; }
+    .actions { display:flex; gap:10px; }
+    button {
+        font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1em;
+        text-transform:uppercase; letter-spacing:0.5px; border:none; border-radius:10px;
+        padding:12px 20px; cursor:pointer; transition:all 0.15s;
+    }
+    .btn-refresh { background:var(--card2); color:var(--text); border:1px solid var(--border); }
+    .btn-refresh:active { transform:scale(0.96); }
+    .btn-print { background:linear-gradient(135deg, var(--red-light) 0%, var(--red) 100%); color:#fff; }
+    .btn-print:active { transform:scale(0.96); }
+
+    .count-banner {
+        display:flex; align-items:center; gap:20px;
+        background:linear-gradient(135deg, rgba(220,38,38,0.22) 0%, rgba(220,38,38,0.08) 100%);
+        border:2px solid var(--red); border-radius:16px; padding:24px 28px; margin-bottom:20px;
+    }
+    .count-num { font-size:4em; font-weight:900; color:#fff; line-height:1; }
+    .count-label { font-size:1.15em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; }
+    .updated { margin-left:auto; font-size:0.85em; color:var(--text-muted); font-weight:600; text-align:right; }
+
+    .list { display:flex; flex-direction:column; gap:10px; }
+    .row {
+        display:flex; align-items:center; justify-content:space-between; gap:16px;
+        background:var(--card); border:1px solid var(--border); border-left:4px solid var(--red);
+        border-radius:12px; padding:16px 22px;
+    }
+    .name { font-size:1.6em; font-weight:800; color:#fff; }
+    .meta { font-size:0.95em; color:var(--text-muted); font-weight:600; margin-top:2px; }
+    .time { font-size:1.3em; font-weight:800; color:var(--red-light); white-space:nowrap; }
+    .empty { text-align:center; padding:60px 20px; color:var(--text-muted); font-size:1.3em; font-weight:700; }
+
+    @media print {
+        body { background:#fff; color:#000; padding:10px; }
+        .actions { display:none; }
+        .top, .count-banner, .row { background:#fff; border-color:#000; box-shadow:none; }
+        .title, .name { color:#000; }
+        .title span, .time { color:#B81820; }
+        .count-num { color:#000; }
+        .sub, .meta, .updated, .count-label { color:#444; }
+    }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="top">
+        <div>
+            <div class="title">🚨 Evacuation <span>List</span></div>
+            <div class="sub">Everyone currently signed in on-site</div>
+        </div>
+        <div class="actions">
+            <button class="btn-refresh" onclick="loadList()">↻ Refresh</button>
+            <button class="btn-print" onclick="window.print()">🖨 Print</button>
+        </div>
+    </div>
+
+    <div class="count-banner">
+        <div class="count-num" id="count">—</div>
+        <div class="count-label">People On-Site</div>
+        <div class="updated" id="updated">Loading…</div>
+    </div>
+
+    <div class="list" id="list"></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://hkwcdpqpduptjwroawrw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrd2NkcHFwZHVwdGp3cm9hd3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDMyNzcsImV4cCI6MjEwNTExOTI3N30.9W7X2SBUQunSYASrpmAgVICAZuX9F_LJCfPT7oBPh3I';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function loadList() {
+    try {
+        const { data, error } = await sb
+            .from('visitor_log')
+            .select('visitor_name, company_name, host_name, signed_in_at')
+            .eq('status', 'Signed In')
+            .order('signed_in_at', { ascending: true });
+        if (error) throw error;
+        const visitors = data || [];
+        document.getElementById('count').textContent = visitors.length;
+        document.getElementById('updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB');
+
+        const list = document.getElementById('list');
+        if (visitors.length === 0) {
+            list.innerHTML = '<div class="empty">✅ Nobody currently signed in</div>';
+            return;
+        }
+        list.innerHTML = visitors.map(v => `
+            <div class="row">
+                <div>
+                    <div class="name">👤 ${v.visitor_name}</div>
+                    <div class="meta">🏢 ${v.company_name || '—'} &nbsp;·&nbsp; 👨‍💼 Host: ${v.host_name || '—'}</div>
+                </div>
+                <div class="time">${new Date(v.signed_in_at).toLocaleTimeString('en-GB')}</div>
+            </div>`).join('');
+    } catch (err) {
+        document.getElementById('list').innerHTML = '<div class="empty">❌ Error loading list — check connection</div>';
+        console.error(err);
+    }
+}
+
+loadList();
+setInterval(loadList, 15000);
+</script>
+</body>
+</html>

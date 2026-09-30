@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Register a Visitor — Flexi Reception</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+    :root {
+        --red: #DC2626; --red-light: #FF5A5A;
+        --bg: #000; --card: #0D0D0F; --card2: #17171A;
+        --text: #F1F1F1; --text-muted: #8A8A90; --border: rgba(255,255,255,0.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        font-family:'Barlow Condensed',sans-serif;
+        background:linear-gradient(180deg,#000 0%,#070707 100%);
+        color:var(--text); min-height:100vh; padding:24px;
+    }
+    .wrap { max-width:720px; margin:0 auto; }
+    .title { font-size:2.1em; font-weight:900; text-transform:uppercase; letter-spacing:-0.5px; color:#fff; margin-bottom:4px; }
+    .title span { color:var(--red-light); }
+    .sub { font-size:0.95em; color:var(--text-muted); font-weight:600; margin-bottom:22px; }
+
+    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
+    .card h2 { font-size:1.1em; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--red-light); margin-bottom:16px; }
+
+    .field { margin-bottom:14px; }
+    .field label { display:block; font-size:0.85em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+    .field input, .field select {
+        width:100%; background:var(--card2); border:1.5px solid var(--border); border-radius:10px;
+        color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:1.15em; font-weight:600;
+        padding:12px 14px; -webkit-appearance:none;
+    }
+    .field input:focus, .field select:focus { outline:none; border-color:var(--red); background:#1c1c20; }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+    .btn {
+        font-family:'Barlow Condensed',sans-serif; font-size:1.2em; font-weight:800;
+        text-transform:uppercase; letter-spacing:0.6px; border:none; border-radius:10px;
+        padding:14px 18px; cursor:pointer; width:100%; transition:all 0.15s;
+    }
+    .btn-primary { background:linear-gradient(135deg, var(--red-light) 0%, var(--red) 100%); color:#fff; }
+    .btn-primary:active { transform:scale(0.98); }
+    .btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+    .msg { margin-top:10px; font-size:0.95em; font-weight:700; text-align:center; min-height:1.2em; }
+    .msg.ok { color:#4ade80; }
+    .msg.err { color:#f87171; }
+
+    .pre-row {
+        display:flex; align-items:center; justify-content:space-between; gap:12px;
+        background:var(--card2); border:1px solid var(--border); border-left:3px solid var(--red);
+        border-radius:10px; padding:12px 16px; margin-bottom:8px;
+    }
+    .pre-row .name { font-weight:800; color:#fff; font-size:1.1em; }
+    .pre-row .meta { font-size:0.82em; color:var(--text-muted); font-weight:600; margin-top:2px; }
+    .pre-row button {
+        background:transparent; border:1px solid rgba(248,113,113,0.4); color:#f87171;
+        border-radius:8px; padding:8px 12px; font-family:'Barlow Condensed',sans-serif;
+        font-weight:700; font-size:0.85em; cursor:pointer; text-transform:uppercase;
+    }
+    .empty { text-align:center; color:var(--text-muted); padding:20px; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="title">Pre-Register a <span>Visitor</span></div>
+    <div class="sub">Add an expected visitor and their kiosk sign-in skips straight to the consent step.</div>
+
+    <div class="card">
+        <h2>New Pre-Registration</h2>
+        <div class="field">
+            <label>Visitor Name</label>
+            <input type="text" id="visitorName" placeholder="e.g. John Smith" autocomplete="off">
+        </div>
+        <div class="row2">
+            <div class="field">
+                <label>Company</label>
+                <input type="text" id="companyName" placeholder="e.g. Acme Ltd" autocomplete="off">
+            </div>
+            <div class="field">
+                <label>Expected Date</label>
+                <input type="date" id="expectedDate">
+            </div>
+        </div>
+        <div class="field">
+            <label>Host</label>
+            <select id="hostName"></select>
+        </div>
+        <div class="row2">
+            <div class="field">
+                <label>Purpose</label>
+                <select id="visitPurpose">
+                    <option value="Meeting">Meeting</option>
+                    <option value="Delivery">Delivery</option>
+                    <option value="Service">Service</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Expected Duration</label>
+                <select id="visitDuration">
+                    <option value="30m">30 mins</option>
+                    <option value="1h" selected>1 hour</option>
+                    <option value="2h">2 hours</option>
+                    <option value="half">Half day</option>
+                    <option value="full">Full day</option>
+                </select>
+            </div>
+        </div>
+        <div class="field">
+            <label>Notes (optional)</label>
+            <input type="text" id="notes" placeholder="Anything reception should know" autocomplete="off">
+        </div>
+        <button class="btn btn-primary" id="submitBtn" onclick="addPreReg()">+ Add Pre-Registration</button>
+        <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="card">
+        <h2>Upcoming Pre-Registrations</h2>
+        <div id="preList"><div class="empty">Loading…</div></div>
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://hkwcdpqpduptjwroawrw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrd2NkcHFwZHVwdGp3cm9hd3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDMyNzcsImV4cCI6MjEwNTExOTI3N30.9W7X2SBUQunSYASrpmAgVICAZuX9F_LJCfPT7oBPh3I';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const HOSTS = [
+    ['Alex Coley','A.Coley@narrowaisle.co.uk','Technical Support'],
+    ['Beth Henley','b.henley@narrowaisle.co.uk','Rental Manager'],
+    ['Chloe Burrows','c.burrows@narrowaisle.co.uk','Service Controller'],
+    ['Donald Houston','d.houston@narrowaisle.co.uk','Group MD'],
+    ['Emma Partridge','e.partridge@narrowaisle.co.uk','Credit Controller'],
+    ['Eric Holt','e.holt@narrowaisle.co.uk','Head of Operations'],
+    ['Gavin Martin','g.martin@narrowaisle.co.uk','Head of International'],
+    ['Guy Whitehurst','g.whitehurst@narrowaisle.co.uk','Business Ops Manager'],
+    ['James Williams','J.Williams@narrowaisle.co.uk','Parts & Service'],
+    ['Jane Robbins','j.robbins@narrowaisle.co.uk','Service Controller'],
+    ['Jim Barker','j.barker@narrowaisle.co.uk','Production Manager'],
+    ['Joseph Wesley','jt.wesley@narrowaisle.co.uk','Used Truck Sales'],
+    ['Karen Bell','k.bell@narrowaisle.co.uk','Service Controller'],
+    ['Kellie Jones','ka.jones@narrowaisle.co.uk','Purchase Ledger'],
+    ['Kris Jones','parts@narrowaisle.co.uk','Parts Controller'],
+    ['Lee Burt','l.burt@narrowaisle.co.uk','Head of Service & Parts'],
+    ['Martin Jones','martin.jones@narrowaisle.co.uk','Strategic Development'],
+    ['Michael Coley','m.coley@narrowaisle.co.uk','QMS Engineer'],
+    ['Michelle Ball','m.ball@narrowaisle.co.uk','Payroll'],
+    ['Nigel Langford','n.langford@narrowaisle.co.uk','Scheduling & Quality'],
+    ['Paul Burns','p.burns@narrowaisle.co.uk','Design Engineer'],
+    ['Paul Kinsella','p.kinsella@narrowaisle.co.uk','Production Supervisor'],
+    ['Phil Grant','p.grant@narrowaisle.co.uk','Operations Service Manager'],
+    ['Rob Edwards','r.edwards@narrowaisle.co.uk','Strategic Account Manager'],
+    ['Sarah Lockley','s.lockley@narrowaisle.co.uk','Finance & Personnel'],
+    ['Steve Clark','s.clark@narrowaisle.co.uk','Financial Controller'],
+    ['Steve Moore','steven.m@narrowaisle.co.uk','Design Engineer'],
+    ['Steve Seymour','s.seymour@narrowaisle.co.uk','Training Manager'],
+    ['Stuart Hill','s.hill@narrowaisle.co.uk','Senior Designer'],
+];
+
+const hostSelect = document.getElementById('hostName');
+hostSelect.innerHTML = '<option value="">— Select host —</option>' +
+    HOSTS.map(h => `<option value="${h[0]}|${h[1]}">${h[0]} – ${h[2]}</option>`).join('');
+
+document.getElementById('expectedDate').value = new Date().toISOString().slice(0,10);
+
+async function addPreReg() {
+    const visitorName = document.getElementById('visitorName').value.trim();
+    const hostVal = hostSelect.value;
+    const expectedDate = document.getElementById('expectedDate').value;
+    const msg = document.getElementById('msg');
+
+    if (!visitorName) { msg.textContent = '⚠ Enter the visitor\'s name'; msg.className = 'msg err'; return; }
+    if (!hostVal) { msg.textContent = '⚠ Select a host'; msg.className = 'msg err'; return; }
+    if (!expectedDate) { msg.textContent = '⚠ Select an expected date'; msg.className = 'msg err'; return; }
+
+    const [hostName, hostEmail] = hostVal.split('|');
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+
+    const { error } = await sb.from('visitor_pre_registrations').insert({
+        visitor_name: visitorName,
+        company_name: document.getElementById('companyName').value.trim() || null,
+        host_name: hostName,
+        host_email: hostEmail || null,
+        visit_purpose: document.getElementById('visitPurpose').value,
+        visit_duration: document.getElementById('visitDuration').value,
+        notes: document.getElementById('notes').value.trim() || null,
+        expected_date: expectedDate
+    });
+
+    submitBtn.disabled = false;
+
+    if (error) {
+        msg.textContent = '❌ Error saving — please try again';
+        msg.className = 'msg err';
+        console.error(error);
+        return;
+    }
+
+    msg.textContent = `✅ ${visitorName} pre-registered for ${expectedDate}`;
+    msg.className = 'msg ok';
+    document.getElementById('visitorName').value = '';
+    document.getElementById('companyName').value = '';
+    document.getElementById('notes').value = '';
+    hostSelect.value = '';
+    loadPreRegs();
+}
+
+async function loadPreRegs() {
+    const list = document.getElementById('preList');
+    const today = new Date().toISOString().slice(0,10);
+    const { data, error } = await sb
+        .from('visitor_pre_registrations')
+        .select('*')
+        .is('used_at', null)
+        .gte('expected_date', today)
+        .order('expected_date', { ascending: true });
+
+    if (error) { list.innerHTML = '<div class="empty">❌ Error loading list</div>'; return; }
+    if (!data || data.length === 0) { list.innerHTML = '<div class="empty">No upcoming pre-registrations</div>'; return; }
+
+    list.innerHTML = data.map(p => `
+        <div class="pre-row">
+            <div>
+                <div class="name">👤 ${p.visitor_name}${p.company_name ? ' · ' + p.company_name : ''}</div>
+                <div class="meta">📅 ${p.expected_date} &nbsp;·&nbsp; 👨‍💼 ${p.host_name} &nbsp;·&nbsp; ${p.visit_purpose || ''}</div>
+            </div>
+            <button onclick="cancelPreReg('${p.id}')">Cancel</button>
+        </div>`).join('');
+}
+
+async function cancelPreReg(id) {
+    if (!confirm('Cancel this pre-registration?')) return;
+    await sb.from('visitor_pre_registrations').delete().eq('id', id);
+    loadPreRegs();
+}
+
+loadPreRegs();
+</script>
+</body>
+</html>

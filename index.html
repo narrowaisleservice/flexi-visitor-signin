@@ -8,6 +8,7 @@
 <title>Visitor Sign-In</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
     :root {
         --red: #DC2626;
@@ -241,6 +242,35 @@
         letter-spacing:0.8px; padding:6px 10px; z-index:100;
     }
     .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:1.05em; font-weight:600; }
+
+    .phone-pill {
+        display:flex; align-items:center; justify-content:center; gap:8px;
+        background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:999px;
+        padding:10px 18px; margin-top:10px; margin-bottom:6px; cursor:pointer;
+        font-size:0.88em; font-weight:700; color:var(--text-muted); transition:all 0.2s ease;
+    }
+    .phone-pill:active { background:rgba(255,255,255,0.06); transform:scale(0.98); }
+
+    .qr-overlay {
+        position:fixed; inset:0; background:rgba(0,0,0,0.92); backdrop-filter:blur(10px);
+        display:flex; align-items:center; justify-content:center; z-index:9998;
+        opacity:0; pointer-events:none; transition:opacity 0.25s ease;
+    }
+    .qr-overlay.show { opacity:1; pointer-events:all; }
+    .qr-box {
+        background:#fff; border-radius:20px; padding:28px; text-align:center;
+        box-shadow:0 20px 60px rgba(0,0,0,0.5); max-width:320px;
+    }
+    .qr-box #qrcodeCanvas { display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+    .qr-box .qr-title { font-family:'Barlow Condensed',sans-serif; font-size:1.5em; font-weight:900; color:#111; text-transform:uppercase; margin-bottom:4px; }
+    .qr-box .qr-sub { font-family:'Barlow Condensed',sans-serif; font-size:0.95em; font-weight:600; color:#555; margin-bottom:6px; }
+    .qr-close { margin-top:16px; }
+
+    .prefilled-banner {
+        display:none; background:linear-gradient(135deg, rgba(74,222,128,0.18) 0%, rgba(74,222,128,0.06) 100%);
+        border:1px solid rgba(74,222,128,0.4); border-radius:12px; padding:14px 16px; margin-bottom:12px;
+        font-weight:700; color:#4ade80; text-align:center; font-size:1em;
+    }
 </style>
 </head>
 <body>
@@ -250,6 +280,14 @@
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text">Signing In...</div>
+</div>
+<div class="qr-overlay" id="qrOverlay" onclick="hidePhoneQR()">
+    <div class="qr-box" onclick="event.stopPropagation()">
+        <div class="qr-title">Scan To Sign In</div>
+        <div class="qr-sub">Use your phone's camera</div>
+        <div id="qrcodeCanvas"></div>
+        <button class="btn btn-outline qr-close" style="color:#111; border-color:#111;" onclick="hidePhoneQR()">Close</button>
+    </div>
 </div>
 
 <div class="shell">
@@ -295,6 +333,7 @@
             <div class="cta-text" id="ctaText">Sign In Here</div>
             <div class="cta-sub" id="ctaSub">Tap to start</div>
         </div>
+        <div class="phone-pill" onclick="showPhoneQR()">📱 Prefer your phone? Tap to scan a QR code</div>
         <div class="btn-row">
             <button class="btn btn-outline" onclick="showScreen('signoutScreen')" id="signOutBtn">👋 Sign Out</button>
         </div>
@@ -385,11 +424,11 @@
                     <div class="step-question" id="s4q">Purpose of visit?</div>
                     <div class="step-hint" id="s4h">Tap to select</div>
                     <div class="option-grid">
-                        <div class="option-tile" onclick="selectPurpose('Meeting',this)"><span class="tile-icon">🤝</span>Meeting</div>
-                        <div class="option-tile" onclick="selectPurpose('Delivery',this)"><span class="tile-icon">📦</span>Delivery</div>
-                        <div class="option-tile" onclick="selectPurpose('Service',this)"><span class="tile-icon">🔧</span>Service</div>
-                        <div class="option-tile" onclick="selectPurpose('Interview',this)"><span class="tile-icon">💼</span>Interview</div>
-                        <div class="option-tile" style="grid-column:1/-1;" onclick="selectPurpose('Other',this)"><span class="tile-icon">📋</span>Other</div>
+                        <div class="option-tile" data-purpose="Meeting" onclick="selectPurpose('Meeting',this)"><span class="tile-icon">🤝</span>Meeting</div>
+                        <div class="option-tile" data-purpose="Delivery" onclick="selectPurpose('Delivery',this)"><span class="tile-icon">📦</span>Delivery</div>
+                        <div class="option-tile" data-purpose="Service" onclick="selectPurpose('Service',this)"><span class="tile-icon">🔧</span>Service</div>
+                        <div class="option-tile" data-purpose="Interview" onclick="selectPurpose('Interview',this)"><span class="tile-icon">💼</span>Interview</div>
+                        <div class="option-tile" data-purpose="Other" style="grid-column:1/-1;" onclick="selectPurpose('Other',this)"><span class="tile-icon">📋</span>Other</div>
                     </div>
                     <input type="hidden" id="visitPurpose">
                 </div>
@@ -406,11 +445,11 @@
                     <div class="step-question" id="s5q">How long will you stay?</div>
                     <div class="step-hint" id="s5h">Select duration</div>
                     <div class="option-grid">
-                        <div class="option-tile" onclick="selectDuration('30m',this)"><span class="tile-icon">⏱️</span><span id="dur30m">30 mins</span></div>
-                        <div class="option-tile" onclick="selectDuration('1h',this)"><span class="tile-icon">⏱️</span><span id="dur1h">1 hour</span></div>
-                        <div class="option-tile" onclick="selectDuration('2h',this)"><span class="tile-icon">⏱️</span><span id="dur2h">2 hours</span></div>
-                        <div class="option-tile" onclick="selectDuration('half',this)"><span class="tile-icon">⏱️</span><span id="durhalf">Half day</span></div>
-                        <div class="option-tile" onclick="selectDuration('full',this)"><span class="tile-icon">⏱️</span><span id="durfull">Full day</span></div>
+                        <div class="option-tile" data-duration="30m" onclick="selectDuration('30m',this)"><span class="tile-icon">⏱️</span><span id="dur30m">30 mins</span></div>
+                        <div class="option-tile" data-duration="1h" onclick="selectDuration('1h',this)"><span class="tile-icon">⏱️</span><span id="dur1h">1 hour</span></div>
+                        <div class="option-tile" data-duration="2h" onclick="selectDuration('2h',this)"><span class="tile-icon">⏱️</span><span id="dur2h">2 hours</span></div>
+                        <div class="option-tile" data-duration="half" onclick="selectDuration('half',this)"><span class="tile-icon">⏱️</span><span id="durhalf">Half day</span></div>
+                        <div class="option-tile" data-duration="full" onclick="selectDuration('full',this)"><span class="tile-icon">⏱️</span><span id="durfull">Full day</span></div>
                     </div>
                     <input type="hidden" id="visitDuration">
                 </div>
@@ -443,6 +482,7 @@
                     <div class="step-hint" id="s7h">Please read and confirm below</div>
                 </div>
                 <div class="consent-scroll">
+                    <div class="prefilled-banner" id="prefilledBanner"></div>
                     <div class="info-panel safety">
                         <h3>⚠️ Health &amp; Safety</h3>
                         <ul>
@@ -531,6 +571,8 @@ let selectedPurpose = '';
 let selectedDuration = '';
 let isSubmitting = false;
 let currentLanguage = 'en';
+let preRegMatch = null;
+let preRegCache = [];
 
 const translations = {
   en: {
@@ -746,6 +788,7 @@ function startSignIn() {
     selectedPurpose = '';
     selectedDuration = '';
     isSubmitting = false;
+    preRegMatch = null;
     ['visitorName','companyName','vehicleReg','visitorEmail'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('hostName').value = '';
     document.getElementById('visitPurpose').value = '';
@@ -754,8 +797,73 @@ function startSignIn() {
     document.querySelectorAll('.option-tile').forEach(tl => tl.classList.remove('selected'));
     document.getElementById('safetyAgree').checked = false;
     document.getElementById('gdprAgree').checked = false;
+    document.getElementById('prefilledBanner').style.display = 'none';
     showStepUI(1, false);
     showScreen('signinScreen');
+}
+
+// ============================================
+// PRE-REGISTRATION FAST-TRACK
+// ============================================
+async function loadPreRegCache() {
+    try {
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        const { data, error } = await sb
+            .from('visitor_pre_registrations')
+            .select('*')
+            .eq('expected_date', todayStr)
+            .is('used_at', null);
+        if (!error) preRegCache = data || [];
+    } catch (err) { console.log('Pre-reg cache load failed:', err); }
+}
+loadPreRegCache();
+setInterval(loadPreRegCache, 60000);
+
+function findPreRegistration(name) {
+    const norm = normalizeName(name);
+    return preRegCache.find(p => normalizeName(p.visitor_name) === norm) || null;
+}
+
+function applyPreRegistration(matched) {
+    preRegMatch = matched;
+    selectedPurpose = matched.visit_purpose || '';
+    selectedDuration = matched.visit_duration || '';
+    document.getElementById('visitPurpose').value = selectedPurpose;
+    document.getElementById('visitDuration').value = selectedDuration;
+    document.getElementById('companyName').value = matched.company_name || '';
+    document.getElementById('vehicleReg').value = matched.vehicle_reg || '';
+    if (matched.host_name) {
+        document.getElementById('hostName').value = matched.host_name + '|' + (matched.host_email || '');
+    }
+    document.querySelectorAll('#step4 .option-tile').forEach(tl => {
+        tl.classList.toggle('selected', tl.dataset.purpose === selectedPurpose);
+    });
+    document.querySelectorAll('#step5 .option-tile').forEach(tl => {
+        tl.classList.toggle('selected', tl.dataset.duration === selectedDuration);
+    });
+    const banner = document.getElementById('prefilledBanner');
+    banner.textContent = `👋 Welcome! You're expected by ${matched.host_name}${selectedPurpose ? ' for ' + selectedPurpose.toLowerCase() : ''} today.`;
+    banner.style.display = 'block';
+}
+
+// ============================================
+// PHONE QR SIGN-IN
+// ============================================
+function showPhoneQR() {
+    const canvas = document.getElementById('qrcodeCanvas');
+    canvas.innerHTML = '';
+    new QRCode(canvas, {
+        text: window.location.href.split('?')[0],
+        width: 220,
+        height: 220,
+        colorDark: '#111111',
+        colorLight: '#ffffff'
+    });
+    document.getElementById('qrOverlay').classList.add('show');
+}
+function hidePhoneQR() {
+    document.getElementById('qrOverlay').classList.remove('show');
 }
 
 function showStepUI(n, goingBack) {
@@ -770,8 +878,20 @@ function showStepUI(n, goingBack) {
 }
 
 function nextStep(from) {
-    if (from === 1 && !document.getElementById('visitorName').value.trim()) { showToast(t('error_name')); return; }
-    if (from === 2 && !document.getElementById('companyName').value.trim()) { showToast(t('error_company')); return; }
+    if (from === 1) {
+        const nameVal = document.getElementById('visitorName').value.trim();
+        if (!nameVal) { showToast(t('error_name')); return; }
+        const matched = findPreRegistration(nameVal);
+        if (matched) {
+            applyPreRegistration(matched);
+            showStepUI(matched.company_name ? 7 : 2, false);
+            return;
+        }
+    }
+    if (from === 2) {
+        if (!document.getElementById('companyName').value.trim()) { showToast(t('error_company')); return; }
+        if (preRegMatch) { showStepUI(7, false); return; }
+    }
     if (from === 3 && !document.getElementById('hostName').value) { showToast(t('error_host')); return; }
     if (from === 4 && !selectedPurpose) { showToast(t('error_purpose')); return; }
     if (from === 5 && !selectedDuration) { showToast(t('error_duration')); return; }
@@ -805,7 +925,18 @@ async function submitSignIn() {
     document.getElementById('submitBtn').disabled = true;
     showLoading('Signing In...');
 
-    const hostParts = document.getElementById('hostName').value.split('|');
+    // If this visitor matched a pre-registration, trust that record's host
+    // over the (possibly still-empty, since that step may have been
+    // skipped) host <select> on screen.
+    let hostNameVal, hostEmailVal;
+    if (preRegMatch) {
+        hostNameVal = preRegMatch.host_name;
+        hostEmailVal = preRegMatch.host_email || '';
+    } else {
+        const hostParts = document.getElementById('hostName').value.split('|');
+        hostNameVal = hostParts[0];
+        hostEmailVal = hostParts[1] || '';
+    }
     const visitorNameValue = document.getElementById('visitorName').value.trim();
     const dateStr = new Date().toLocaleDateString('en-GB');
     const timeInStr = new Date().toLocaleTimeString('en-GB');
@@ -813,8 +944,8 @@ async function submitSignIn() {
     const record = {
         visitor_name: visitorNameValue,
         company_name: document.getElementById('companyName').value.trim(),
-        host_name: hostParts[0],
-        host_email: hostParts[1] || '',
+        host_name: hostNameVal,
+        host_email: hostEmailVal,
         visit_purpose: selectedPurpose,
         visit_duration: selectedDuration,
         vehicle_reg: document.getElementById('vehicleReg').value.trim(),
@@ -828,6 +959,13 @@ async function submitSignIn() {
     try {
         const { error } = await sb.from('visitor_log').insert(record);
         if (error) throw error;
+
+        if (preRegMatch) {
+            sb.from('visitor_pre_registrations')
+                .update({ used_at: new Date().toISOString() })
+                .eq('id', preRegMatch.id)
+                .then(() => {}, () => {});
+        }
 
         hideLoading();
 
