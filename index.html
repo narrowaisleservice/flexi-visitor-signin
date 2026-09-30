@@ -518,7 +518,7 @@
 // ============================================
 const SUPABASE_URL = 'https://hkwcdpqpduptjwroawrw.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrd2NkcHFwZHVwdGp3cm9hd3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDMyNzcsImV4cCI6MjEwNTExOTI3N30.9W7X2SBUQunSYASrpmAgVICAZuX9F_LJCfPT7oBPh3I';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Slim Apps Script mailer -- sends the host arrival email (and optional
 // visitor follow-up email) via Gmail. It no longer touches the spreadsheet;
@@ -826,7 +826,7 @@ async function submitSignIn() {
     };
 
     try {
-        const { error } = await supabase.from('visitor_log').insert(record);
+        const { error } = await sb.from('visitor_log').insert(record);
         if (error) throw error;
 
         hideLoading();
@@ -882,7 +882,7 @@ async function checkLastVisit(currentName) {
     try {
         const startOfToday = new Date();
         startOfToday.setHours(0,0,0,0);
-        const { data, error } = await supabase
+        const { data, error } = await sb
             .from('visitor_log')
             .select('visitor_name, status, signed_in_at')
             .gte('signed_in_at', startOfToday.toISOString())
@@ -901,7 +901,7 @@ async function loadWelcomeStats() {
     try {
         const startOfToday = new Date();
         startOfToday.setHours(0,0,0,0);
-        const { data, error } = await supabase
+        const { data, error } = await sb
             .from('visitor_log')
             .select('status', { count: 'exact' })
             .gte('signed_in_at', startOfToday.toISOString());
@@ -925,7 +925,7 @@ async function loadTodaysVisitors() {
     try {
         const startOfToday = new Date();
         startOfToday.setHours(0,0,0,0);
-        const { data, error } = await supabase
+        const { data, error } = await sb
             .from('visitor_log')
             .select('id, visitor_name, company_name, host_name, status, signed_in_at')
             .gte('signed_in_at', startOfToday.toISOString())
@@ -958,7 +958,7 @@ async function signOut(id, name) {
     if (!confirm(`Sign out ${name}?`)) return;
     showLoading('Signing out...');
     try {
-        const { error } = await supabase
+        const { error } = await sb
             .from('visitor_log')
             .update({ signed_out_at: new Date().toISOString(), status: 'Signed Out' })
             .eq('id', id);
