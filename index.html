@@ -57,19 +57,6 @@
     .header-clock .time { font-size:1.7em; font-weight:800; color:var(--red-light); letter-spacing:-0.5px; font-variant-numeric:tabular-nums; }
     .header-clock .date { font-size:0.72em; color:var(--text-muted); font-weight:600; margin-top:2px; letter-spacing:0.3px; }
 
-    .lang-selector { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:6px; }
-    .lang-label { font-size:0.68em; color:var(--text-muted); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
-    .lang-buttons { display:flex; gap:7px; }
-    .lang-btn {
-        width:36px; height:36px; border-radius:50%;
-        border:2px solid var(--border);
-        background:var(--card2);
-        font-weight:700; cursor:pointer; font-size:1.25em;
-        transition:all 0.2s ease;
-        display:flex; align-items:center; justify-content:center;
-    }
-    .lang-btn.active { border-color:var(--red); background:var(--red); box-shadow:0 0 14px rgba(220,38,38,0.45); transform:scale(1.08); }
-
     .screen { display:none; flex:1; flex-direction:column; min-height:0; position:relative; }
     .screen.active { display:flex; }
 
@@ -295,16 +282,6 @@
     <div class="header">
         <div class="header-logo">
             <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/flexi-logo-white.svg" alt="Flexi" onerror="this.style.display='none'">
-        </div>
-        <div class="lang-selector">
-            <div class="lang-label" id="langLabel">Select Language</div>
-            <div class="lang-buttons">
-                <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">🇬🇧</button>
-                <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">🇪🇸</button>
-                <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">🇫🇷</button>
-                <button class="lang-btn" data-lang="pl" onclick="setLanguage('pl')">🇵🇱</button>
-                <button class="lang-btn" data-lang="tw" onclick="setLanguage('tw')">🇹🇼</button>
-            </div>
         </div>
         <div class="header-clock">
             <div class="time" id="clockTime">00:00:00</div>
@@ -570,190 +547,39 @@ let currentStep = 1;
 let selectedPurpose = '';
 let selectedDuration = '';
 let isSubmitting = false;
-let currentLanguage = 'en';
 let preRegMatch = null;
 let preRegCache = [];
 
-const translations = {
-  en: {
-    select_lang: "Select Language", tagline: "Your Space, Our Expertise",
-    visitors_today: "Visitors Today", on_site: "Currently On-Site",
-    cta_text: "Sign In Here", cta_sub: "Tap to start",
-    signin_btn: "📝 Sign In", signout_btn: "👋 Sign Out",
-    s1num: "Step 1 of 7", s1q: "What's your name?", s1h: "Enter your full name",
-    s2num: "Step 2 of 7", s2q: "Which company are you from?", s2h: "Enter your company name",
-    s3num: "Step 3 of 7", s3q: "Who are you here to see?", s3h: "Select from the list below",
-    s4num: "Step 4 of 7", s4q: "Purpose of visit?", s4h: "Tap to select",
-    s5num: "Step 5 of 7", s5q: "How long will you stay?", s5h: "Select duration",
-    s6num: "Step 6 of 7", s6q: "A couple of optional details", s6h: "Leave blank if not applicable",
-    s7num: "Step 7 of 7", s7q: "Almost done!", s7h: "Please read and confirm below",
-    dur30m: "30 mins", dur1h: "1 hour", dur2h: "2 hours", durhalf: "Half day", durfull: "Full day",
-    safety_label: "I understand and accept the Health & Safety information",
-    gdpr_label: "I consent to my data being processed in accordance with the GDPR statement above",
-    success_title: "Signed In!", success_sub: "Thank you for registering your visit",
-    success_notified: "has been notified 📧", success_reception: "Please wait at reception",
-    success_return: "Welcome back! Last visited on", back_btn: "← Back to Welcome",
-    signout_today: "Visitors Today", signout_current: "Currently On-Site",
-    error_name: "⚠ Please enter your name", error_company: "⚠ Please enter your company name",
-    error_host: "⚠ Please select who you are here to see", error_purpose: "⚠ Please select a purpose",
-    error_duration: "⚠ Please select a duration", error_safety: "⚠ Please accept the Health & Safety information",
-    error_gdpr: "⚠ Please accept the GDPR consent", signin_success: "✅ Signed in successfully",
-    error_try: "❌ Error – please try again",
-  },
-  es: {
-    select_lang: "Seleccionar Idioma", tagline: "Tu Espacio, Nuestra Experiencia",
-    visitors_today: "Visitantes Hoy", on_site: "Actualmente en el Sitio",
-    cta_text: "Regístrate Aquí", cta_sub: "Toca para comenzar",
-    signin_btn: "📝 Registrarse", signout_btn: "👋 Cerrar sesión",
-    s1num: "Paso 1 de 7", s1q: "¿Cuál es tu nombre?", s1h: "Ingrese su nombre completo",
-    s2num: "Paso 2 de 7", s2q: "¿De qué empresa eres?", s2h: "Ingrese el nombre de la empresa",
-    s3num: "Paso 3 de 7", s3q: "¿A quién vienes a ver?", s3h: "Selecciona de la lista",
-    s4num: "Paso 4 de 7", s4q: "¿Propósito de la visita?", s4h: "Toca para seleccionar",
-    s5num: "Paso 5 de 7", s5q: "¿Cuánto tiempo te quedarás?", s5h: "Selecciona duración",
-    s6num: "Paso 6 de 7", s6q: "Algunos detalles opcionales", s6h: "Dejar en blanco si no aplica",
-    s7num: "Paso 7 de 7", s7q: "¡Casi listo!", s7h: "Por favor lea y confirme a continuación",
-    dur30m: "30 mins", dur1h: "1 hora", dur2h: "2 horas", durhalf: "Medio día", durfull: "Día completo",
-    safety_label: "Entiendo y acepto la información de Salud y Seguridad",
-    gdpr_label: "Doy mi consentimiento para que mis datos se procesen de conformidad con la declaración de RGPD anterior",
-    success_title: "¡Registrado!", success_sub: "Gracias por registrar su visita",
-    success_notified: "ha sido notificado 📧", success_reception: "Por favor espere en recepción",
-    success_return: "¡Bienvenido de vuelta! Última visita el", back_btn: "← Volver a Bienvenido",
-    signout_today: "Visitantes Hoy", signout_current: "Actualmente en el Sitio",
-    error_name: "⚠ Por favor ingrese su nombre", error_company: "⚠ Por favor ingrese el nombre de la empresa",
-    error_host: "⚠ Por favor seleccione a quién viene a ver", error_purpose: "⚠ Por favor seleccione un propósito",
-    error_duration: "⚠ Por favor seleccione una duración", error_safety: "⚠ Por favor acepte la información de Salud y Seguridad",
-    error_gdpr: "⚠ Por favor acepte el consentimiento del RGPD", signin_success: "✅ Registrado exitosamente",
-    error_try: "❌ Error – por favor intenta de nuevo",
-  },
-  fr: {
-    select_lang: "Sélectionner la Langue", tagline: "Votre Espace, Notre Expertise",
-    visitors_today: "Visiteurs Aujourd'hui", on_site: "Actuellement sur Site",
-    cta_text: "Enregistrez-vous Ici", cta_sub: "Cliquez pour commencer",
-    signin_btn: "📝 S'enregistrer", signout_btn: "👋 Se Déconnecter",
-    s1num: "Étape 1 sur 7", s1q: "Quel est votre nom ?", s1h: "Entrez votre nom complet",
-    s2num: "Étape 2 sur 7", s2q: "De quelle entreprise venez-vous ?", s2h: "Entrez le nom de l'entreprise",
-    s3num: "Étape 3 sur 7", s3q: "Qui venez-vous voir ?", s3h: "Sélectionnez dans la liste",
-    s4num: "Étape 4 sur 7", s4q: "Objet de la visite ?", s4h: "Cliquez pour sélectionner",
-    s5num: "Étape 5 sur 7", s5q: "Combien de temps resterez-vous ?", s5h: "Sélectionnez la durée",
-    s6num: "Étape 6 sur 7", s6q: "Quelques détails optionnels", s6h: "Laissez vide si non applicable",
-    s7num: "Étape 7 sur 7", s7q: "Presque terminé !", s7h: "Veuillez lire et confirmer ci-dessous",
-    dur30m: "30 minutes", dur1h: "1 heure", dur2h: "2 heures", durhalf: "Demi-journée", durfull: "Journée complète",
-    safety_label: "Je comprends et j'accepte les informations de santé et sécurité",
-    gdpr_label: "Je consens au traitement de mes données conformément à la déclaration RGPD ci-dessus",
-    success_title: "Enregistré !", success_sub: "Merci d'avoir enregistré votre visite",
-    success_notified: "a été notifié 📧", success_reception: "Veuillez attendre à la réception",
-    success_return: "Bienvenue ! Dernière visite le", back_btn: "← Retour à l'Accueil",
-    signout_today: "Visiteurs Aujourd'hui", signout_current: "Actuellement sur Site",
-    error_name: "⚠ Veuillez entrer votre nom", error_company: "⚠ Veuillez entrer le nom de l'entreprise",
-    error_host: "⚠ Veuillez sélectionner la personne à visiter", error_purpose: "⚠ Veuillez sélectionner l'objet de la visite",
-    error_duration: "⚠ Veuillez sélectionner la durée", error_safety: "⚠ Veuillez accepter les informations de santé et sécurité",
-    error_gdpr: "⚠ Veuillez accepter le consentement RGPD", signin_success: "✅ Enregistrement réussi",
-    error_try: "❌ Erreur – veuillez réessayer",
-  },
-  pl: {
-    select_lang: "Wybierz Język", tagline: "Twoja Przestrzeń, Nasza Wiedza",
-    visitors_today: "Odwiedzających Dzisiaj", on_site: "Aktualnie na Terenie",
-    cta_text: "Zaloguj się Tutaj", cta_sub: "Dotknij, aby zacząć",
-    signin_btn: "📝 Zaloguj się", signout_btn: "👋 Wyloguj się",
-    s1num: "Krok 1 z 7", s1q: "Jak się nazywasz?", s1h: "Wpisz swoje pełne imię i nazwisko",
-    s2num: "Krok 2 z 7", s2q: "Z jakiej firmy przychodzisz?", s2h: "Wpisz nazwę firmy",
-    s3num: "Krok 3 z 7", s3q: "Kogo przychodzisz odwiedzić?", s3h: "Wybierz z listy",
-    s4num: "Krok 4 z 7", s4q: "Cel wizyty?", s4h: "Dotknij, aby wybrać",
-    s5num: "Krok 5 z 7", s5q: "Jak długo się zostaniesz?", s5h: "Wybierz czas trwania",
-    s6num: "Krok 6 z 7", s6q: "Kilka opcjonalnych szczegółów", s6h: "Zostaw puste, jeśli nie dotyczy",
-    s7num: "Krok 7 z 7", s7q: "Prawie gotowe!", s7h: "Proszę przeczytaj i potwierdź poniżej",
-    dur30m: "30 min", dur1h: "1 godzina", dur2h: "2 godziny", durhalf: "Pół dnia", durfull: "Cały dzień",
-    safety_label: "Rozumiem i akceptuję informacje dotyczące bezpieczeństwa",
-    gdpr_label: "Wyrażam zgodę na przetwarzanie moich danych w zgodzie z powyższym oświadczeniem RODO",
-    success_title: "Zalogowano!", success_sub: "Dziękujemy za zalogowanie się",
-    success_notified: "został powiadomiony 📧", success_reception: "Proszę czekać w recepcji",
-    success_return: "Witaj ponownie! Ostatnia wizyta", back_btn: "← Wróć do Powitalnej",
-    signout_today: "Odwiedzających Dzisiaj", signout_current: "Aktualnie na Terenie",
-    error_name: "⚠ Wpisz swoje imię i nazwisko", error_company: "⚠ Wpisz nazwę firmy",
-    error_host: "⚠ Wybierz osobę do odwiedzenia", error_purpose: "⚠ Wybierz cel wizyty",
-    error_duration: "⚠ Wybierz czas trwania", error_safety: "⚠ Zaakceptuj informacje o bezpieczeństwie",
-    error_gdpr: "⚠ Zaakceptuj zgodę RODO", signin_success: "✅ Pomyślnie zalogowano",
-    error_try: "❌ Błąd – spróbuj ponownie",
-  },
-  tw: {
-    select_lang: "選擇語言", tagline: "您的空間，我們的專業知識",
-    visitors_today: "今日訪客", on_site: "目前在場",
-    cta_text: "在此簽到", cta_sub: "點擊開始",
-    signin_btn: "📝 簽到", signout_btn: "👋 簽出",
-    s1num: "第 1 步，共 7 步", s1q: "請問您的名字？", s1h: "請輸入您的全名",
-    s2num: "第 2 步，共 7 步", s2q: "您來自哪家公司？", s2h: "請輸入公司名稱",
-    s3num: "第 3 步，共 7 步", s3q: "您要見誰？", s3h: "從列表中選擇",
-    s4num: "第 4 步，共 7 步", s4q: "來訪目的？", s4h: "點擊以選擇",
-    s5num: "第 5 步，共 7 步", s5q: "您要停留多長時間？", s5h: "選擇持續時間",
-    s6num: "第 6 步，共 7 步", s6q: "一些可選詳情", s6h: "不適用時留空",
-    s7num: "第 7 步，共 7 步", s7q: "快完成了！", s7h: "請在下方閱讀並確認",
-    dur30m: "30 分鐘", dur1h: "1 小時", dur2h: "2 小時", durhalf: "半天", durfull: "整天",
-    safety_label: "我理解並接受健康和安全信息",
-    gdpr_label: "我同意根據上述 GDPR 聲明處理我的數據",
-    success_title: "已簽到！", success_sub: "感謝您登記訪問",
-    success_notified: "已被通知 📧", success_reception: "請在前台等候",
-    success_return: "歡迎回來！最後一次訪問於", back_btn: "← 返回歡迎頁面",
-    signout_today: "今日訪客", signout_current: "目前在場",
-    error_name: "⚠ 請輸入您的名字", error_company: "⚠ 請輸入公司名稱",
-    error_host: "⚠ 請選擇要拜訪的人員", error_purpose: "⚠ 請選擇訪問目的",
-    error_duration: "⚠ 請選擇停留時間", error_safety: "⚠ 請接受健康和安全信息",
-    error_gdpr: "⚠ 請接受 GDPR 同意", signin_success: "✅ 簽到成功",
-    error_try: "❌ 錯誤 – 請重試",
-  }
+// Kept as a flat English string table (rather than deleting every t('key')
+// call site) since the multi-language switcher was removed but the same
+// keys are still used for error/status messages throughout the app.
+const strings = {
+  tagline: "Your Space, Our Expertise",
+  visitors_today: "Visitors Today", on_site: "Currently On-Site",
+  cta_text: "Sign In Here", cta_sub: "Tap to start",
+  signin_btn: "📝 Sign In", signout_btn: "👋 Sign Out",
+  s1num: "Step 1 of 7", s1q: "What's your name?", s1h: "Enter your full name",
+  s2num: "Step 2 of 7", s2q: "Which company are you from?", s2h: "Enter your company name",
+  s3num: "Step 3 of 7", s3q: "Who are you here to see?", s3h: "Select from the list below",
+  s4num: "Step 4 of 7", s4q: "Purpose of visit?", s4h: "Tap to select",
+  s5num: "Step 5 of 7", s5q: "How long will you stay?", s5h: "Select duration",
+  s6num: "Step 6 of 7", s6q: "A couple of optional details", s6h: "Leave blank if not applicable",
+  s7num: "Step 7 of 7", s7q: "Almost done!", s7h: "Please read and confirm below",
+  dur30m: "30 mins", dur1h: "1 hour", dur2h: "2 hours", durhalf: "Half day", durfull: "Full day",
+  safety_label: "I understand and accept the Health & Safety information",
+  gdpr_label: "I consent to my data being processed in accordance with the GDPR statement above",
+  success_title: "Signed In!", success_sub: "Thank you for registering your visit",
+  success_notified: "has been notified 📧", success_reception: "Please wait at reception",
+  success_return: "Welcome back! Last visited on", back_btn: "← Back to Welcome",
+  signout_today: "Visitors Today", signout_current: "Currently On-Site",
+  error_name: "⚠ Please enter your name", error_company: "⚠ Please enter your company name",
+  error_host: "⚠ Please select who you are here to see", error_purpose: "⚠ Please select a purpose",
+  error_duration: "⚠ Please select a duration", error_safety: "⚠ Please accept the Health & Safety information",
+  error_gdpr: "⚠ Please accept the GDPR consent", signin_success: "✅ Signed in successfully",
+  error_try: "❌ Error – please try again",
 };
 
-function t(key) { return translations[currentLanguage][key] || translations.en[key] || key; }
-
-function setLanguage(lang) {
-  currentLanguage = lang;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
-  updateTranslations();
-}
-
-function updateTranslations() {
-  document.getElementById('langLabel').textContent = t('select_lang');
-  document.getElementById('welcomeTagline').textContent = t('tagline');
-  document.getElementById('visitorsLabel').textContent = t('visitors_today');
-  document.getElementById('onsiteLabel').textContent = t('on_site');
-  document.getElementById('ctaText').textContent = t('cta_text');
-  document.getElementById('ctaSub').textContent = t('cta_sub');
-  document.getElementById('signOutBtn').textContent = t('signout_btn');
-  document.getElementById('s1num').textContent = t('s1num');
-  document.getElementById('s1q').textContent = t('s1q');
-  document.getElementById('s1h').textContent = t('s1h');
-  document.getElementById('s2num').textContent = t('s2num');
-  document.getElementById('s2q').textContent = t('s2q');
-  document.getElementById('s2h').textContent = t('s2h');
-  document.getElementById('s3num').textContent = t('s3num');
-  document.getElementById('s3q').textContent = t('s3q');
-  document.getElementById('s3h').textContent = t('s3h');
-  document.getElementById('s4num').textContent = t('s4num');
-  document.getElementById('s4q').textContent = t('s4q');
-  document.getElementById('s4h').textContent = t('s4h');
-  document.getElementById('s5num').textContent = t('s5num');
-  document.getElementById('s5q').textContent = t('s5q');
-  document.getElementById('s5h').textContent = t('s5h');
-  document.getElementById('s6num').textContent = t('s6num');
-  document.getElementById('s6q').textContent = t('s6q');
-  document.getElementById('s6h').textContent = t('s6h');
-  document.getElementById('s7num').textContent = t('s7num');
-  document.getElementById('s7q').textContent = t('s7q');
-  document.getElementById('s7h').textContent = t('s7h');
-  document.getElementById('dur30m').textContent = t('dur30m');
-  document.getElementById('dur1h').textContent = t('dur1h');
-  document.getElementById('dur2h').textContent = t('dur2h');
-  document.getElementById('durhalf').textContent = t('durhalf');
-  document.getElementById('durfull').textContent = t('durfull');
-  document.getElementById('safetyLabel').innerHTML = t('safety_label') + ' <span class="req">*</span>';
-  document.getElementById('gdprLabel').innerHTML = t('gdpr_label') + ' <span class="req">*</span>';
-  document.getElementById('successTitle').textContent = t('success_title');
-  document.getElementById('successSub').textContent = t('success_sub');
-  document.getElementById('backBtn').textContent = t('back_btn');
-  document.getElementById('backToWelcomeBtn').textContent = t('back_btn');
-  document.getElementById('signoutTodayLabel').textContent = t('signout_today');
-  document.getElementById('signoutCurrentLabel').textContent = t('signout_current');
-}
+function t(key) { return strings[key] || key; }
 
 function normalizeName(name) { return name.toLowerCase().trim().replace(/\s+/g, ' '); }
 
@@ -951,7 +777,6 @@ async function submitSignIn() {
         vehicle_reg: document.getElementById('vehicleReg').value.trim(),
         visitor_email: document.getElementById('visitorEmail').value.trim() || null,
         status: 'Signed In',
-        language: currentLanguage,
         safety_ack: true,
         gdpr_ack: true
     };
