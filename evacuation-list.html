@@ -4,18 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Evacuation List — Flexi Reception</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
     :root {
-        --red: #DC2626; --red-light: #FF5A5A;
-        --bg: #000; --card: #0D0D0F; --card2: #17171A;
-        --text: #F1F1F1; --text-muted: #8A8A90; --border: rgba(255,255,255,0.08);
+        --red: #df0a1e; --red-light: #e8394a; --red-dark: #c3161e;
+        --bg: #fff; --card: #fff; --card2: #f5f5f6;
+        --text: #101010; --text-muted: #6b6b70; --border: rgba(16,16,16,0.10);
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
-        font-family:'Barlow Condensed',sans-serif;
-        background:linear-gradient(180deg,#000 0%,#070707 100%);
+        font-family:'DM Sans',sans-serif;
+        background:#fff;
         color:var(--text);
         min-height:100vh;
         padding:24px;
@@ -23,29 +23,29 @@
     .wrap { max-width:1100px; margin:0 auto; }
     .top {
         display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
-        background:var(--card); border:1px solid rgba(220,38,38,0.35); border-radius:16px;
-        padding:20px 26px; margin-bottom:20px; box-shadow:0 10px 30px rgba(0,0,0,0.35);
+        background:var(--card); border:1px solid rgba(223,10,30,0.25); border-radius:16px;
+        padding:20px 26px; margin-bottom:20px; box-shadow:0 10px 30px rgba(16,16,16,0.06);
     }
-    .title { font-size:2.1em; font-weight:900; text-transform:uppercase; letter-spacing:-0.5px; color:#fff; }
-    .title span { color:var(--red-light); }
+    .title { font-family:'IBM Plex Sans',sans-serif; font-size:2.1em; font-weight:900; text-transform:uppercase; letter-spacing:-0.5px; color:var(--text); }
+    .title span { color:var(--red); }
     .sub { font-size:0.95em; color:var(--text-muted); font-weight:600; margin-top:2px; }
     .actions { display:flex; gap:10px; }
     button {
-        font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1em;
+        font-family:'IBM Plex Sans',sans-serif; font-weight:800; font-size:1em;
         text-transform:uppercase; letter-spacing:0.5px; border:none; border-radius:10px;
         padding:12px 20px; cursor:pointer; transition:all 0.15s;
     }
     .btn-refresh { background:var(--card2); color:var(--text); border:1px solid var(--border); }
     .btn-refresh:active { transform:scale(0.96); }
-    .btn-print { background:linear-gradient(135deg, var(--red-light) 0%, var(--red) 100%); color:#fff; }
+    .btn-print { background:linear-gradient(135deg, var(--red-light) 0%, var(--red-dark) 100%); color:#fff; }
     .btn-print:active { transform:scale(0.96); }
 
     .count-banner {
         display:flex; align-items:center; gap:20px;
-        background:linear-gradient(135deg, rgba(220,38,38,0.22) 0%, rgba(220,38,38,0.08) 100%);
+        background:linear-gradient(135deg, rgba(223,10,30,0.10) 0%, rgba(223,10,30,0.04) 100%);
         border:2px solid var(--red); border-radius:16px; padding:24px 28px; margin-bottom:20px;
     }
-    .count-num { font-size:4em; font-weight:900; color:#fff; line-height:1; }
+    .count-num { font-family:'IBM Plex Sans',sans-serif; font-size:4em; font-weight:900; color:var(--text); line-height:1; }
     .count-label { font-size:1.15em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; }
     .updated { margin-left:auto; font-size:0.85em; color:var(--text-muted); font-weight:600; text-align:right; }
 
@@ -53,11 +53,11 @@
     .row {
         display:flex; align-items:center; justify-content:space-between; gap:16px;
         background:var(--card); border:1px solid var(--border); border-left:4px solid var(--red);
-        border-radius:12px; padding:16px 22px;
+        border-radius:12px; padding:16px 22px; box-shadow:0 4px 12px rgba(16,16,16,0.04);
     }
-    .name { font-size:1.6em; font-weight:800; color:#fff; }
+    .name { font-size:1.6em; font-weight:800; color:var(--text); }
     .meta { font-size:0.95em; color:var(--text-muted); font-weight:600; margin-top:2px; }
-    .time { font-size:1.3em; font-weight:800; color:var(--red-light); white-space:nowrap; }
+    .time { font-size:1.3em; font-weight:800; color:var(--red); white-space:nowrap; }
     .empty { text-align:center; padding:60px 20px; color:var(--text-muted); font-size:1.3em; font-weight:700; }
 
     @media print {
