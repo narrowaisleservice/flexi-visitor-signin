@@ -1,0 +1,39 @@
+<!-- ============================================================
+     AI Weekly Digest card — paste into insights-dashboard.html
+     Requires the page's existing Supabase client to be named `sb`
+     (same pattern used across the rest of the portal). If it's
+     named something else there, just change `sb.` below to match.
+     ============================================================ -->
+<div class="card" id="digestCard" style="background:var(--card,#fff); border:1px solid var(--border,rgba(16,16,16,0.1)); border-radius:16px; padding:22px; margin-bottom:20px; box-shadow:0 10px 30px rgba(16,16,16,0.06);">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+        <h2 style="font-family:'IBM Plex Sans',sans-serif; font-size:1em; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text,#101010); margin:0;">🤖 AI Weekly Digest</h2>
+        <button id="digestBtn" onclick="generateDigest()" style="font-family:'IBM Plex Sans',sans-serif; font-weight:800; font-size:0.85em; text-transform:uppercase; letter-spacing:0.5px; border:none; border-radius:10px; padding:10px 16px; cursor:pointer; background:linear-gradient(135deg,#e8394a 0%,#c3161e 100%); color:#fff;">Generate</button>
+    </div>
+    <div id="digestMeta" style="font-size:0.8em; color:var(--text-muted,#6b6b70); font-weight:600; margin-bottom:10px;"></div>
+    <div id="digestBody" style="font-size:0.95em; line-height:1.6; color:var(--text,#101010); white-space:pre-wrap;">Click Generate for this week's summary.</div>
+</div>
+
+<script>
+async function generateDigest() {
+    const btn = document.getElementById('digestBtn');
+    const body = document.getElementById('digestBody');
+    const meta = document.getElementById('digestMeta');
+    btn.disabled = true;
+    btn.textContent = 'Thinking…';
+    body.textContent = 'Pulling the latest numbers and writing the summary — a few seconds…';
+    meta.textContent = '';
+
+    try {
+        const { data, error } = await sb.functions.invoke('weekly-digest', { method: 'POST' });
+        if (error) throw error;
+        body.textContent = data.digest || 'No digest text returned.';
+        meta.textContent = 'Generated ' + new Date(data.generated_at).toLocaleString('en-GB');
+    } catch (err) {
+        body.textContent = '❌ Error generating digest — check connection / function logs.';
+        console.error(err);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate';
+    }
+}
+</script>
