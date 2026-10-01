@@ -284,6 +284,61 @@
         border:1px solid rgba(34,197,94,0.35); border-radius:12px; padding:14px 16px; margin-bottom:12px;
         font-weight:700; color:#16a34a; text-align:center; font-size:1em;
     }
+
+    /* Searchable host combobox */
+    .combobox { position:relative; width:100%; margin-bottom:14px; }
+    .combobox .step-input { margin-bottom:0; }
+    .combobox-results {
+        display:none; position:absolute; top:calc(100% + 6px); left:0; right:0; max-height:260px;
+        overflow-y:auto; background:#fff; border:1.5px solid var(--border); border-radius:12px;
+        box-shadow:0 14px 34px rgba(16,16,16,0.12); z-index:50; text-align:left;
+    }
+    .combobox-results.show { display:block; }
+    .combobox-item { padding:13px 18px; cursor:pointer; border-bottom:1px solid var(--border); transition:background 0.12s ease; }
+    .combobox-item:last-child { border-bottom:none; }
+    .combobox-item:active, .combobox-item.hover { background:var(--red-dim); }
+    .combobox-item strong { display:block; font-family:'IBM Plex Sans',sans-serif; font-size:1em; font-weight:700; color:var(--text); }
+    .combobox-item span { display:block; font-size:0.8em; color:var(--text-muted); font-weight:500; margin-top:1px; }
+    .combobox-empty { padding:16px 18px; color:var(--text-muted); font-size:0.9em; font-weight:600; text-align:center; }
+
+    /* Returning-visitor quick-confirm card */
+    .returning-icon { font-size:2.6em; margin-bottom:12px; }
+
+    /* Idle screensaver */
+    .screensaver {
+        position:fixed; inset:0; background:#ffffff; z-index:9000;
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        opacity:0; pointer-events:none; transition:opacity 0.6s ease;
+    }
+    .screensaver.show { opacity:1; pointer-events:all; }
+    .screensaver img { height:84px; margin-bottom:30px; filter:brightness(0); opacity:0.9; }
+    .screensaver .ss-tip {
+        font-family:'IBM Plex Sans',sans-serif; font-size:1.8em; font-weight:900; color:var(--text);
+        text-align:center; max-width:680px; padding:0 30px; text-transform:uppercase; letter-spacing:-0.3px; line-height:1.15;
+    }
+    .screensaver .ss-sub { font-size:1.05em; color:var(--text-muted); margin-top:14px; font-weight:600; }
+    .screensaver .ss-tap {
+        position:absolute; bottom:40px; font-size:0.82em; color:var(--text-muted); font-weight:700;
+        text-transform:uppercase; letter-spacing:1.2px; animation:ssBlink 1.8s ease-in-out infinite;
+    }
+    @keyframes ssBlink { 0%,100% { opacity:0.35; } 50% { opacity:1; } }
+
+    /* Printable visitor badge -- hidden on screen, shown only by @media print */
+    .badge-print { display:none; }
+    @media print {
+        body * { visibility:hidden; }
+        .badge-print, .badge-print * { visibility:visible; }
+        .badge-print { display:block; position:fixed; top:0; left:0; width:100%; }
+        .badge-card {
+            width:90mm; margin:14mm auto; border:2px solid #000; border-radius:10px; padding:18px 20px;
+            font-family:'IBM Plex Sans',sans-serif; text-align:center;
+        }
+        .badge-card .badge-label { font-size:0.75em; text-transform:uppercase; letter-spacing:1.5px; color:#444; margin-bottom:8px; }
+        .badge-card .badge-name { font-size:1.7em; font-weight:900; margin-bottom:4px; }
+        .badge-card .badge-company { font-size:1em; font-weight:600; color:#333; margin-bottom:12px; }
+        .badge-card .badge-row { font-size:0.9em; margin:4px 0; color:#111; }
+        .badge-card .badge-date { font-size:0.75em; color:#555; margin-top:12px; }
+    }
 </style>
 </head>
 <body>
@@ -300,6 +355,25 @@
         <div class="qr-sub">Use your phone's camera</div>
         <div id="qrcodeCanvas"></div>
         <button class="btn btn-outline qr-close" style="color:#111; border-color:#111;" onclick="hidePhoneQR()">Close</button>
+    </div>
+</div>
+
+<div class="screensaver" id="screensaver" onclick="hideScreensaver()">
+    <img src="https://raw.githubusercontent.com/narrowaisleservice/flexi-visitor-signin/refs/heads/main/Narrow-Aisle-white.svg" alt="" onerror="this.style.display='none'">
+    <div class="ss-tip" id="ssTip">Welcome to Narrow Aisle / Flexi</div>
+    <div class="ss-sub" id="ssSub">Tap below to sign in</div>
+    <div class="ss-tap">Tap anywhere to continue</div>
+</div>
+
+<!-- Printable visitor badge (hidden on screen, only rendered by the browser's print dialog) -->
+<div class="badge-print" id="badgePrint">
+    <div class="badge-card">
+        <div class="badge-label">Visitor</div>
+        <div class="badge-name" id="badgeName">—</div>
+        <div class="badge-company" id="badgeCompany">—</div>
+        <div class="badge-row">Visiting: <strong id="badgeHost">—</strong></div>
+        <div class="badge-row">Purpose: <span id="badgePurpose">—</span></div>
+        <div class="badge-date" id="badgeDate">—</div>
     </div>
 </div>
 
@@ -345,6 +419,24 @@
         </div>
         <div class="btn-row">
             <button class="btn btn-outline" onclick="showScreen('signoutScreen')" id="signOutBtn">👋 Sign Out</button>
+            <button class="btn btn-ghost" onclick="showScreen('deliveryScreen')" id="deliveryBtn">📦 Courier / Delivery Drop-off</button>
+        </div>
+    </div>
+
+    <!-- QUICK DELIVERY / COURIER LANE -->
+    <div class="screen" id="deliveryScreen">
+        <div class="wizard-wrap" style="justify-content:center;">
+            <div class="step-inner">
+                <div class="step-num">Quick Delivery</div>
+                <div class="step-question">📦 Courier / Delivery</div>
+                <div class="step-hint">No full sign-in needed — just log it and we'll let reception know</div>
+                <input class="step-input" type="text" id="deliveryCourier" placeholder="Courier / company (optional)" autocomplete="off">
+                <input class="step-input" type="text" id="deliveryNotes" placeholder="Notes — e.g. 2 boxes for Parts (optional)" autocomplete="off">
+            </div>
+            <div class="step-nav" style="margin:18px auto 0;">
+                <button class="btn btn-ghost" onclick="showScreen('welcomeScreen')">Cancel</button>
+                <button class="btn btn-primary" id="deliverySubmitBtn" onclick="submitDelivery()">✅ Log Delivery</button>
+            </div>
         </div>
     </div>
 
@@ -363,7 +455,21 @@
                 </div>
                 <div class="step-nav">
                     <button class="btn btn-ghost" onclick="showScreen('welcomeScreen')" id="btn1Cancel">Cancel</button>
-                    <button class="btn btn-primary" onclick="nextStep(1)">Next →</button>
+                    <button class="btn btn-primary" id="step1NextBtn" onclick="nextStep(1)">Next →</button>
+                </div>
+            </div>
+
+            <!-- RETURNING VISITOR QUICK-CONFIRM (shown instead of Step 2 when we recognise the name) -->
+            <div class="wizard-step" id="stepReturning">
+                <div class="step-inner">
+                    <div class="returning-icon">👋</div>
+                    <div class="step-num">Welcome Back</div>
+                    <div class="step-question">Here again?</div>
+                    <div class="step-hint" id="returningHostText">Use the same details as last time?</div>
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-ghost" onclick="declineReturning()">No, start fresh</button>
+                    <button class="btn btn-primary" onclick="acceptReturning()">✅ Yes, same as before</button>
                 </div>
             </div>
 
@@ -386,39 +492,12 @@
                 <div class="step-inner">
                     <div class="step-num" id="s3num">Step 3 of 7</div>
                     <div class="step-question" id="s3q">Who are you here to see?</div>
-                    <div class="step-hint" id="s3h">Select from the list below</div>
-                    <select class="host-select" id="hostName">
-                        <option value="">— Select person —</option>
-                        <option value="Alex Coley|A.Coley@narrowaisle.co.uk">Alex Coley – Technical Support</option>
-                        <option value="Beth Henley|b.henley@narrowaisle.co.uk">Beth Henley – Rental Manager</option>
-                        <option value="Chloe Burrows|c.burrows@narrowaisle.co.uk">Chloe Burrows – Service Controller</option>
-                        <option value="Donald Houston|d.houston@narrowaisle.co.uk">Donald Houston – Group MD</option>
-                        <option value="Emma Partridge|e.partridge@narrowaisle.co.uk">Emma Partridge – Credit Controller</option>
-                        <option value="Eric Holt|e.holt@narrowaisle.co.uk">Eric Holt – Head of Operations</option>
-                        <option value="Gavin Martin|g.martin@narrowaisle.co.uk">Gavin Martin – Head of International</option>
-                        <option value="Guy Whitehurst|g.whitehurst@narrowaisle.co.uk">Guy Whitehurst – Business Ops Manager</option>
-                        <option value="James Williams|J.Williams@narrowaisle.co.uk">James Williams – Parts &amp; Service</option>
-                        <option value="Jane Robbins|j.robbins@narrowaisle.co.uk">Jane Robbins – Service Controller</option>
-                        <option value="Jim Barker|j.barker@narrowaisle.co.uk">Jim Barker – Production Manager</option>
-                        <option value="Joseph Wesley|jt.wesley@narrowaisle.co.uk">Joseph Wesley – Used Truck Sales</option>
-                        <option value="Karen Bell|k.bell@narrowaisle.co.uk">Karen Bell – Service Controller</option>
-                        <option value="Kellie Jones|ka.jones@narrowaisle.co.uk">Kellie Jones – Purchase Ledger</option>
-                        <option value="Kris Jones|parts@narrowaisle.co.uk">Kris Jones – Parts Controller</option>
-                        <option value="Lee Burt|l.burt@narrowaisle.co.uk">Lee Burt – Head of Service &amp; Parts</option>
-                        <option value="Martin Jones|martin.jones@narrowaisle.co.uk">Martin Jones – Strategic Development</option>
-                        <option value="Michael Coley|m.coley@narrowaisle.co.uk">Michael Coley – QMS Engineer</option>
-                        <option value="Michelle Ball|m.ball@narrowaisle.co.uk">Michelle Ball – Payroll</option>
-                        <option value="Nigel Langford|n.langford@narrowaisle.co.uk">Nigel Langford – Scheduling &amp; Quality</option>
-                        <option value="Paul Burns|p.burns@narrowaisle.co.uk">Paul Burns – Design Engineer</option>
-                        <option value="Paul Kinsella|p.kinsella@narrowaisle.co.uk">Paul Kinsella – Production Supervisor</option>
-                        <option value="Phil Grant|p.grant@narrowaisle.co.uk">Phil Grant – Operations Service Manager</option>
-                        <option value="Rob Edwards|r.edwards@narrowaisle.co.uk">Rob Edwards – Strategic Account Manager</option>
-                        <option value="Sarah Lockley|s.lockley@narrowaisle.co.uk">Sarah Lockley – Finance &amp; Personnel</option>
-                        <option value="Steve Clark|s.clark@narrowaisle.co.uk">Steve Clark – Financial Controller</option>
-                        <option value="Steve Moore|steven.m@narrowaisle.co.uk">Steve Moore – Design Engineer</option>
-                        <option value="Steve Seymour|s.seymour@narrowaisle.co.uk">Steve Seymour – Training Manager</option>
-                        <option value="Stuart Hill|s.hill@narrowaisle.co.uk">Stuart Hill – Senior Designer</option>
-                    </select>
+                    <div class="step-hint" id="s3h">Start typing a name</div>
+                    <div class="combobox" id="hostCombobox">
+                        <input class="step-input" type="text" id="hostSearch" placeholder="Type a name..." autocomplete="off" autocapitalize="words" oninput="filterHosts()" onfocus="filterHosts()">
+                        <input type="hidden" id="hostName">
+                        <div class="combobox-results" id="hostResults"></div>
+                    </div>
                 </div>
                 <div class="step-nav">
                     <button class="btn btn-ghost" onclick="prevStep(3)">← Back</button>
@@ -536,7 +615,8 @@
             <div class="success-host" id="successHostBox">—</div>
             <div class="success-return" id="successReturn"></div>
         </div>
-        <button class="btn btn-outline" style="margin-top:20px; max-width:500px;" onclick="showScreen('welcomeScreen')" id="backBtn">← Back to Welcome</button>
+        <button class="btn btn-outline" style="margin-top:16px; max-width:500px;" onclick="printBadge()" id="printBadgeBtn">🖨 Print Visitor Badge</button>
+        <button class="btn btn-ghost" style="margin-top:10px; max-width:500px;" onclick="showScreen('welcomeScreen')" id="backBtn">← Back to Welcome</button>
     </div>
 
     <!-- SIGN-OUT SCREEN -->
@@ -574,6 +654,10 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Supabase is the single source of truth for visitor data now.
 const MAILER_URL = 'https://script.google.com/macros/s/AKfycbyI8cHuRpKec2e28byX8tz85Z09Ze0TGebnugkD7uC2hg6bfWYvP9dKHZLGvrCje0B5aA/exec';
 
+// Where courier/delivery drop-offs and watchlist alerts get flagged to --
+// update this to your real reception inbox.
+const RECEPTION_EMAIL = 'reception@narrowaisle.co.uk';
+
 const TOTAL_STEPS = 7;
 let currentStep = 1;
 let selectedPurpose = '';
@@ -581,6 +665,44 @@ let selectedDuration = '';
 let isSubmitting = false;
 let preRegMatch = null;
 let preRegCache = [];
+let watchlistCache = [];
+let watchlistFlag = null;
+let returningMatch = null;
+let lastSignInRecord = null;
+
+// Same 29 hosts previously hardcoded as <option> tags -- now driven through
+// JS so the picker on Step 3 can be searched instead of scrolled.
+const HOSTS = [
+    ['Alex Coley','A.Coley@narrowaisle.co.uk','Technical Support'],
+    ['Beth Henley','b.henley@narrowaisle.co.uk','Rental Manager'],
+    ['Chloe Burrows','c.burrows@narrowaisle.co.uk','Service Controller'],
+    ['Donald Houston','d.houston@narrowaisle.co.uk','Group MD'],
+    ['Emma Partridge','e.partridge@narrowaisle.co.uk','Credit Controller'],
+    ['Eric Holt','e.holt@narrowaisle.co.uk','Head of Operations'],
+    ['Gavin Martin','g.martin@narrowaisle.co.uk','Head of International'],
+    ['Guy Whitehurst','g.whitehurst@narrowaisle.co.uk','Business Ops Manager'],
+    ['James Williams','J.Williams@narrowaisle.co.uk','Parts & Service'],
+    ['Jane Robbins','j.robbins@narrowaisle.co.uk','Service Controller'],
+    ['Jim Barker','j.barker@narrowaisle.co.uk','Production Manager'],
+    ['Joseph Wesley','jt.wesley@narrowaisle.co.uk','Used Truck Sales'],
+    ['Karen Bell','k.bell@narrowaisle.co.uk','Service Controller'],
+    ['Kellie Jones','ka.jones@narrowaisle.co.uk','Purchase Ledger'],
+    ['Kris Jones','parts@narrowaisle.co.uk','Parts Controller'],
+    ['Lee Burt','l.burt@narrowaisle.co.uk','Head of Service & Parts'],
+    ['Martin Jones','martin.jones@narrowaisle.co.uk','Strategic Development'],
+    ['Michael Coley','m.coley@narrowaisle.co.uk','QMS Engineer'],
+    ['Michelle Ball','m.ball@narrowaisle.co.uk','Payroll'],
+    ['Nigel Langford','n.langford@narrowaisle.co.uk','Scheduling & Quality'],
+    ['Paul Burns','p.burns@narrowaisle.co.uk','Design Engineer'],
+    ['Paul Kinsella','p.kinsella@narrowaisle.co.uk','Production Supervisor'],
+    ['Phil Grant','p.grant@narrowaisle.co.uk','Operations Service Manager'],
+    ['Rob Edwards','r.edwards@narrowaisle.co.uk','Strategic Account Manager'],
+    ['Sarah Lockley','s.lockley@narrowaisle.co.uk','Finance & Personnel'],
+    ['Steve Clark','s.clark@narrowaisle.co.uk','Financial Controller'],
+    ['Steve Moore','steven.m@narrowaisle.co.uk','Design Engineer'],
+    ['Steve Seymour','s.seymour@narrowaisle.co.uk','Training Manager'],
+    ['Stuart Hill','s.hill@narrowaisle.co.uk','Senior Designer'],
+];
 
 // Kept as a flat English string table (rather than deleting every t('key')
 // call site) since the multi-language switcher was removed but the same
@@ -629,6 +751,7 @@ function showScreen(id) {
     if (id === 'signoutScreen') loadTodaysVisitors();
     if (id === 'welcomeScreen') loadWelcomeStats();
     if (id === 'successScreen') setTimeout(() => showScreen('welcomeScreen'), 25000);
+    resetIdleTimer();
 }
 
 function buildDots() {
@@ -647,8 +770,11 @@ function startSignIn() {
     selectedDuration = '';
     isSubmitting = false;
     preRegMatch = null;
-    ['visitorName','companyName','vehicleReg','visitorEmail'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    watchlistFlag = null;
+    returningMatch = null;
+    ['visitorName','companyName','vehicleReg','visitorEmail','hostSearch'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('hostName').value = '';
+    document.getElementById('hostResults').classList.remove('show');
     document.getElementById('visitPurpose').value = '';
     document.getElementById('visitDuration').value = '';
     document.getElementById('submitBtn').disabled = false;
@@ -693,6 +819,7 @@ function applyPreRegistration(matched) {
     document.getElementById('vehicleReg').value = matched.vehicle_reg || '';
     if (matched.host_name) {
         document.getElementById('hostName').value = matched.host_name + '|' + (matched.host_email || '');
+        document.getElementById('hostSearch').value = matched.host_name;
     }
     document.querySelectorAll('#step4 .option-tile').forEach(tl => {
         tl.classList.toggle('selected', tl.dataset.purpose === selectedPurpose);
@@ -703,6 +830,100 @@ function applyPreRegistration(matched) {
     const banner = document.getElementById('prefilledBanner');
     banner.textContent = `👋 Welcome! You're expected by ${matched.host_name}${selectedPurpose ? ' for ' + selectedPurpose.toLowerCase() : ''} today.`;
     banner.style.display = 'block';
+}
+
+// ============================================
+// SEARCHABLE HOST PICKER (Step 3)
+// ============================================
+function filterHosts() {
+    const q = normalizeName(document.getElementById('hostSearch').value);
+    const results = document.getElementById('hostResults');
+    const matches = q ? HOSTS.filter(h => normalizeName(h[0]).includes(q) || normalizeName(h[2]).includes(q)) : HOSTS;
+    if (matches.length === 0) {
+        results.innerHTML = '<div class="combobox-empty">No match — check the spelling</div>';
+    } else {
+        results.innerHTML = matches.map(h =>
+            `<div class="combobox-item" onclick="selectHost('${h[0].replace(/'/g, "\\'")}','${h[1]}')"><strong>${h[0]}</strong><span>${h[2]}</span></div>`
+        ).join('');
+    }
+    results.classList.add('show');
+}
+
+function selectHost(name, email) {
+    document.getElementById('hostName').value = name + '|' + email;
+    document.getElementById('hostSearch').value = name;
+    document.getElementById('hostResults').classList.remove('show');
+}
+
+document.addEventListener('click', (e) => {
+    const box = document.getElementById('hostCombobox');
+    if (box && !box.contains(e.target)) document.getElementById('hostResults').classList.remove('show');
+});
+
+// ============================================
+// WATCHLIST CHECK (silent -- never shown to the visitor)
+// ============================================
+async function loadWatchlistCache() {
+    try {
+        const { data, error } = await sb.from('visitor_watchlist').select('name, reason').eq('active', true);
+        if (!error) watchlistCache = data || [];
+    } catch (err) { console.log('Watchlist cache load failed:', err); }
+}
+loadWatchlistCache();
+setInterval(loadWatchlistCache, 120000);
+
+function findWatchlistMatch(name) {
+    const norm = normalizeName(name);
+    return watchlistCache.find(w => normalizeName(w.name) === norm) || null;
+}
+
+// ============================================
+// RETURNING VISITOR QUICK-CONFIRM
+// ============================================
+async function checkReturningVisitor(name) {
+    try {
+        const { data, error } = await sb
+            .from('visitor_log')
+            .select('company_name, host_name, host_email, visit_purpose, visit_duration')
+            .ilike('visitor_name', name)
+            .order('signed_in_at', { ascending: false })
+            .limit(1);
+        if (error || !data || data.length === 0) return null;
+        return data[0];
+    } catch { return null; }
+}
+
+function showReturningCard(match) {
+    returningMatch = match;
+    document.getElementById('returningHostText').textContent =
+        `Last time you saw ${match.host_name}${match.visit_purpose ? ' for ' + match.visit_purpose.toLowerCase() : ''}. Same again?`;
+    document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active', 'going-back'));
+    document.getElementById('stepReturning').classList.add('active');
+}
+
+function acceptReturning() {
+    const f = returningMatch;
+    if (!f) return;
+    selectedPurpose = f.visit_purpose || '';
+    selectedDuration = f.visit_duration || '';
+    document.getElementById('visitPurpose').value = selectedPurpose;
+    document.getElementById('visitDuration').value = selectedDuration;
+    document.getElementById('companyName').value = f.company_name || '';
+    if (f.host_name) {
+        document.getElementById('hostName').value = f.host_name + '|' + (f.host_email || '');
+        document.getElementById('hostSearch').value = f.host_name;
+    }
+    document.querySelectorAll('#step4 .option-tile').forEach(tl => tl.classList.toggle('selected', tl.dataset.purpose === selectedPurpose));
+    document.querySelectorAll('#step5 .option-tile').forEach(tl => tl.classList.toggle('selected', tl.dataset.duration === selectedDuration));
+    const banner = document.getElementById('prefilledBanner');
+    banner.textContent = `👋 Welcome back! Using your details from last time.`;
+    banner.style.display = 'block';
+    showStepUI(7, false);
+}
+
+function declineReturning() {
+    returningMatch = null;
+    showStepUI(2, false);
 }
 
 // ============================================
@@ -751,14 +972,28 @@ function showStepUI(n, goingBack) {
     if (inp && inp.tagName !== 'SELECT') setTimeout(() => inp.focus(), 300);
 }
 
-function nextStep(from) {
+async function nextStep(from) {
     if (from === 1) {
         const nameVal = document.getElementById('visitorName').value.trim();
         if (!nameVal) { showToast(t('error_name')); return; }
+
+        const wl = findWatchlistMatch(nameVal);
+        watchlistFlag = wl ? (wl.reason || 'Watchlist match') : null;
+
         const matched = findPreRegistration(nameVal);
         if (matched) {
             applyPreRegistration(matched);
             showStepUI(matched.company_name ? 7 : 2, false);
+            return;
+        }
+
+        // Not expected today -- see if they've been in before and offer to
+        // reuse their last visit's details instead of the full wizard.
+        document.getElementById('step1NextBtn').disabled = true;
+        const returning = await checkReturningVisitor(nameVal);
+        document.getElementById('step1NextBtn').disabled = false;
+        if (returning) {
+            showReturningCard(returning);
             return;
         }
     }
@@ -826,7 +1061,10 @@ async function submitSignIn() {
         visitor_email: document.getElementById('visitorEmail').value.trim() || null,
         status: 'Signed In',
         safety_ack: true,
-        gdpr_ack: true
+        gdpr_ack: true,
+        flagged: !!watchlistFlag,
+        flagged_reason: watchlistFlag || null,
+        is_delivery: false
     };
 
     try {
@@ -841,6 +1079,7 @@ async function submitSignIn() {
         }
 
         hideLoading();
+        lastSignInRecord = record;
 
         document.getElementById('successHostBox').innerHTML =
             `<strong>${record.host_name}</strong> ${t('success_notified')}<br>
@@ -852,6 +1091,7 @@ async function submitSignIn() {
         // Fire the Gmail notification via the slim Apps Script mailer --
         // don't block the success screen on it.
         notifyHost({
+            alertType: 'arrival',
             hostName: record.host_name,
             hostEmail: record.host_email,
             visitorName: record.visitor_name,
@@ -862,6 +1102,18 @@ async function submitSignIn() {
             date: dateStr,
             timeIn: timeInStr
         });
+
+        // A silent watchlist match also gets its own alert to reception --
+        // the visitor sees nothing different on screen either way.
+        if (watchlistFlag) {
+            notifySecurity({
+                visitorName: record.visitor_name,
+                companyName: record.company_name,
+                flaggedReason: watchlistFlag,
+                date: dateStr,
+                timeIn: timeInStr
+            });
+        }
 
         // Check last visit in background (don't wait for it)
         checkLastVisit(visitorNameValue).then(lastVisitInfo => {
@@ -887,6 +1139,72 @@ function notifyHost(payload) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     }).catch(err => console.log('Mailer notify failed:', err));
+}
+
+function notifySecurity(payload) {
+    fetch(MAILER_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, alertType: 'watchlist', hostEmail: RECEPTION_EMAIL, hostName: 'Reception' })
+    }).catch(err => console.log('Security alert failed:', err));
+}
+
+// ============================================
+// QUICK DELIVERY / COURIER LANE
+// ============================================
+async function submitDelivery() {
+    const courier = document.getElementById('deliveryCourier').value.trim() || 'Courier';
+    const notes = document.getElementById('deliveryNotes').value.trim();
+    document.getElementById('deliverySubmitBtn').disabled = true;
+    showLoading('Logging delivery...');
+
+    const nowIso = new Date().toISOString();
+    const dateStr = new Date().toLocaleDateString('en-GB');
+    const timeInStr = new Date().toLocaleTimeString('en-GB');
+    const record = {
+        visitor_name: courier,
+        company_name: courier,
+        host_name: 'Goods In / Reception',
+        host_email: RECEPTION_EMAIL,
+        visit_purpose: 'Delivery',
+        visit_duration: null,
+        vehicle_reg: notes || null,
+        visitor_email: null,
+        status: 'Signed Out',
+        signed_out_at: nowIso,
+        safety_ack: true,
+        gdpr_ack: true,
+        is_delivery: true
+    };
+
+    try {
+        const { error } = await sb.from('visitor_log').insert(record);
+        if (error) throw error;
+        hideLoading();
+        document.getElementById('deliverySubmitBtn').disabled = false;
+        document.getElementById('deliveryCourier').value = '';
+        document.getElementById('deliveryNotes').value = '';
+        showToast('✅ Delivery logged — reception notified');
+        notifyHost({
+            alertType: 'delivery',
+            hostName: 'Reception',
+            hostEmail: RECEPTION_EMAIL,
+            visitorName: courier,
+            companyName: courier,
+            visitPurpose: 'Delivery',
+            vehicleReg: notes,
+            visitorEmail: '',
+            date: dateStr,
+            timeIn: timeInStr
+        });
+        showScreen('welcomeScreen');
+    } catch (err) {
+        hideLoading();
+        document.getElementById('deliverySubmitBtn').disabled = false;
+        showToast(t('error_try'));
+        console.error(err);
+    }
 }
 
 async function checkLastVisit(currentName) {
@@ -994,6 +1312,73 @@ function showToast(msg) {
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
+
+// ============================================
+// VISITOR BADGE PRINTING
+// ============================================
+function printBadge() {
+    if (!lastSignInRecord) { showToast('Nothing to print yet'); return; }
+    document.getElementById('badgeName').textContent = lastSignInRecord.visitor_name;
+    document.getElementById('badgeCompany').textContent = lastSignInRecord.company_name || '';
+    document.getElementById('badgeHost').textContent = lastSignInRecord.host_name;
+    document.getElementById('badgePurpose').textContent = lastSignInRecord.visit_purpose || '';
+    document.getElementById('badgeDate').textContent = new Date().toLocaleDateString('en-GB') + ' · ' + new Date().toLocaleTimeString('en-GB');
+    window.print();
+}
+
+// ============================================
+// IDLE SCREENSAVER
+// ============================================
+const SCREENSAVER_TIPS = [
+    { tip: 'Welcome to Narrow Aisle / Flexi', sub: 'Tap below to sign in' },
+    { tip: "Please sign in at reception", sub: 'It only takes a minute' },
+    { tip: 'Fire Assembly Point: Main Car Park', sub: 'Please familiarise yourself on arrival' },
+    { tip: 'Visiting a colleague?', sub: "They'll get an email the moment you sign in" },
+    { tip: 'Expected today?', sub: 'Pre-registered visitors skip straight through to the end' },
+    { tip: 'Dropping off a parcel?', sub: 'Use the Courier / Delivery option -- no full sign-in needed' },
+];
+const IDLE_MS = 45000;
+let idleTimer = null;
+let ssRotateTimer = null;
+let ssIndex = 0;
+
+function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    const welcome = document.getElementById('welcomeScreen');
+    if (welcome && welcome.classList.contains('active')) {
+        idleTimer = setTimeout(showScreensaver, IDLE_MS);
+    }
+}
+
+function renderScreensaverTip() {
+    document.getElementById('ssTip').textContent = SCREENSAVER_TIPS[ssIndex].tip;
+    document.getElementById('ssSub').textContent = SCREENSAVER_TIPS[ssIndex].sub;
+}
+
+function showScreensaver() {
+    ssIndex = 0;
+    renderScreensaverTip();
+    document.getElementById('screensaver').classList.add('show');
+    clearInterval(ssRotateTimer);
+    ssRotateTimer = setInterval(() => {
+        ssIndex = (ssIndex + 1) % SCREENSAVER_TIPS.length;
+        renderScreensaverTip();
+    }, 6000);
+}
+
+function hideScreensaver() {
+    document.getElementById('screensaver').classList.remove('show');
+    clearInterval(ssRotateTimer);
+    resetIdleTimer();
+}
+
+['pointerdown', 'touchstart', 'keydown'].forEach(evt => {
+    document.addEventListener(evt, () => {
+        if (document.getElementById('screensaver').classList.contains('show')) return; // its own tap handler covers this
+        resetIdleTimer();
+    });
+});
+resetIdleTimer();
 
 // ============================================
 // INSTALLABLE APP (PWA)

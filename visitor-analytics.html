@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visitor Analytics — Flexi Reception</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+    :root {
+        --red: #df0a1e; --red-light: #e8394a; --red-dark: #c3161e;
+        --bg: #fff; --card: #fff; --card2: #f5f5f6;
+        --text: #101010; --text-muted: #6b6b70; --border: rgba(16,16,16,0.10);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        font-family:'DM Sans',sans-serif;
+        background:#fff;
+        color:var(--text); min-height:100vh; padding:24px;
+    }
+    .wrap { max-width:1100px; margin:0 auto; }
+    .top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:22px; }
+    .title { font-family:'IBM Plex Sans',sans-serif; font-size:2.1em; font-weight:900; text-transform:uppercase; letter-spacing:-0.5px; color:var(--text); }
+    .title span { color:var(--red); }
+    .sub { font-size:0.95em; color:var(--text-muted); font-weight:600; margin-top:2px; }
+    button {
+        font-family:'IBM Plex Sans',sans-serif; font-weight:800; font-size:0.95em;
+        text-transform:uppercase; letter-spacing:0.5px; border:none; border-radius:10px;
+        padding:12px 20px; cursor:pointer; background:var(--card2); color:var(--text); border:1px solid var(--border);
+        transition:all 0.15s;
+    }
+    button:active { transform:scale(0.96); }
+
+    .stats-row { display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; margin-bottom:22px; }
+    @media (max-width:900px) { .stats-row { grid-template-columns:repeat(2, 1fr); } }
+    .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 14px; text-align:center; box-shadow:0 6px 20px rgba(16,16,16,0.05); }
+    .stat-label { font-size:0.72em; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:6px; }
+    .stat-value { font-family:'IBM Plex Sans',sans-serif; font-size:2.2em; font-weight:900; color:var(--red); line-height:1; }
+
+    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:20px; box-shadow:0 10px 30px rgba(16,16,16,0.06); }
+    .card h2 { font-family:'IBM Plex Sans',sans-serif; font-size:1em; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text); margin-bottom:16px; }
+    .chart-wrap { position:relative; height:280px; }
+    .two-col { display:grid; grid-template-columns:1.4fr 1fr; gap:20px; }
+    @media (max-width:800px) { .two-col { grid-template-columns:1fr; } }
+    .empty { text-align:center; color:var(--text-muted); padding:40px 20px; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="top">
+        <div>
+            <div class="title">Visitor <span>Analytics</span></div>
+            <div class="sub">Last 30 days of sign-in activity</div>
+        </div>
+        <button onclick="loadAll()">↻ Refresh</button>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Today</div><div class="stat-value" id="statToday">—</div></div>
+        <div class="stat-card"><div class="stat-label">On-Site Now</div><div class="stat-value" id="statOnSite">—</div></div>
+        <div class="stat-card"><div class="stat-label">Last 7 Days</div><div class="stat-value" id="statWeek">—</div></div>
+        <div class="stat-card"><div class="stat-label">Last 30 Days</div><div class="stat-value" id="statMonth">—</div></div>
+        <div class="stat-card"><div class="stat-label">Avg / Day (30d)</div><div class="stat-value" id="statAvg">—</div></div>
+    </div>
+
+    <div class="card">
+        <h2>Visits Per Day — Last 30 Days</h2>
+        <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
+    </div>
+
+    <div class="two-col">
+        <div class="card">
+            <h2>Top Hosts — Last 30 Days</h2>
+            <div class="chart-wrap"><canvas id="hostChart"></canvas></div>
+        </div>
+        <div class="card">
+            <h2>Busiest Day of Week</h2>
+            <div class="chart-wrap"><canvas id="dowChart"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://hkwcdpqpduptjwroawrw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrd2NkcHFwZHVwdGp3cm9hd3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDMyNzcsImV4cCI6MjEwNTExOTI3N30.9W7X2SBUQunSYASrpmAgVICAZuX9F_LJCfPT7oBPh3I';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const RED = '#df0a1e';
+const RED_LIGHT = 'rgba(223,10,30,0.12)';
+const TEXT_MUTED = '#6b6b70';
+
+let dailyChart, hostChart, dowChart;
+
+function dayKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+async function loadAll() {
+    const since30 = new Date(); since30.setDate(since30.getDate() - 30); since30.setHours(0, 0, 0, 0);
+    const startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0);
+    const since7 = new Date(); since7.setDate(since7.getDate() - 7); since7.setHours(0, 0, 0, 0);
+
+    const { data, error } = await sb
+        .from('visitor_log')
+        .select('visitor_name, host_name, status, signed_in_at, is_delivery')
+        .gte('signed_in_at', since30.toISOString())
+        .order('signed_in_at', { ascending: true });
+
+    if (error) {
+        console.error(error);
+        document.querySelector('.wrap').insertAdjacentHTML('beforeend', '<div class="empty">❌ Error loading data — check connection</div>');
+        return;
+    }
+
+    const rows = (data || []).filter(v => !v.is_delivery); // deliveries skew "visitor" analytics -- counted separately if needed later
+
+    // -------- stat tiles --------
+    const today = rows.filter(v => new Date(v.signed_in_at) >= startOfToday);
+    const week = rows.filter(v => new Date(v.signed_in_at) >= since7);
+    const onSite = rows.filter(v => v.status === 'Signed In').length;
+    document.getElementById('statToday').textContent = today.length;
+    document.getElementById('statOnSite').textContent = onSite;
+    document.getElementById('statWeek').textContent = week.length;
+    document.getElementById('statMonth').textContent = rows.length;
+    document.getElementById('statAvg').textContent = (rows.length / 30).toFixed(1);
+
+    // -------- visits per day (last 30 days, zero-filled) --------
+    const dayLabels = [], dayCounts = [];
+    const dayMap = {};
+    rows.forEach(v => { const k = dayKey(new Date(v.signed_in_at)); dayMap[k] = (dayMap[k] || 0) + 1; });
+    for (let i = 29; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const k = dayKey(d);
+        dayLabels.push(d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+        dayCounts.push(dayMap[k] || 0);
+    }
+
+    // -------- top hosts --------
+    const hostMap = {};
+    rows.forEach(v => { const h = v.host_name || 'Unknown'; hostMap[h] = (hostMap[h] || 0) + 1; });
+    const topHosts = Object.entries(hostMap).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+    // -------- busiest day of week --------
+    const dowNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dowCounts = [0, 0, 0, 0, 0, 0, 0];
+    rows.forEach(v => { dowCounts[new Date(v.signed_in_at).getDay()]++; });
+
+    renderCharts(dayLabels, dayCounts, topHosts, dowNames, dowCounts);
+}
+
+function renderCharts(dayLabels, dayCounts, topHosts, dowNames, dowCounts) {
+    const fontFamily = "'DM Sans', sans-serif";
+    Chart.defaults.font.family = fontFamily;
+    Chart.defaults.color = TEXT_MUTED;
+
+    if (dailyChart) dailyChart.destroy();
+    dailyChart = new Chart(document.getElementById('dailyChart'), {
+        type: 'line',
+        data: {
+            labels: dayLabels,
+            datasets: [{
+                data: dayCounts, borderColor: RED, backgroundColor: RED_LIGHT,
+                fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2.5
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+                y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: 'rgba(16,16,16,0.06)' } }
+            }
+        }
+    });
+
+    if (hostChart) hostChart.destroy();
+    hostChart = new Chart(document.getElementById('hostChart'), {
+        type: 'bar',
+        data: {
+            labels: topHosts.map(h => h[0]),
+            datasets: [{ data: topHosts.map(h => h[1]), backgroundColor: RED, borderRadius: 6, maxBarThickness: 26 }]
+        },
+        options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: 'rgba(16,16,16,0.06)' } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+
+    if (dowChart) dowChart.destroy();
+    dowChart = new Chart(document.getElementById('dowChart'), {
+        type: 'bar',
+        data: {
+            labels: dowNames,
+            datasets: [{ data: dowCounts, backgroundColor: RED, borderRadius: 6, maxBarThickness: 30 }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: 'rgba(16,16,16,0.06)' } }
+            }
+        }
+    });
+}
+
+loadAll();
+</script>
+</body>
+</html>

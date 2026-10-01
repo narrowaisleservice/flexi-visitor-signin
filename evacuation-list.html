@@ -39,6 +39,19 @@
     .btn-refresh:active { transform:scale(0.96); }
     .btn-print { background:linear-gradient(135deg, var(--red-light) 0%, var(--red-dark) 100%); color:#fff; }
     .btn-print:active { transform:scale(0.96); }
+    .btn-drill { background:#f59e0b; color:#1a1200; }
+    .btn-drill:active { transform:scale(0.96); }
+    .btn-drill.active { background:#101010; color:#fff; }
+
+    .drill-banner {
+        display:none; align-items:center; gap:14px;
+        background:linear-gradient(135deg, rgba(245,158,11,0.18) 0%, rgba(245,158,11,0.07) 100%);
+        border:2px solid #f59e0b; border-radius:16px; padding:16px 22px; margin-bottom:20px;
+        font-weight:800; color:#92400e; font-size:1.05em;
+    }
+    .drill-banner.show { display:flex; }
+    .drill-banner .dot { width:10px; height:10px; border-radius:50%; background:#f59e0b; animation:drillPulse 1s ease-in-out infinite; flex-shrink:0; }
+    @keyframes drillPulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
     .count-banner {
         display:flex; align-items:center; gap:20px;
@@ -68,6 +81,7 @@
         .title span, .time { color:#B81820; }
         .count-num { color:#000; }
         .sub, .meta, .updated, .count-label { color:#444; }
+        .drill-banner { border-color:#000; background:#fff; color:#000; }
     }
 </style>
 </head>
@@ -81,7 +95,13 @@
         <div class="actions">
             <button class="btn-refresh" onclick="loadList()">↻ Refresh</button>
             <button class="btn-print" onclick="window.print()">🖨 Print</button>
+            <button class="btn-drill" id="drillBtn" onclick="toggleDrill()">🧯 Test Drill</button>
         </div>
+    </div>
+
+    <div class="drill-banner" id="drillBanner">
+        <div class="dot"></div>
+        <div>TEST DRILL IN PROGRESS — list frozen at <span id="drillTime">—</span>. This is not a live count.</div>
     </div>
 
     <div class="count-banner">
@@ -98,7 +118,27 @@ const SUPABASE_URL = 'https://hkwcdpqpduptjwroawrw.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrd2NkcHFwZHVwdGp3cm9hd3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDMyNzcsImV4cCI6MjEwNTExOTI3N30.9W7X2SBUQunSYASrpmAgVICAZuX9F_LJCfPT7oBPh3I';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+let drillMode = false;
+
+function toggleDrill() {
+    drillMode = !drillMode;
+    const btn = document.getElementById('drillBtn');
+    const banner = document.getElementById('drillBanner');
+    if (drillMode) {
+        document.getElementById('drillTime').textContent = new Date().toLocaleTimeString('en-GB');
+        banner.classList.add('show');
+        btn.classList.add('active');
+        btn.textContent = '✅ End Drill';
+    } else {
+        banner.classList.remove('show');
+        btn.classList.remove('active');
+        btn.textContent = '🧯 Test Drill';
+        loadList(); // snap straight back to the live count
+    }
+}
+
 async function loadList() {
+    if (drillMode) return; // list stays frozen on screen until the drill ends
     try {
         const { data, error } = await sb
             .from('visitor_log')
