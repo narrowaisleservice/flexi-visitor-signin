@@ -257,6 +257,8 @@
     }
     .toast.show { opacity:1; transform:translateX(0); }
 
+    .made-by { position:fixed; bottom:18px; right:16px; color:var(--text-muted); font-size:0.68em; font-weight:600; letter-spacing:0.6px; opacity:0.8; z-index:100; pointer-events:none; }
+    .screensaver .made-by { position:absolute; z-index:1; }
     .version-badge {
         position:fixed; bottom:14px; left:16px; background:rgba(223,10,30,0.06); color:var(--text-muted);
         border:1px solid var(--red-border); border-radius:7px; font-size:0.68em; font-weight:700;
@@ -344,6 +346,7 @@
 <body>
 
 <div class="version-badge">V2.0.1S</div>
+<div class="made-by">Made by James Williams</div>
 <div class="toast" id="toast"></div>
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
@@ -363,6 +366,7 @@
     <div class="ss-tip" id="ssTip">Welcome to Narrow Aisle / Flexi</div>
     <div class="ss-sub" id="ssSub">Tap below to sign in</div>
     <div class="ss-tap">Tap anywhere to continue</div>
+    <div class="made-by">Made by James Williams</div>
 </div>
 
 <!-- Printable visitor badge (hidden on screen, only rendered by the browser's print dialog) -->
